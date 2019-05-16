@@ -1,0 +1,77 @@
+version: '3'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb2"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ./data/db:/data/db
+    ports:
+      - 27017:27017
+    command: mongod --smallfiles --logpath=/dev/null # --quiet
+
+
+# ## run
+
+# ```
+# docker compose -up
+# docker exec -it mongodb bin/bash
+# /usr/bin/mongo [path_db_files]
+# ```
+
+# ## use
+
+# > show dbs
+# > use db_name
+# > db.stats() # db info
+# > db.getCollectionNames()
+# > db.players.insert({  name: 'Aaron Appindagoye', heigth: 182, weight: 187 })
+# > db.players.find()
+# > db.players.insert({ date_field: new Date(1987,2,14,0,0) })
+# > db.players.remove({}) # {} is without filters
+# > db.players.find({preferred_foot: "left"})
+# > db.players.find({heigth: {$gt: 150}}) # $gt, $lt, $exists, $or , $regex
+# > db.players.find( {$or: [{heigth: {$gt: 150}}, {heigth: {$lt: 140}} ]})
+# > db.players.find({name: { $regex: "o$"}})
+#
+# > anidados
+# >  db.bandas.find({'discos.ano': 2006}) ej:("discos" : [ { "nombre" : "despues de todo", "ano" : 2006 } ],)
+
+# > db.players.update(
+#     busqueda {},
+#     actualizacion {clave: valor},
+#     'upsert' false/true si no existe lo crea, 
+#     'multi' false/true, masivo o solo el primero que encuentra)
+#
+# > db.players.update({name: { $regex: "o$"}}, { $set: {heigth: 133}}) # set only the attribute to the current object
+# > db.players.update({name: { $regex: "o$"}}, { heigth: 133 }) # replace the  whole
+# > db.players.update({name: { $regex: "a$"}}, { $inc: {heigth: -3}}) #increment a value
+# > db.players.update({name: 'David Silva'},{$push:{hobbies:'Swimming'}})
+# > db.players.update({name: 'Edison zaraza'},{$push:{hobbies:'Swimming'}}) $ add to collection an items
+# > db.hits.update({page: 'players'}, {$inc:{hits:1}},true); # last parameter is if not exist create
+# >  db.bandas.update({}, { $inc: { integrantes:1}}, false, true) (incremento todos)
+
+# > db.players.update({}, {$set:{active:true}},false, true); # last parameter bulk update
+# > db.players.find(null,{name:true}); # second parameter to filter only a few attributes
+# > db.players.find(null,{name:1, _id: 0});
+
+# sort
+# > db.players.find(null,{name:1, _id: 0}).sort({name:-1})  '1 ASC'
+# > db.players.find(null,{name:1, _id: 0}).sort({name:-1}).limit(2).skip(1)
+# > db.players.find(null).count()
+# > db.bandas.count({barrio: 'barracas'})   ->2
+# > db.bandas.find({barrio: 'barracas'}).count()
+
+
+# Sorted
+# db.bandas.find().sort({integrantes: 1})  'ordenado por integrantes asc
+# db.bandas.find().sort({integrantes: -1})  'ordenado por integrantes dec'
+
+# ## Admin
+
+# > db.players.ensureIndex({name:1}) # add index
+# > db.players.ensureIndex({name:1}, {unique: true}) # add index
+# > db.players.find({}).explain()
