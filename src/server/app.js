@@ -5,7 +5,7 @@ var app = express()
 var bodyParser = require('body-parser')
 var urlDB = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/uade_sem2_shart'
 var mongoose = require('mongoose')
-var port = process.env.PORT || 8080
+var port = process.env.PORT || 80
 var JWT = require('./helpers/hash')
 var LogMiddleware = require('./helpers/log')
 
