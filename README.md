@@ -13,19 +13,22 @@ create xxx
 update xxx
 delete xxx
 
-
 ## Install
 
 ```sh
+# not versioned file
+echo 'PORT=3333' > .env
 npm install
 npm start
+curl http://localhost:3333/api # check
+# open in browser http://localhost:3333
 ```
 
 ## Db
 
 ```sh
-docker compose -up
-docker exec -it mongodb bin/bash
+docker-compose up -d
+docker exec -it mongoDBSem2 bin/bash
 /usr/bin/mongo
 > show dbs
 > use uade_sem2_shart;
