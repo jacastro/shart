@@ -7,10 +7,10 @@ module.exports.get_fullcontact_info = (email, callback) => {
   })
     .then(res => {
       // 2xx response
-      if (callback) {
+      if (res && callback) {
         callback({
           full_name: res.contactInfo ? res.contactInfo.fullName : '',
-          photo: res.photos[0] ? res.photos[0].url : '',
+          photo: res.photos ? res.photos[0].url : '',
           location: res.demographics ? res.demographics.locationGeneral : '',
           age: res.demographics ? res.demographics.age : 0,
           gender: res.demographics ? res.demographics.gender : ''

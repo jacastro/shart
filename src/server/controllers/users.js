@@ -4,7 +4,6 @@ var Auth = require('../helpers/hash')
 var Users = require('../models/users')
 var FullContact = require('../helpers/fullContact')
 
-// List users, allow unsigned user
 router.get('/', function (req, res) {
   Users.find().sort('name').select({ __v: 0, _id: 0 })
     .then(result => {
@@ -15,75 +14,64 @@ router.get('/', function (req, res) {
     })
 })
 
-// Create a New User, allow unsigned user
+router.get('/:id', function (req, res) {
+  Users.findOne({ id: req.params.id }, (err, result) => {
+    if (result) {
+      res.status(200).json(result)
+    } else {
+      res.status(404).json({ errors: 'user not found' })
+    }
+  })
+})
+
 router.post('/', function (req, res) {
-  if (req.body.pass.length >= 8) {
-    Auth.hash(req.body.pass, hash => {
-      FullContact.get_fullcontact_info(req.body.email, fullContactData => {
-        var user = Users({
-          email: req.body.email.toLowerCase().trim(),
-          digest: hash,
-          name: req.body.name,
-          full_contact_data: fullContactData
-        })
+  FullContact.get_fullcontact_info(req.body.email, fullContactData => {
+    var user = Users({
+      email: req.body.email.toLowerCase().trim(),
+      name: req.body.name,
+      full_contact_data: fullContactData || {}
+    })
 
-        user.save()
-          .then(newUser => {
-            res.status(200).json({ user: newUser })
-          })
-          .catch(err => {
-            res.status(500).json({ message: 'Something went wrong', error: err.message })
-          })
+    user.save()
+      .then(newUser => {
+        res.status(200).json(newUser)
       })
-    })
-  } else {
-    res.json({ message: 'Password must be 8 characters or more' })
-  }
+      .catch(err => {
+        res.status(500).json({ message: 'Something went wrong', error: err.message })
+      })
+  })
 })
 
-// Update a user, only signed user
-router.put('/', function (req, res) {
-  if (req.user) {
-    Users.findOne({ id: req.user.id }, (err, result) => {
-      if (result) {
-        Auth.hash(req.body.pass, hash => {
-          Users.updateOne({ id: req.user.id }, {
-            digest: hash
-          }).then((err, status) => {
-            res.status(200).json({ result: 'ok' })
-          })
-            .catch(err => {
-              res.status(500).json({ message: 'Something went wrong', error: err.message })
-            })
+router.put('/:id', function (req, res) {
+  Users.findOne({ id: req.params.id }, (err, result) => {
+    if (result) {
+      Users.updateOne({ id: req.params.id }, {
+        name: req.body.name || result.name
+      }).then((err, status) => {
+        res.status(200).json({ result: 'ok' })
+      })
+        .catch(err => {
+          res.status(500).json({ message: 'Something went wrong', error: err.message })
         })
-      } else {
-        res.status(404).json({ errors: 'user not found' })
-      }
-    })
-  } else {
-    res.status(403).json({ errors: 'please sign in' })
-  }
+    } else {
+      res.status(404).json({ errors: 'user not found' })
+    }
+  })
 })
 
-// Delete a user, only signed user
 router.delete('/', function (req, res) {
-  if (req.user) {
-    Users.findOne({ id: req.user.id }, (err, result) => {
-      if (result) {
-        Users.deleteOne({ id: req.user.id })
-          .then((err, status) => {
-            res.status(200).json({ result: 'ok' })
-          })
-          .catch(err => {
-            res.status(500).json({ message: 'Something went wrong', error: err })
-          })
-      } else {
-        res.status(404).json({ errors: 'user not found' })
-      }
-    })
-  } else {
-    res.status(403).json({ errors: 'please sign in' })
-  }
+  Users.findOne({ id: req.params.id }, (err, result) => {
+    if (result) {
+      Users.deleteOne({ id: req.params.id })
+        .then((err, status) => {
+          res.status(200).json({ result: 'ok' })
+        })
+        .catch(err => {
+          res.status(500).json({ message: 'Something went wrong', error: err })
+        })
+    } else {
+      res.status(404).json({ errors: 'user not found' })
+    }
+  })
 })
-
 module.exports = router
