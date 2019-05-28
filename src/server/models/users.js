@@ -6,7 +6,7 @@ var Schema = mongoose.Schema
 var UserSchema = new Schema({
   id: { type: Number, unique: true, min: 1 },
   email: { type: String, required: true, maxlength: 50, unique: true },
-  name: { type: String, required: true, maxlength: 50 },
+  user_name: { type: String, required: true, maxlength: 50 },
   full_contact_data: {}
 })
 

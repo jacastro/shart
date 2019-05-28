@@ -5,7 +5,7 @@ var Users = require('../models/users')
 var FullContact = require('../helpers/fullContact')
 
 router.get('/', function (req, res) {
-  Users.find().sort('name').select({ __v: 0, _id: 0 })
+  Users.find().sort('user_name').select({ __v: 0, _id: 0 })
     .then(result => {
       res.status(200).json({ users: result })
     })
@@ -28,7 +28,7 @@ router.post('/', function (req, res) {
   FullContact.get_fullcontact_info(req.body.email, fullContactData => {
     var user = Users({
       email: req.body.email.toLowerCase().trim(),
-      name: req.body.name,
+      user_name: req.body.user_name,
       full_contact_data: fullContactData || {}
     })
 
@@ -46,7 +46,7 @@ router.put('/:id', function (req, res) {
   Users.findOne({ id: req.params.id }, (err, result) => {
     if (result) {
       Users.updateOne({ id: req.params.id }, {
-        name: req.body.name || result.name
+        user_name: req.body.user_name || result.user_name
       }).then((err, status) => {
         res.status(200).json({ result: 'ok' })
       })
