@@ -7,7 +7,7 @@ var ClientSchema = new Schema({
   id: { type: Number, unique: true, min: 1 },
   full_name: { type: String, required: true, maxlength: 200 },
   phone: { type: String, maxlength: 100 },
-  user: { type: User}
+  user: { type: Schema.Types.ObjectId, ref: 'User' }
 })
 
 ClientSchema.pre('save', function (next) {
