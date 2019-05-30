@@ -14,6 +14,7 @@ import Profile from './pages/profile';
 import Projects from './pages/projects';
 import CreateProject from './pages/projects/create';
 import ProjectOfUser from './pages/projects/byUser';
+import Project from './pages/projects/project';
 
 import Header from './layout/header';
 
@@ -72,7 +73,7 @@ export default class App extends Component {
                   <ListItemText primary="Proyectos" />
                 </ListItem>
               </Link>
-              <Link to="/projects/create" onClick={this.toggleDrawer(false)}>
+              <Link to="/me/projects/create" onClick={this.toggleDrawer(false)}>
                 <ListItem button>
                   <ListItemText primary="Crear Proyecto" />
                 </ListItem>
@@ -81,7 +82,7 @@ export default class App extends Component {
           </Drawer>
           <div role="presentation" onClick={this.toggleDrawer(false)} onKeyDown={this.toggleDrawer(false)}>
             <Header />
-            <main>
+            <main className="main">
               <Route path="/" component={Home} exact />
               <Route path="/me" component={Profile} exact />
               <Route path="/me/projects" component={ProjectOfUser} exact />
@@ -89,7 +90,7 @@ export default class App extends Component {
               <Route path="/profile/:id" component={Profile} exact />
               <Route path="/profile/:id/projects" component={ProjectOfUser} exact />
               <Route path="/projects" component={Projects} exact />
-              <Route path="/projects/:id" component={CreateProject} exact />
+              <Route path="/projects/:id" component={Project} exact />
             </main>
           </div>
         </Router>
