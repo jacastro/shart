@@ -8,49 +8,52 @@ module.exports = {
   entry: ['babel-polyfill', './src/client/index.js'],
   output: {
     path: path.join(__dirname, outputDirectory),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    publicPath: '/',
   },
   module: {
     rules: [{
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader'
-        }
-      },
-      {
-        test: /\.scss$/,
-        use: [
-          {
-            loader: "style-loader" // creates style nodes from JS strings
-          },
-          {
-            loader: "css-loader" // translates CSS into CommonJS
-          },
-          {
-            loader: "sass-loader" // compiles Sass to CSS
-          }
-        ]
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
-      },
-      {
-        test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-        loader: 'url-loader?limit=100000'
+      test: /\.(js|jsx)$/,
+      exclude: /node_modules/,
+      use: {
+        loader: 'babel-loader'
       }
+    },
+    {
+      test: /\.scss$/,
+      use: [
+        {
+          loader: 'style-loader' // creates style nodes from JS strings
+        },
+        {
+          loader: 'css-loader' // translates CSS into CommonJS
+        },
+        {
+          loader: 'sass-loader' // compiles Sass to CSS
+        }
+      ]
+    },
+    {
+      test: /\.css$/,
+      use: ['style-loader', 'css-loader']
+    },
+    {
+      test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+      loader: 'url-loader?limit=100000'
+    }
     ]
   },
   resolve: {
     extensions: ['*', '.js', '.jsx']
   },
   devServer: {
+    historyApiFallback: true,
     port: 3000,
     open: true,
     proxy: {
       '/api': 'http://localhost:80'
-    }
+    },
+    contentBase: false,
   },
   plugins: [
     new CleanWebpackPlugin([outputDirectory]),
