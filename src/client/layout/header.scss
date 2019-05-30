@@ -1,0 +1,12 @@
+.header {
+  flex-grow: 1;
+
+  &_title {
+    color: #fff !important;
+  }
+
+  a {
+    color: #fff;
+    float: right;
+  }
+}

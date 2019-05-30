@@ -1,23 +1,99 @@
+/* eslint-disable import/no-cycle */
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+
+import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+
+import AppContext from './context';
+
+import Home from './pages/home';
+import Profile from './pages/profile';
+import Projects from './pages/projects';
+import CreateProject from './pages/projects/create';
+import ProjectOfUser from './pages/projects/byUser';
+
+import Header from './layout/header';
+
 import './app.scss';
-import ReactImage from './react.png';
 
 export default class App extends Component {
-  state = { username: null };
+  state = {
+    user: null,
+    showLeftMenu: false,
+  };
 
   componentDidMount() {
     fetch('/api')
       .then(res => res.json())
-      .then(user => this.setState({ username: user.result }));
+      .then(user => this.setState({ user }));
   }
 
+  toggleDrawer = open => (event) => {
+    event.stopPropagation();
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+
+    this.setState({ showLeftMenu: open });
+  };
+
   render() {
-    const { username } = this.state;
+    const { username, showLeftMenu } = this.state;
     return (
-      <div>
-        {username ? <h1>{`Hello ${username}`}</h1> : <h1>Loading.. please wait!</h1>}
-        <img src={ReactImage} alt="react" />
-      </div>
+      <AppContext.Provider
+        value={{
+          ...this.state,
+          toggleDrawer: this.toggleDrawer,
+        }}
+      >
+        <Router>
+          <Drawer open={showLeftMenu} onClose={this.toggleDrawer(false)}>
+            <List className="left-menu">
+              <Link to="/" onClick={this.toggleDrawer(false)}>
+                <ListItem button>
+                  <ListItemText primary="home" />
+                </ListItem>
+              </Link>
+              <Link to="/me" onClick={this.toggleDrawer(false)}>
+                <ListItem button>
+                  <ListItemText primary="Mi perfil" />
+                </ListItem>
+              </Link>
+              <Link to="/me/projects" onClick={this.toggleDrawer(false)}>
+                <ListItem button>
+                  <ListItemText primary="Mis proyectos" />
+                </ListItem>
+              </Link>
+              <Link to="/projects" onClick={this.toggleDrawer(false)}>
+                <ListItem button>
+                  <ListItemText primary="Proyectos" />
+                </ListItem>
+              </Link>
+              <Link to="/projects/create" onClick={this.toggleDrawer(false)}>
+                <ListItem button>
+                  <ListItemText primary="Crear Proyecto" />
+                </ListItem>
+              </Link>
+            </List>
+          </Drawer>
+          <div role="presentation" onClick={this.toggleDrawer(false)} onKeyDown={this.toggleDrawer(false)}>
+            <Header />
+            <main>
+              <Route path="/" component={Home} exact />
+              <Route path="/me" component={Profile} exact />
+              <Route path="/me/projects" component={ProjectOfUser} exact />
+              <Route path="/me/projects/create" component={CreateProject} exact />
+              <Route path="/profile/:id" component={Profile} exact />
+              <Route path="/profile/:id/projects" component={ProjectOfUser} exact />
+              <Route path="/projects" component={Projects} exact />
+              <Route path="/projects/:id" component={CreateProject} exact />
+            </main>
+          </div>
+        </Router>
+      </AppContext.Provider>
     );
   }
 }
