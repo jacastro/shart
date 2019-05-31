@@ -4,8 +4,8 @@ var Mes = require('../models/mes')
 
 router.get('/', function (req, res) {
   Mes.find()
-     .sort('full_name').select({ __v: 0, _id: 0 })
-     .populate('user', { __v: 0, _id: 0 })
+    .sort('full_name').select('-_id -__v')
+    .populate('user', '-_id -__v')
     .then(result => {
       res.status(200).json({ micro_entrepreneur: result })
     })
@@ -15,13 +15,16 @@ router.get('/', function (req, res) {
 })
 
 router.get('/:id', function (req, res) {
-  Mes.findOne({ id: req.params.id }, (err, result) => {
-    if (result) {
-      res.status(200).json(result)
-    } else {
-      res.status(404).json({ errors: 'micro entrepreneur not found' })
-    }
-  })
+  Mes.findOne({ id: req.params.id })
+    .select('-_id -__v')
+    .populate('user', '-_id -__v')
+    .then(result => {
+      if (result) {
+        res.status(200).json(result)
+      } else {
+        res.status(404).json({ errors: 'micro entrepreneur not found' })
+      }
+    })
 })
 
 router.post('/', function (req, res) {

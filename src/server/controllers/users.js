@@ -5,7 +5,7 @@ var Users = require('../models/users')
 var FullContact = require('../helpers/fullContact')
 
 router.get('/', function (req, res) {
-  Users.find().sort('user_name').select({ __v: 0, _id: 0 })
+  Users.find().sort('user_name').select('-_id -__v')
     .then(result => {
       res.status(200).json({ users: result })
     })
@@ -15,13 +15,16 @@ router.get('/', function (req, res) {
 })
 
 router.get('/:id', function (req, res) {
-  Users.findOne({ id: req.params.id }, (err, result) => {
-    if (result) {
-      res.status(200).json(result)
-    } else {
-      res.status(404).json({ errors: 'user not found' })
-    }
-  })
+  Users.findOne({ id: req.params.id })
+    .select('-_id -__v')
+    .populate('user', '-_id -__v')
+    .then(result => {
+      if (result) {
+        res.status(200).json(result)
+      } else {
+        res.status(404).json({ errors: 'user not found' })
+      }
+    })
 })
 
 router.post('/', function (req, res) {

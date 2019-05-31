@@ -11,7 +11,9 @@
 #  db.getCollectionNames()
  ```
 
- ## Seed
+## Seed
+
+Seed data
 
 ```sh
 #  db.users.find() view all
@@ -19,38 +21,113 @@
 #  db.users.remove({})
 #  db.mes.remove({})
 #  db.clients.remove({})
+#  db.projects.remove({})
 #  db.users.find({email: "dummy1@gmail.com"})
 #  db.users.find({user_name: { $regex: "o$"}})
 
-var o = ObjectId();
-db.users.insert({_id: o, id: '518630cd-4f74-47dd-b407-b28fd22fab14', email: "matiasberrueta@gmail.com", user_name: "mberrueta"})
-db.mes.insert({id: "07c1f058-ba1f-4338-904a-3dafa4cca96f", full_name: "Matias Berrueta", phone: "11-1111-1111", biography: "...", address: "...", city: "bs as", postal_code: "0000", tags: ["a1", "a2"], user: o })
+## Mes
+###############################
+
+var o1 = ObjectId();
+var me1 = ObjectId();
+db.users.insert({_id: o1, id: 1, email: "matiasberrueta@gmail.com", user_name: "mberrueta"})
+db.mes.insert({_id: me1, id: 1, full_name: "Matias Berrueta", phone: "11-1111-1111", biography: "...", address: "...", city: "bs as", postal_code: "0000", tags: ["a1", "a2"], user: o1 })
+
+var o2 = ObjectId();
+var me2 = ObjectId();
+db.users.insert({_id: o2, id: 2, email: "erikannunez@gmail.com", user_name: "eri"})
+db.mes.insert({_id: me2, id: 2, full_name: "Erica Nuñez", phone: "22-2222-2222", biography: "...", address: "...", city: "bs as", postal_code: "1111", tags: ["a1", "a2"], user: o2 })
+
+var o3 = ObjectId();
+var me3 = ObjectId();
+db.users.insert({_id: o3, id: 3, email: "otero.florencia96@gmail.com", user_name: "flor"})
+db.mes.insert({_id: me3, id: 3, full_name: "Florencia Otero", phone: "33-3333-3333", biography: "...", address: "...", city: "bs as", postal_code: "2222", tags: ["a1", "a2"], user: o3 })
+
+var o4 = ObjectId();
+var me4 = ObjectId();
+db.users.insert({_id: o4, id: 4, email: "javiacastro@gmail.com", user_name: "javi"})
+db.mes.insert({_id: me4, id: 4, full_name: "Javier Castro", phone: "44-4444-4444", biography: "...", address: "...", city: "bs as", postal_code: "3333", tags: ["a1", "a2"], user: o4 })
+
+var o5 = ObjectId();
+var me5 = ObjectId();
+db.users.insert({_id: o5, id: 5, email: "alberto.d.sal@gmail.com", user_name: "beto"})
+db.mes.insert({_id: me5, id: 5, full_name: "Alrberto Sal", phone: "55-5555-5555", biography: "...", address: "...", city: "bs as", postal_code: "4444", tags: ["a1", "a2"], user: o5 })
+
+## Clients
+###############################
 
 o = ObjectId();
-db.users.insert({_id: o, id: 'abde5c83-ae0b-4e13-b98b-bc6c2cc18fe9', email: "erikannunez@gmail.com", user_name: "eri"})
-db.mes.insert({id: "b4773d3f-7498-49e4-9af5-d8c71dd705e5", full_name: "Erica Nuñez", phone: "22-2222-2222", biography: "...", address: "...", city: "bs as", postal_code: "1111", tags: ["a1", "a2"], user: o })
+db.users.insert({_id: o, id: 6, email: "dummy1@gmail.com", user_name: "dummy1"})
+db.clients.insert({id: 6, full_name: "Pepe Argento", phone: "66-6666-6666", user: o })
 
 o = ObjectId();
-db.users.insert({_id: o, id: '790cb6d5-7dc8-4c67-bd87-70a1babaca57', email: "otero.florencia96@gmail.com", user_name: "flor"})
-db.mes.insert({id: "3c42e759-51c8-48dd-bb89-b7dc0271b0f2", full_name: "Florencia Otero", phone: "33-3333-3333", biography: "...", address: "...", city: "bs as", postal_code: "2222", tags: ["a1", "a2"], user: o })
+db.users.insert({_id: o, id: 7, email: "dummy2@gmail.com", user_name: "dummy2"})
+db.clients.insert({id: 7, full_name: "Pamela David", phone: "77-7777-7777", user: o })
 
 o = ObjectId();
-db.users.insert({_id: o, id: '97705399-ca0b-4dff-bb5a-86cbd8217b69', email: "javiacastro@gmail.com", user_name: "javi"})
-db.mes.insert({id: "869e7c64-d3f6-4568-90a5-2dbfc7db8442", full_name: "Javier Castro", phone: "44-4444-4444", biography: "...", address: "...", city: "bs as", postal_code: "3333", tags: ["a1", "a2"], user: o })
+db.users.insert({_id: o, id: 8, email: "dummy3@gmail.com", user_name: "dumm3"})
+db.clients.insert({id: 8, full_name: "Eliot", phone: "88-8888-8888", user: o })
 
-o = ObjectId();
-db.users.insert({_id: o, id: 'a7bee685-3e5b-4598-bf94-991234474265', email: "alberto.d.sal@gmail.com", user_name: "beto"})
-db.mes.insert({id: "79cdc644-937a-4643-91d6-fdbae6e165e6", full_name: "Alrberto Sal", phone: "55-5555-5555", biography: "...", address: "...", city: "bs as", postal_code: "4444", tags: ["a1", "a2"], user: o })
+## Projects
+###############################
 
-o = ObjectId();
-db.users.insert({_id: o, id: 'ff9a9004-eac9-4bf4-a6df-ea919dcdf44b', email: "dummy1@gmail.com", user_name: "dummy1"})
-db.clients.insert({id: "6a3b1805-9b81-4a5c-a7ad-615edd6e8ff9", full_name: "Pepe Argento", phone: "66-6666-6666", user: o })
 
-o = ObjectId();
-db.users.insert({_id: o, id: '71920526-65e1-43b6-9113-0a75f3b7ee2a', email: "dummy2@gmail.com", user_name: "dummy2"})
-db.clients.insert({id: "bb79a649-5780-4a40-89f8-5173b26fad83", full_name: "Pamela David", phone: "77-7777-7777", user: o })
+db.projects.insert({
+  id: 1,
+  name: 'Stormtrooper toy',
+  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sollicitudin efficitur erat, nec consectetur metus lobortis id. Donec tempus urna in mi finibus luctus. Donec ligula nisl, pulvinar quis leo nec, auctor vehicula magna. Vivamus et mi nec justo consequat sodales quis at lorem. Nullam ut euismod augue. Mauris ut erat lacus. Nulla eleifend fringilla faucibus. Donec facilisis blandit ligula vitae vestibulum. Vestibulum tincidunt facilisis lacus. Nulla facilisi. Maecenas in cursus lorem.',
+  category: 'toys',
+  current_phase: 'design',
+  start_date: new Date('2019-05-18'),
+  end_date: new Date('2019-07-18'),
+  images: ['https://i.ebayimg.com/images/g/ud8AAOSwDFBaF3cU/s-l300.jpg'],
+  need_collaborations: true,
+  project_leader: me1,
+  owner: o1,
+  promoted_level: '',
+  rating: 1,
+  region: 'bsas',
+  require_shipping: true,
+  shipping_address: 'Av. siempre viva 54',
+  tags: ['toys', 'fun', 'star-wars'],
+  view_counts: 1,
+  collaborations: [
+    {
+      stage: 'develop',
+      collaborator: me2
+    }
+  ],
+  postulants: [
+    {
+      stage: 'develop',
+      collaborator: me3
+    },
+    {
+      stage: 'develop',
+      collaborator: me4
+    }
+  ],
+})
 
-o = ObjectId();
-db.users.insert({_id: o, id: '74ed58c0-ed42-46f0-9b58-b5b4b9e254b6', email: "dummy3@gmail.com", user_name: "dumm3"})
-db.clients.insert({id: "0678aed3-d4c7-4eda-976e-bd88eed2665b", full_name: "Eliot", phone: "88-8888-8888", user: o })
+db.projects.insert({
+  id: 2,
+  name: 'bonsai',
+  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sollicitudin efficitur erat, nec consectetur metus lobortis id. Donec tempus urna in mi finibus luctus. Donec ligula nisl, pulvinar quis leo nec, auctor vehicula magna. Vivamus et mi nec justo consequat sodales quis at lorem. Nullam ut euismod augue. Mauris ut erat lacus. Nulla eleifend fringilla faucibus. Donec facilisis blandit ligula vitae vestibulum. Vestibulum tincidunt facilisis lacus. Nulla facilisi. Maecenas in cursus lorem.',
+  category: 'trees',
+  current_phase: 'design',
+  start_date: new Date('2019-05-1'),
+  end_date: new Date('2019-05-18'),
+  images: ['https://www.bonsaiempire.es/great-bonsai-album/acer-bonsai-pall.jpg'],
+  need_collaborations: false,
+  project_leader: me4,
+  owner: o4,
+  promoted_level: '',
+  rating: 1,
+  region: 'bsas',
+  require_shipping: false,
+  shipping_address: '',
+  tags: ['green', 'trees', 'weedings'],
+  view_counts: 1
+})
+
 ```
