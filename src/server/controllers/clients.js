@@ -4,10 +4,10 @@ var Clients = require('../models/clients')
 
 router.get('/', function (req, res) {
   Clients.find()
-     .sort('full_name').select({ __v: 0, _id: 0 })
-     .populate('user', { __v: 0, _id: 0 })
+     .sort('full_name').select('-_id -__v')
+     .populate('user', '-_id -__v')
     .then(result => {
-      res.status(200).json({ micro_entrepreneur: result })
+      res.status(200).json({ clients: result })
     })
     .catch(err => {
       res.status(500).json({ message: 'Something went wrong', error: err })
@@ -15,13 +15,16 @@ router.get('/', function (req, res) {
 })
 
 router.get('/:id', function (req, res) {
-  Clients.findOne({ id: req.params.id }, (err, result) => {
-    if (result) {
-      res.status(200).json(result)
-    } else {
-      res.status(404).json({ errors: 'micro entrepreneur not found' })
-    }
-  })
+  Clients.findOne({ id: req.params.id })
+      .select('-_id -__v')
+      .populate('user', '-_id -__v')
+      .then(result => {
+        if (result) {
+          res.status(200).json(result)
+        } else {
+          res.status(404).json({ errors: 'client not found' })
+        }
+      })
 })
 
 router.post('/', function (req, res) {
