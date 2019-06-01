@@ -1,15 +1,44 @@
-import React, { useContext } from 'react';
-
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import React from 'react';
+import ProjectItem from '../../components/projectItem';
 import AppContext from '../../context';
+import './styles.scss';
 
-const ProjectOfUserPage = ({ match }) => {
-  const { user } = useContext(AppContext);
+class MyProjectsPage extends React.Component {
+  state = {
+    list: null,
+  };
 
-  const profileId = match.params.id || 'yoooo';
+  componentDidMount() {
+    fetch('/api/getList')
+      .then(res => res.json())
+      .then(list => this.setState({ list }));
+  }
 
-  return (
-    <h1>{`Proyectos de ${profileId}`}</h1>
-  );
-};
+  render() {
+    const { list } = this.state;
 
-export default ProjectOfUserPage;
+    return (
+      <React.Fragment>
+        <Typography gutterBottom variant="h2" color="textSecondary" align="left">Mis proyectos</Typography>
+        {list == null ? <CircularProgress /> : (
+          <Grid container justify="center" spacing={32}>
+            {
+              list.map((project, index) => (
+                <Grid key={project} item xs={4}>
+                  <ProjectItem id={index} name={project} />
+                </Grid>
+              ))
+            }
+          </Grid>
+        )}
+      </React.Fragment>
+    );
+  }
+}
+
+MyProjectsPage.contextType = AppContext;
+
+export default MyProjectsPage;
