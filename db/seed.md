@@ -93,17 +93,20 @@ db.projects.insert({
   view_counts: 1,
   collaborations: [
     {
-      stage: 'develop',
+      task: 'develop',
+      status: 'in_progress',
       collaborator: me2
     }
   ],
   postulants: [
     {
-      stage: 'develop',
+      task: 'develop',
+      status: 'in_progress',
       collaborator: me3
     },
     {
-      stage: 'develop',
+      task: 'develop',
+      status: 'in_progress',
       collaborator: me4
     }
   ],

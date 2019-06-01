@@ -27,6 +27,8 @@ app.use(bodyParser.urlencoded({
 app.use('/api/users', require('./controllers/users'));
 app.use('/api/clients', require('./controllers/clients'));
 app.use('/api/mes', require('./controllers/mes'));
+app.use('/api/users', require('./controllers/projects'));
+app.use('/api/projects', require('./controllers/projects'));
 app.use('/api/auth', require('./controllers/auth'));
 
 mongoose.connect(urlDB);
