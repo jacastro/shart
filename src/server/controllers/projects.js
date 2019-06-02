@@ -19,7 +19,7 @@ router.get('/:user_id/projects/', function (req, res) {
       }
       let id = user[0]._id
       Projects
-        .find({ owner: id }, '-_id -__v')
+        .find({ owner: id }, '-_id -__v -rating_sum -rating_count')
         .populate('owner', '-_id -__v')
         .populate({
           path: 'project_leader',
@@ -66,7 +66,7 @@ router.get('/:id', function (req, res) {
 
   let id = req.params.id
   Projects
-    .findOneAndUpdate({ id: id }, { $inc: { view_counts: 1 } }, {fields: '-_id -__v'})
+    .findOneAndUpdate({ id: id }, { $inc: { view_counts: 1 } }, { fields: '-_id -__v -rating_sum -rating_count' })
     .populate('owner', '-_id -__v')
     .populate({
       path: 'project_leader',
@@ -156,6 +156,39 @@ router.put('/:id', function (req, res) {
           .catch(err => {
             res.status(500).json({ message: 'Something went wrong', error: err.message })
           })
+      } else {
+        res.status(404).json({ errors: 'project not found' })
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'Something went wrong', error: err.message })
+    })
+})
+
+router.post('/:id/rate', function (req, res) {
+  Projects.findOne({ id: req.params.id })
+    .then(project => {
+      if (project) {
+        let rating = req.body.rating
+
+        if (rating >= 1 && rating <= 5) {
+
+          console.log(project.rating_sum ,project.rating_count)
+          if (!project.rating_sum) { project.rating_sum = 0}
+          if (!project.rating_count) { project.rating_count = 0}
+          project.rating_sum += rating
+          project.rating_count += 1
+          project.rating = (project.rating_sum / project.rating_count).toFixed(2);
+          project.save()
+            .then(updatedProject => {
+              res.status(200).json(updatedProject)
+            })
+            .catch(err => {
+              res.status(500).json({ message: 'Something went wrong', error: err.message })
+            })
+        } else {
+          res.status(403).json({ errors: 'Invalid rating. Should be between 1 and 5' })
+        }
       } else {
         res.status(404).json({ errors: 'project not found' })
       }
