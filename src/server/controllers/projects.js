@@ -165,21 +165,24 @@ router.put('/:id', function (req, res) {
     })
 })
 
-router.delete('/', function (req, res) {
-  res.status(500).json({ message: 'TBD', error: err })
-  // Users.findOne({ id: req.params.id }, (err, result) => {
-  //   if (result) {
-  //     Users.deleteOne({ id: req.params.id })
-  //       .then((err, status) => {
-  //         res.status(200).json({ result: 'ok' })
-  //       })
-  //       .catch(err => {
-  //         res.status(500).json({ message: 'Something went wrong', error: err })
-  //       })
-  //   } else {
-  //     res.status(404).json({ errors: 'user not found' })
-  //   }
-  // })
+router.delete('/:id', function (req, res) {
+  Projects.findOne({ id: req.params.id })
+    .then(result => {
+      if (result) {
+        Projects.deleteOne({ id: req.params.id })
+          .then(status => {
+            res.status(200).json({ result: 'ok' })
+          })
+          .catch(err => {
+            res.status(500).json({ message: 'Something went wrong', error: err })
+          })
+      } else {
+        res.status(404).json({ errors: 'project not found' })
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'Something went wrong', error: err.message })
+    })
 })
 
 module.exports = router
