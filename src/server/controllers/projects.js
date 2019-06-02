@@ -1,4 +1,5 @@
 var express = require('express')
+const params = require('params');
 var router = express.Router()
 var Users = require('../models/users')
 var Projects = require('../models/projects')
@@ -111,14 +112,13 @@ router.post('/:user_id/projects/', function (req, res) {
   }
 
   Users.find({ id: req.params.user_id })
-  .then(user => {
+    .then(user => {
       if (!user || !user[0]._id) {
         res.status(404).json({ errors: 'invalid owner user' })
         return;
       }
       let user_id = user[0]._id
       let project = Projects(req.body)
-      project = removeUnAllowedManualAttr(project)
       project['project_leader'] = undefined;
       project['owner'] = undefined;
       project['promoted_level'] = undefined;
@@ -139,21 +139,30 @@ router.post('/:user_id/projects/', function (req, res) {
 })
 
 router.put('/:id', function (req, res) {
-  res.status(500).json({ message: 'TBD', error: err })
-  // Users.findOne({ id: req.params.id }, (err, result) => {
-  //   if (result) {
-  //     Users.updateOne({ id: req.params.id }, {
-  //       user_name: req.body.user_name || result.user_name
-  //     }).then((err, status) => {
-  //       res.status(200).json({ result: 'ok' })
-  //     })
-  //       .catch(err => {
-  //         res.status(500).json({ message: 'Something went wrong', error: err.message })
-  //       })
-  //   } else {
-  //     res.status(404).json({ errors: 'user not found' })
-  //   }
-  // })
+  const permittedParams = [
+    'name', 'description', 'category', 'current_phase', 'start_date', 'end_date', 'images',
+    'need_collaborations', 'promoted_level', 'region', 'require_shipping',
+    'shipping_address', 'tags', 'collaborations'
+  ]
+  Projects.findOne({ id: req.params.id })
+    .then(project => {
+      if (project) {
+        let parameters = params(req.body).only(permittedParams)
+        project.set(parameters)
+        project.save()
+          .then(updatedProject => {
+            res.status(200).json(updatedProject)
+          })
+          .catch(err => {
+            res.status(500).json({ message: 'Something went wrong', error: err.message })
+          })
+      } else {
+        res.status(404).json({ errors: 'project not found' })
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'Something went wrong', error: err.message })
+    })
 })
 
 router.delete('/', function (req, res) {
