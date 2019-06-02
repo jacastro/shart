@@ -66,7 +66,7 @@ router.get('/:id', function (req, res) {
 
   let id = req.params.id
   Projects
-    .findOne({ id: id }, '-_id -__v')
+    .findOneAndUpdate({ id: id }, { $inc: { view_counts: 1 } }, {fields: '-_id -__v'})
     .populate('owner', '-_id -__v')
     .populate({
       path: 'project_leader',
