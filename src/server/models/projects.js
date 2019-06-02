@@ -21,7 +21,7 @@ var ProjectSchema = new Schema({
   require_shipping: {type: Boolean, required: true},
   shipping_address: String,
   tags: [String],
-  view_counts: {type: Number, min: 1},
+  view_counts: {type: Number, min: 0},
   collaborations: [
     {
       task: String,
