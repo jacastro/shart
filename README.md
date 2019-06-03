@@ -53,4 +53,10 @@ docker exec -it mongoDBSem2 bin/bash
 - /api/mes [GET]
 - /api/mes/:id [GET]
 - /api/users/:user_id/projects [GET] [POST]
-- /api/users/projects/:id [GET] [PUT] [DELETE]
+- /api/projects/:id [GET] [PUT] [DELETE]
+- /api/projects/:id/rate [POST]
+
+## Postman collection
+
+[postman](https://www.getpostman.com/collections/4eaeb2cdeda7cc5b5c3d)
+
