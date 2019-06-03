@@ -43,3 +43,14 @@ docker exec -it mongoDBSem2 bin/bash
 - 500: Error
 - 404: Not Found
 - 403: Authentication Error
+
+## API Routes
+
+- /api/users [GET]
+- /api/users/:id [GET]
+- /api/clients [GET]
+- /api/clients/:id [GET]
+- /api/mes [GET]
+- /api/mes/:id [GET]
+- /api/users/:user_id/projects [GET] [POST]
+- /api/users/projects/:id [GET] [PUT] [DELETE]
