@@ -5,16 +5,28 @@ import React from 'react';
 import ProjectItem from '../../components/projectItem';
 import AppContext from '../../context';
 import './styles.scss';
+const axios = require('axios');
+
 
 class MyProjectsPage extends React.Component {
   state = {
     list: null,
+    userId: null
   };
 
   componentDidMount() {
-    fetch('/api/getList')
-      .then(res => res.json())
-      .then(list => this.setState({ list }));
+
+    axios.get('../api/users/1/projects')
+    .then(response => {
+      const data = response.data.projects;
+      this.setState({ list: data, userId: 1 });
+      // handle success
+
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+    });
   }
 
   render() {
@@ -27,8 +39,8 @@ class MyProjectsPage extends React.Component {
           <Grid container justify="center" spacing={32}>
             {
               list.map((project, index) => (
-                <Grid key={project} item xs={4}>
-                  <ProjectItem id={index} name={project} />
+                <Grid key={index} item xs={4}>
+                  <ProjectItem id={index} {...project} />
                 </Grid>
               ))
             }
