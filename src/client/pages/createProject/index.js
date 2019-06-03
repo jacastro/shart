@@ -4,6 +4,7 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import AppContext from '../../context';
 
@@ -66,8 +67,7 @@ export const phases = [
 
 const steps = [
   {
-    label: 'Sobre tu proyecto',
-    title: 'Contanos sobre tu proyecto',
+    title: 'Sobre tu proyecto',
     content: <ConfigStep />,
   },
   {
@@ -75,12 +75,12 @@ const steps = [
     content: <StatusStep />,
   },
   {
-    title: 'Tareas',
+    title: 'Configurar Tareas',
     content: <TaskStep />,
   },
   {
     title: 'Finalizar',
-    content: <ConfigStep />,
+    content: <LinearProgress />,
   }
 ];
 
@@ -98,6 +98,7 @@ const CreateProjectPage = () => {
     need_collaborations: true,
     require_shipping: true,
     shipping_address: null,
+    current_phase_num: null,
     current_phase: 'design',
     region: 'bsas',
     phases: [
@@ -124,8 +125,6 @@ const CreateProjectPage = () => {
     ]
   });
 
-  console.log(values);
-
   const handleChange = name => (event) => {
     setValues({ ...values, [name]: event.target ? event.target.value : event });
   };
@@ -139,7 +138,12 @@ const CreateProjectPage = () => {
   };
 
   function handleNext() {
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
+    setActiveStep((prevActiveStep) => {
+      if (prevActiveStep === 2) {
+        setTimeout(() => { handleNext(); }, 1000);
+      }
+      return prevActiveStep + 1;
+    });
   }
 
   function handleBack() {
@@ -158,19 +162,19 @@ const CreateProjectPage = () => {
           const labelProps = {};
           return (
             <Step key={step.title} {...stepProps}>
-              <StepLabel {...labelProps}>{step.label || step.title}</StepLabel>
+              <StepLabel {...labelProps}>{step.title}</StepLabel>
             </Step>
           );
         })}
       </Stepper>
       <div>
-        {activeStep === steps.length ? (
+        {activeStep >= steps.length ? (
           <div>
             <Typography>
-              All steps completed - you&apos;re finished
+              ¡Tu proyecto ha sido creado correctamente!
             </Typography>
             <Button onClick={handleReset}>
-              Reset
+              Mis proyectos
             </Button>
           </div>
         ) : (
@@ -187,8 +191,9 @@ const CreateProjectPage = () => {
                 variant="contained"
                 color="primary"
                 onClick={handleNext}
+                disabled={activeStep === steps.length - 1}
               >
-                {activeStep === steps.length - 1 ? 'Finalizar' : 'Continuar'}
+                {activeStep > steps.length - 3 ? 'Crear proyecto' : 'Continuar'}
               </Button>
             </div>
           </div>

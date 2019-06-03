@@ -26,7 +26,7 @@ const StatusStep = () => {
           style={{ width: '48%' }}
         >
           {phases.map(({ id, name }) => (
-            <MenuItem key={id} value={name}>
+            <MenuItem key={id} value={id}>
               {name}
             </MenuItem>
           ))}
