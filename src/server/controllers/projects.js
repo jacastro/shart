@@ -58,6 +58,42 @@ router.get('/:user_id/projects/', function (req, res) {
     })
 })
 
+router.get('/', function (req, res) {
+  Projects
+  .find()
+  .populate('owner', '-_id -__v')
+  .populate({
+    path: 'project_leader',
+    select: '-_id -__v',
+    populate: [{
+      path: 'user',
+      select: '-_id -__v'
+    }]
+  })
+  .populate({
+    path: 'collaborations.collaborator',
+    select: '-_id -__v',
+    populate: [{
+      path: 'user',
+      select: '-_id -__v'
+    }]
+  })
+  .populate({
+    path: 'postulants.collaborator',
+    select: '-_id -__v',
+    populate: [{
+      path: 'user',
+      select: '-_id -__v'
+    }]
+  })
+  .then(projects => {
+    res.status(200).json({ projects: projects })
+  })
+  .catch(err => {
+    res.status(500).json({ message: 'Something went wrong', error: err })
+  })
+})
+
 router.get('/:id', function (req, res) {
   if (!req.params.id) {
     res.status(404).json({ errors: 'project not found' })
