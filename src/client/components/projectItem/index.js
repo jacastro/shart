@@ -13,9 +13,10 @@ import AppContext from '../../context';
 
 const ProjectItem = ({ id, name, description, category, tags, owner }) => {
   const { user } = useContext(AppContext);
+  const goTo = owner.id === user.id ? `me/projects/modify/${id}` : `/projects/${id}`;
   return (
     <Card className="project-item">
-      <Link to={`/projects/${id}`}>
+      <Link to={goTo}>
         <CardActionArea>
           <CardMedia
             image="/static/images/cards/contemplative-reptile.jpg"
