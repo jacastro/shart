@@ -4,9 +4,10 @@
   &_title {
     color: #fff !important;
   }
-
   a {
     color: #fff;
-    float: right;
+  }
+  a:hover{
+    text-decoration: none;
   }
 }
