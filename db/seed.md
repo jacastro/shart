@@ -91,20 +91,29 @@ db.projects.insert({
   shipping_address: 'Av. siempre viva 54',
   tags: ['toys', 'fun', 'star-wars'],
   view_counts: 1,
-  collaborations: [
+  phases: [
     {
-      task: 'develop',
-      status: 'in_progress',
-      collaborator: me2
+      id: 'design',
+      name: 'Diseño',
+      tasks: [
+        {
+          id: 'develop',
+          name: 'Desarrollo',
+          status: 'in_progress',
+          collaborator: me2
+        }
+      ]
     }
   ],
   postulants: [
     {
+      phase: 'design',
       task: 'develop',
       status: 'in_progress',
       collaborator: me3
     },
     {
+      phase: 'design',
       task: 'develop',
       status: 'in_progress',
       collaborator: me4

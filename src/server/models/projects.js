@@ -24,15 +24,23 @@ var ProjectSchema = new Schema({
   shipping_address: String,
   tags: [String],
   view_counts: {type: Number, min: 0},
-  collaborations: [
+  phases: [
     {
-      task: String,
-      status: String,
-      collaborator: {type: Schema.Types.ObjectId, ref: 'Me' }
+      id: {type: String, required: true},
+      name: {type: String, required: true},
+      tasks: [
+        {
+          id: {type: String, required: true},
+          name: {type: String, required: true},
+          status: {type: String, required: true},
+          collaborator: {type: Schema.Types.ObjectId, ref: 'Me' }
+        }
+      ]
     }
   ],
   postulants: [
     {
+      phase: String,
       task: String,
       status: String,
       collaborator: {type: Schema.Types.ObjectId, ref: 'Me' }
