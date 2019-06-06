@@ -78,7 +78,7 @@ class Home extends React.Component {
                       title={project.name.toUpperCase()}
                       subtitle={`Creado por @${project.owner.user_name}`}
                       actionIcon={(
-                        <IconButton aria-label="Información del Proyecto" color="secondary">
+                        <IconButton aria-label="Información del Proyecto" color="secondary" href={`/projects/${project.id}`}>
                           <InfoIcon />
                         </IconButton>
                       )}
@@ -99,7 +99,7 @@ class Home extends React.Component {
                       title={project.name.toUpperCase()}
                       subtitle={`Creado por @${project.owner.user_name}`}
                       actionIcon={(
-                        <IconButton aria-label="Información del Proyecto" color="secondary">
+                        <IconButton aria-label="Información del Proyecto" color="secondary" href={`/projects/${project.id}`}>
                           <InfoIcon />
                         </IconButton>
                       )}
@@ -120,7 +120,7 @@ class Home extends React.Component {
                       title={project.name.toUpperCase()}
                       subtitle={`Creado por @${project.owner.user_name}`}
                       actionIcon={(
-                        <IconButton aria-label="Información del Proyecto" color="secondary">
+                        <IconButton aria-label="Información del Proyecto" color="secondary" href={`/projects/${project.id}`}>
                           <InfoIcon />
                         </IconButton>
                       )}
@@ -141,7 +141,7 @@ class Home extends React.Component {
                       title={project.name.toUpperCase()}
                       subtitle={`Creado por @${project.owner.user_name}`}
                       actionIcon={(
-                        <IconButton aria-label="Información del Proyecto" color="secondary">
+                        <IconButton aria-label="Información del Proyecto" color="secondary" href={`/projects/${project.id}`}>
                           <InfoIcon />
                         </IconButton>
                       )}
