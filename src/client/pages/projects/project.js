@@ -66,14 +66,21 @@ class Project extends React.Component {
     this.toggle = this.toggle.bind(this);
     this.state = {
       project: null,
-      open: false
+      open: false,
+      images: [],
     };
   }
 
   componentDidMount() {
     fetch(`/api/projects/${this.props.match.params.id}`)
       .then(res => res.json())
-      .then(project => this.setState({ project }));
+      .then(project => this.setState({ 
+        project,
+        images: project.images.map(image => ({
+          url: image,
+          col: Math.floor(Math.random() * 3) + 1,
+        }))
+      }));
   }
 
   toggle() {
@@ -81,7 +88,7 @@ class Project extends React.Component {
   }
 
   render() {
-    const { project } = this.state;
+    const { project, images } = this.state;
 
     return (
       <React.Fragment>
@@ -163,9 +170,9 @@ class Project extends React.Component {
                         <Typography variant="overline" gutterBottom>Imágenes del Proyecto:</Typography>
                         <div className="card-project-gallery-root">
                           <GridList cellHeight={100} className="card-project-gallery" cols={3}>
-                            {project.images.map((image, index) => (
-                              <GridListTile key={Math.random()} cols={Math.floor(Math.random() * 3) + 1}>
-                                <img src={image} alt={image} />
+                            {images.map(image => (
+                              <GridListTile key={image.url} cols={image.col}>
+                                <img src={image.url} alt={image.url} />
                               </GridListTile>
                             ))}
                           </GridList>
