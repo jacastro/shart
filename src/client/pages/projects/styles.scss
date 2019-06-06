@@ -39,3 +39,14 @@
     cursor: pointer !important;
   }
 }
+.container{
+  &-home{
+    text-align: left;
+    h2{
+      font-size: 2rem;
+    }
+    .home-projects{
+      margin-bottom: 30px;
+    }
+  }
+}
