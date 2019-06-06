@@ -44,9 +44,18 @@
     text-align: left;
     h2{
       font-size: 2rem;
+      margin-bottom: 2rem;
     }
     .home-projects{
       margin-bottom: 30px;
+      #my-projects{
+        a[role=button], button{
+          float: right;
+          svg{
+            margin-right: 5px;
+          }
+        }
+      }
     }
   }
 }

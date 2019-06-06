@@ -1,4 +1,6 @@
 import React, { useContext } from 'react';
+import AddIcon from '@material-ui/icons/Add';
+import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
 import GridList from '@material-ui/core/GridList';
@@ -39,7 +41,13 @@ class Home extends React.Component {
       <React.Fragment>
         <Container className="container-home">
           <Container className="home-projects">
-            <Typography variant="h2" gutterBottom>Mis Proyectos</Typography>
+            <Typography id="my-projects" variant="h2" gutterBottom>
+              Mis Proyectos
+              <Button variant="contained" color="primary" href="/me/projects/create">
+                <AddIcon />
+                Nuevo Proyecto
+              </Button>
+            </Typography>
             {projects == null ? <CircularProgress /> : (
               <GridList cols={2.5}>
                 {projects.map(project => (
@@ -49,7 +57,7 @@ class Home extends React.Component {
                       title={project.name.toUpperCase()}
                       subtitle={`Creado por @${project.owner.user_name}`}
                       actionIcon={(
-                        <IconButton aria-label="Información del Proyecto" color="secondary">
+                        <IconButton aria-label="Información del Proyecto" color="secondary" href={`/projects/${project.id}`}>
                           <InfoIcon />
                         </IconButton>
                       )}
