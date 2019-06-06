@@ -1,14 +1,11 @@
 import React from 'react';
-
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-
 import AppContext from '../../context';
-
 import ProjectItem from '../../components/projectItem';
-
 import './styles.scss';
+const axios = require('axios');
 
 
 class ProjectsPage extends React.Component {
@@ -17,9 +14,17 @@ class ProjectsPage extends React.Component {
   };
 
   componentDidMount() {
-    fetch('/api/getList')
-      .then(res => res.json())
-      .then(list => this.setState({ list }));
+    axios.get('../api/projects')
+    .then(response => {
+      const data = response.data.projects;
+      this.setState({ list: data });
+      // handle success
+
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+    });
   }
 
   render() {
@@ -33,7 +38,7 @@ class ProjectsPage extends React.Component {
             {
               list.map((project, index) => (
                 <Grid key={project} item xs={4}>
-                  <ProjectItem id={index} name={project} />
+                  <ProjectItem id={index} {...project} />
                 </Grid>
               ))
             }

@@ -27,7 +27,7 @@ export default class App extends Component {
   };
 
   componentDidMount() {
-    fetch('/api')
+    fetch('/api/users/1')
       .then(res => res.json())
       .then(user => this.setState({ user }));
   }
