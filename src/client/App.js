@@ -12,7 +12,7 @@ import AppContext from './context';
 import Home from './pages/home';
 import Profile from './pages/profile';
 import Projects from './pages/projects';
-import CreateProject from './pages/projects/create';
+import CreateProject from './pages/createProject';
 import ProjectOfUser from './pages/projects/byUser';
 import Project from './pages/projects/project';
 
@@ -27,7 +27,7 @@ export default class App extends Component {
   };
 
   componentDidMount() {
-    fetch('/api')
+    fetch('/api/users/1')
       .then(res => res.json())
       .then(user => this.setState({ user }));
   }

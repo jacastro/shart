@@ -3,3 +3,39 @@
     text-align: left;
   }
 }
+.card-project {
+  text-align: left;
+  &-action{
+    margin-left: 0 !important;
+  }
+  &-apply{
+    margin-left: auto !important;
+    svg{
+      margin-right: 5px;
+    }
+  }
+  &-gallery{
+    height: 200px;
+  }
+  &-gallery-root{
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      overflow: hidden;
+  }
+  &-media {
+    background: no-repeat center;
+    background-size: cover;
+    height: 0px;
+    padding-top: 25%;
+  }
+  &-meta{
+    div{
+      margin-bottom: 10px;
+    }
+  }
+  &-tags {
+    margin-left: 5px;
+    cursor: pointer !important;
+  }
+}

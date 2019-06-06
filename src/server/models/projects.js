@@ -16,21 +16,31 @@ var ProjectSchema = new Schema({
   project_leader: {type: Schema.Types.ObjectId, ref: 'Me' },
   owner: {type: Schema.Types.ObjectId, ref: 'User' },
   promoted_level: String,
-  rating: {type: Number, min: 1},
+  rating: {type: Number, min: 1, max: 5},
+  rating_sum: {type: Number, min: 0},
+  rating_count: {type: Number, min: 0},
   region: {type: String, required: true, maxlength: 100},
   require_shipping: {type: Boolean, required: true},
   shipping_address: String,
   tags: [String],
-  view_counts: {type: Number, min: 1},
-  collaborations: [
+  view_counts: {type: Number, min: 0},
+  phases: [
     {
-      task: String,
-      status: String,
-      collaborator: {type: Schema.Types.ObjectId, ref: 'Me' }
+      id: {type: String, required: true},
+      name: {type: String, required: true},
+      tasks: [
+        {
+          id: {type: String, required: true},
+          name: {type: String, required: true},
+          status: {type: String, required: true},
+          collaborator: {type: Schema.Types.ObjectId, ref: 'Me' }
+        }
+      ]
     }
   ],
   postulants: [
     {
+      phase: String,
       task: String,
       status: String,
       collaborator: {type: Schema.Types.ObjectId, ref: 'Me' }
