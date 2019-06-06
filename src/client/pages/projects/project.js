@@ -11,18 +11,32 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Collapse from '@material-ui/core/Collapse';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import IconButton from '@material-ui/core/IconButton';
+import Link from '@material-ui/core/Link';
 import PlaceIcon from '@material-ui/icons/Place';
+import FaceIcon from '@material-ui/icons/Face';
 import ShareIcon from '@material-ui/icons/Share';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import ViewListIcon from '@material-ui/icons/ViewList';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+
 import Typography from '@material-ui/core/Typography';
 import AppContext from '../../context';
 
@@ -43,18 +57,27 @@ const phases = [{
   name: 'Envío',
 }, {
   id: 'final',
-  name: 'Finalizado',
+  name: 'Fin',
 }];
 
 class Project extends React.Component {
-  state = {
-    project: null
-  };
+  constructor(props) {
+    super(props);
+    this.toggle = this.toggle.bind(this);
+    this.state = {
+      project: null,
+      open: false
+    };
+  }
 
   componentDidMount() {
     fetch(`/api/projects/${this.props.match.params.id}`)
       .then(res => res.json())
       .then(project => this.setState({ project }));
+  }
+
+  toggle() {
+    this.setState({ open: !this.state.open });
   }
 
   render() {
@@ -64,7 +87,12 @@ class Project extends React.Component {
       <React.Fragment>
         {project == null ? <CircularProgress /> : (
           <Card className="card-project">
-            <CardHeader title={project.name} subheader={`Liderado por ${project.project_leader.full_name}`} />
+            <CardHeader
+              title={project.name}
+              subheader={
+                <Link href={`/users/${project.owner.id}`}>{`Creado por @${project.owner.user_name}`}</Link>
+            }
+            />
             {project.images.length > 0
             && <CardMedia className="card-project-media" image={project.images[0]} />
             }
@@ -78,11 +106,48 @@ class Project extends React.Component {
                     <Typography variant="overline">Ubicación:</Typography>
                     <Chip className="card-project-tags" label={project.region} icon={<PlaceIcon />} component="a" href={`/places/${project.region}`} />
                   </div>
+                  <div>
+                    <Typography variant="overline">Líder de Proyecto:</Typography>
+                    <Chip color="primary" className="card-project-tags" label={project.project_leader.full_name} icon={<FaceIcon />} component="a" href={`/users/${project.project_leader.id}`} />
+                  </div>
+                  <div>
+                    <Typography variant="overline">Posiciones abiertas & colaboraciones:</Typography>
+                    <List dense disablePadding>
+                      {project.phases.map((phase, index) => (
+                        <div key={phase.id}>
+                          <ListItem divider button onClick={this.toggle}>
+                            <ListItemIcon>
+                              <ViewListIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={phase.name} secondary={phase.tasks.length > 1 ? `${phase.tasks.length} tareas` : `${phase.tasks.length} tarea`} />
+                            {this.state.open ? <ExpandLess /> : <ExpandMore />}
+                          </ListItem>
+                          <Collapse in={this.state.open} timeout="auto" unmountOnExit>
+                            <List dense component="div" disablePadding>
+                              {phase.tasks.map((task, index) => (
+                                <ListItem divider key={task.id} button>
+                                  <ListItemIcon>
+                                    {task.status === 'in_progress'
+                                    && <AssignmentIndIcon color="secondary" />}
+                                    {task.status === 'open'
+                                    && <AssignmentIcon color="primary" />}
+                                    {task.status === 'done'
+                                    && <AssignmentTurnedInIcon color="disabled" />}
+                                  </ListItemIcon>
+                                  <ListItemText primary={task.name} secondary={task.status}/>
+                                </ListItem>
+                              ))}
+                            </List>
+                          </Collapse>
+                        </div>
+                      ))}
+                    </List>
+                  </div>
                 </Grid>
                 <Grid item xs={4} className="card-project-meta">
                   <div>
                     <Typography variant="overline" gutterBottom>Categoría: </Typography>
-                    <Chip color="primary" key={project.category} label={project.category} component="a" href={`/categories/${project.category}`} />
+                    <Chip color="primary" className="card-project-tags" key={project.category} label={project.category} component="a" href={`/categories/${project.category}`} />
                   </div>
                   <div>
                     {project.tags.length > 0
@@ -110,6 +175,7 @@ class Project extends React.Component {
                   }
                 </Grid>
                 <Grid item xs={12}>
+                  <Typography variant="overline">Estado de avance del proyecto:</Typography>
                   <Stepper>
                     {phases.map((phase, index) => (
                       <Step key={phase.id} active={project.current_phase === phase.id}>
@@ -145,10 +211,10 @@ class Project extends React.Component {
               </IconButton>
               {project.need_collaborations
               && (
-              <Button href="#" className="card-project-apply" color="primary" variant="outlined">
-                <AddCircleIcon />
-Postularme
-              </Button>
+                <Button href="#" className="card-project-apply" color="primary" variant="outlined">
+                  <AddCircleIcon />
+  Postularme
+                </Button>
               )
               }
             </CardActions>
