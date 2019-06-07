@@ -6,6 +6,8 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
+import phases from '../../../config/phases';
+
 import AppContext from '../../context';
 
 import ConfigStep from './configStep';
@@ -24,12 +26,16 @@ export const categories = [
     label: 'Regalos',
   },
   {
-    value: 'handicrafts',
+    value: 'handicraft',
     label: 'Artesanías',
   },
   {
     value: 'picture',
     label: 'Cuadros',
+  },
+  {
+    value: 'trees',
+    label: 'Árboles',
   },
 ];
 
@@ -45,84 +51,48 @@ export const tags = [
   },
 ];
 
-export const phases = [
-  {
-    id: 'design',
-    name: 'Diseño',
-  },
-  {
-    id: 'development',
-    name: 'Desarrollo',
-  },
-  {
-    id: 'decoration',
-    name: 'Decoración',
-  },
-  {
-    id: 'ship',
-    name: 'Envío',
-  },
-];
-
-
 const steps = [
   {
     title: 'Sobre tu proyecto',
     content: <ConfigStep />,
+    disableBack: true,
   },
   {
-    title: 'Estado actual',
+    title: 'Estado',
     content: <StatusStep />,
   },
   {
     title: 'Configurar Tareas',
     content: <TaskStep />,
+    nextText: 'Crear proyecto'
   },
   {
     title: 'Finalizar',
     content: <LinearProgress />,
+    disableNext: true
   }
 ];
 
 export const FormContext = createContext();
 
-const CreateProjectPage = () => {
+const ModifyProjectPage = ({ data }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [values, setValues] = useState({
     name: 'Mi nuevo proyecto',
     category: null,
     tags: [],
+    images: [],
     description: '',
-    start: null,
-    end: null,
+    start_date: '',
+    end_date: '',
     need_collaborations: true,
     require_shipping: true,
     shipping_address: null,
     current_phase_num: null,
-    current_phase: 'design',
+    current_phase: 'init',
     region: 'bsas',
-    phases: [
-      {
-        id: 'design',
-        name: 'Diseño',
-        tasks: []
-      },
-      {
-        id: 'development',
-        name: 'Desarrollo',
-        tasks: []
-      },
-      {
-        id: 'decoration',
-        name: 'Decoración',
-        tasks: []
-      },
-      {
-        id: 'ship',
-        name: 'Envío',
-        tasks: []
-      },
-    ]
+    phases: phases.map(phase => ({ ...phase, tasks: [] })),
+    ...data,
   });
 
   const handleChange = name => (event) => {
@@ -154,10 +124,12 @@ const CreateProjectPage = () => {
     setActiveStep(0);
   }
 
+  const stepData = steps[activeStep];
+
   return (
     <div className="create-prject">
       <Stepper activeStep={activeStep}>
-        {steps.map((step, index) => {
+        {steps.map((step) => {
           const stepProps = {};
           const labelProps = {};
           return (
@@ -183,17 +155,20 @@ const CreateProjectPage = () => {
               {steps[activeStep].content}
             </FormContext.Provider>
             <div className="actions">
-              <Button disabled={activeStep === 0} onClick={handleBack}>
-                Atrás
+              <Button
+                disabled={stepData.disableBack || false}
+                onClick={handleBack}
+              >
+                {stepData.backText || 'Atrás'}
               </Button>
 
               <Button
                 variant="contained"
                 color="primary"
                 onClick={handleNext}
-                disabled={activeStep === steps.length - 1}
+                disabled={stepData.disableNext || false}
               >
-                {activeStep > steps.length - 3 ? 'Crear proyecto' : 'Continuar'}
+                {stepData.nextText || 'Continuar'}
               </Button>
             </div>
           </div>
@@ -203,4 +178,4 @@ const CreateProjectPage = () => {
   );
 };
 
-export default CreateProjectPage;
+export default ModifyProjectPage;

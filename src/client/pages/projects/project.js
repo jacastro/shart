@@ -40,25 +40,7 @@ import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import Typography from '@material-ui/core/Typography';
 import AppContext from '../../context';
 
-const phases = [{
-  id: 'init',
-  name: 'Inicio',
-}, {
-  id: 'design',
-  name: 'Diseño',
-}, {
-  id: 'development',
-  name: 'Desarrollo',
-}, {
-  id: 'decoration',
-  name: 'Decoración',
-}, {
-  id: 'ship',
-  name: 'Envío',
-}, {
-  id: 'final',
-  name: 'Fin',
-}];
+import phases from '../../../config/phases';
 
 class Project extends React.Component {
   constructor(props) {

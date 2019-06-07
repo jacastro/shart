@@ -15,11 +15,18 @@ import Subtitle from '../../components/subtitle';
 const StatusStep = () => {
   const { values, handleChangeValue } = useContext(FormContext);
 
+  console.log(values);
+
   const handleChangeTask = (phaseIndex, taskIndex) => (event) => {
+    const { tasks } = values.phases[phaseIndex];
     if (taskIndex != null) {
-      values.phases[phaseIndex].tasks[taskIndex] = event.target.value;
+      tasks[taskIndex].name = event.target.value;
     } else {
-      values.phases[phaseIndex].tasks.push('');
+      tasks.push({
+        id: 'a',
+        name: '',
+        status: 'todo',
+      });
     }
     handleChangeValue('phases', values.phases);
   };
@@ -41,7 +48,7 @@ const StatusStep = () => {
           {phase.tasks.map((task, taskIndex) => (
             <TextField
               label={`Descripción de la tarea Nº${taskIndex + 1} de ${phase.name}`}
-              value={task}
+              value={task.name}
               onChange={handleChangeTask(phaseIndex + num, taskIndex)}
               margin="normal"
               variant="outlined"
