@@ -20,6 +20,7 @@ import Home from './pages/home';
 import Profile from './pages/profile';
 import Projects from './pages/projects';
 import CreateProject from './pages/createProject';
+import EditProjectPage from './pages/createProject/editProject';
 import ProjectOfUser from './pages/projects/byUser';
 import Project from './pages/projects/project';
 
@@ -111,6 +112,7 @@ export default class App extends Component {
               <Route path="/me" component={Profile} exact />
               <Route path="/me/projects" component={ProjectOfUser} exact />
               <Route path="/me/projects/create" component={CreateProject} exact />
+              <Route path="/me/projects/modify/:id" component={EditProjectPage} exact />
               <Route path="/profile/:id" component={Profile} exact />
               <Route path="/profile/:id/projects" component={ProjectOfUser} exact />
               <Route path="/projects" component={Projects} exact />

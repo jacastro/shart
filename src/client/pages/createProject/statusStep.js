@@ -12,8 +12,58 @@ import Subtitle from '../../components/subtitle';
 const StatusStep = () => {
   const { values, handleChange, handleChangeCheckbox } = useContext(FormContext);
 
+  const end = values.end_date.substring(0, values.end_date.indexOf('T'));
+  const start = values.start_date.substring(0, values.start_date.indexOf('T'));
+
   return (
     <React.Fragment>
+      <Grid container justify="space-between">
+        <Subtitle title="Fechas" />
+        <TextField
+          id="date"
+          label="Inicio"
+          type="date"
+          value={start}
+          onChange={handleChange('start_date')}
+          margin="normal"
+          variant="outlined"
+          style={{ width: '48%' }}
+        />
+        <TextField
+          id="date"
+          label="Fin"
+          type="date"
+          value={end}
+          onChange={handleChange('end_date')}
+          margin="normal"
+          variant="outlined"
+          style={{ width: '48%' }}
+        />
+      </Grid>
+      <Grid container justify="space-between">
+        <Subtitle title="Envío" />
+        <FormControlLabel
+          style={{ width: '48%' }}
+          control={(
+            <Checkbox
+              checked={values.require_shipping}
+              onChange={handleChangeCheckbox('require_shipping')}
+              color="primary"
+            />
+          )}
+          label="¿Tu proyecto requiere envío a domicilio?"
+        />
+        {values.require_shipping && (
+          <TextField
+            label="Dirección de envío"
+            value={values.shipping_address}
+            onChange={handleChange('shipping_address')}
+            margin="normal"
+            variant="outlined"
+            fullWidth
+          />
+        )}
+      </Grid>
       <Grid container justify="space-between">
         <Subtitle title="Sobre el estado actual" />
         <TextField
@@ -25,7 +75,7 @@ const StatusStep = () => {
           variant="outlined"
           style={{ width: '48%' }}
         >
-          {phases.map(({ id, name }) => (
+          {values.phases.map(({ id, name }) => (
             <MenuItem key={id} value={id}>
               {name}
             </MenuItem>

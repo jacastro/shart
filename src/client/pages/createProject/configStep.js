@@ -11,15 +11,34 @@ import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Chip from '@material-ui/core/Chip';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 
-import { FormContext, categories, tags } from '.';
+import { FormContext } from '.';
+import { categories, tags } from '../../../config';
 import Subtitle from '../../components/subtitle';
 
 const ConfigStep = () => {
-  const { values, handleChange, handleChangeCheckbox } = useContext(FormContext);
+  const { values, handleChange, handleChangeValue } = useContext(FormContext);
+
+  const handleChangeImage = imageIndex => (event) => {
+    if (imageIndex != null) {
+      values.images[imageIndex] = event.target.value;
+    } else {
+      values.images.push('');
+    }
+    handleChangeValue('images', values.images);
+  };
+
+  const handleDeleteImage = (imageIndex) => {
+    values.images.splice(imageIndex, 1);
+    handleChangeValue('images', values.images);
+  };
 
   return (
-    <React.Fragment>
+    <div style={{ textAlign: 'left' }}>
       <Subtitle title="Información principal" />
       <TextField
         label="Nombre"
@@ -79,54 +98,36 @@ const ConfigStep = () => {
           </Select>
         </FormControl>
       </Grid>
-      <Grid container justify="space-between">
-        <Subtitle title="Fechas" />
-        <TextField
-          id="date"
-          label="Inicio"
-          type="date"
-          value={values.start}
-          onChange={handleChange('start')}
-          margin="normal"
-          variant="outlined"
-          style={{ width: '48%' }}
-        />
-        <TextField
-          id="date"
-          label="Fin"
-          type="date"
-          value={values.end}
-          onChange={handleChange('end')}
-          margin="normal"
-          variant="outlined"
-          style={{ width: '48%' }}
-        />
-      </Grid>
-      <Grid container justify="space-between">
-        <Subtitle title="Envío" />
-        <FormControlLabel
-          style={{ width: '48%' }}
-          control={(
-            <Checkbox
-              checked={values.require_shipping}
-              onChange={handleChangeCheckbox('require_shipping')}
-              color="primary"
-            />
-          )}
-          label="¿Tu proyecto requiere envío a domicilio?"
-        />
-        {values.require_shipping && (
+      <React.Fragment>
+        <Subtitle title="Imágenes" />
+        {values.images.map((image, imageIndex) => (
           <TextField
-            label="Dirección de envío"
-            value={values.shipping_address}
-            onChange={handleChange('shipping_address')}
+            label={`Imagen Nº${imageIndex + 1}`}
+            value={image}
+            onChange={handleChangeImage(imageIndex)}
             margin="normal"
             variant="outlined"
             fullWidth
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    edge="end"
+                    aria-label="Toggle password visibility"
+                    onClick={() => handleDeleteImage(imageIndex)}
+                  >
+                    <DeleteForeverOutlinedIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
-        )}
-      </Grid>
-    </React.Fragment>
+        ))}
+        <Button variant="outlined" onClick={handleChangeImage()}>
+          Agregar nueva imagen
+        </Button>
+      </React.Fragment>
+    </div>
   );
 };
 
