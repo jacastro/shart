@@ -40,7 +40,7 @@ import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import Typography from '@material-ui/core/Typography';
 import AppContext from '../../context';
 
-import phases from '../../../config/phases';
+import { phases } from '../../../config';
 
 class Project extends React.Component {
   constructor(props) {

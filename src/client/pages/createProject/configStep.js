@@ -16,7 +16,8 @@ import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 
-import { FormContext, categories, tags } from '.';
+import { FormContext } from '.';
+import { categories, tags } from '../../../config';
 import Subtitle from '../../components/subtitle';
 
 const ConfigStep = () => {

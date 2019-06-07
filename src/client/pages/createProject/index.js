@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-import phases from '../../../config/phases';
+import { phases } from '../../../config';
 
 import AppContext from '../../context';
 
@@ -15,41 +15,6 @@ import StatusStep from './statusStep';
 import TaskStep from './taskStep';
 
 import './createProject.scss';
-
-export const categories = [
-  {
-    value: 'toys',
-    label: 'Juguetes',
-  },
-  {
-    value: 'gift',
-    label: 'Regalos',
-  },
-  {
-    value: 'handicraft',
-    label: 'Artesanías',
-  },
-  {
-    value: 'picture',
-    label: 'Cuadros',
-  },
-  {
-    value: 'trees',
-    label: 'Árboles',
-  },
-];
-
-export const tags = [
-  ...categories,
-  {
-    value: 'star-wars',
-    label: 'Star Wars',
-  },
-  {
-    value: 'fun',
-    label: 'Diversión',
-  },
-];
 
 const steps = [
   {
