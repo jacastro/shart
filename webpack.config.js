@@ -54,6 +54,7 @@ module.exports = {
       '/api': 'http://localhost:80'
     },
     contentBase: false,
+    disableHostCheck: true,
   },
   plugins: [
     new CleanWebpackPlugin([outputDirectory]),

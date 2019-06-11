@@ -164,11 +164,14 @@ router.post('/:user_id/projects/', function (req, res) {
       project['postulants'] = [];
       project.owner = user_id
 
+      console.log(project); 
+
       project.save()
         .then(newProject => {
           res.status(200).json(newProject)
         })
         .catch(err => {
+          console.log(err);
           res.status(500).json({ message: 'Something went wrong', error: err.message })
         })
     })
