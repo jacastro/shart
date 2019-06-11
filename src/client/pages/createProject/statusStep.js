@@ -12,9 +12,6 @@ import Subtitle from '../../components/subtitle';
 const StatusStep = () => {
   const { values, handleChange, handleChangeCheckbox } = useContext(FormContext);
 
-  const end = values.end_date.substring(0, values.end_date.indexOf('T'));
-  const start = values.start_date.substring(0, values.start_date.indexOf('T'));
-
   return (
     <React.Fragment>
       <Grid container justify="space-between">
@@ -23,7 +20,7 @@ const StatusStep = () => {
           id="date"
           label="Inicio"
           type="date"
-          value={start}
+          value={values.start_date}
           onChange={handleChange('start_date')}
           margin="normal"
           variant="outlined"
@@ -33,7 +30,7 @@ const StatusStep = () => {
           id="date"
           label="Fin"
           type="date"
-          value={end}
+          value={values.end_date}
           onChange={handleChange('end_date')}
           margin="normal"
           variant="outlined"

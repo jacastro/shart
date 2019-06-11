@@ -8,6 +8,8 @@ import { get } from '../../services';
 
 import ModifyProjectPage from '.';
 
+const formatDate = date => (date.includes('T') ? date.substring(0, date.indexOf('T')) : date);
+
 export default class EditProjectPage extends Component {
   state = {
     data: null,
@@ -17,10 +19,16 @@ export default class EditProjectPage extends Component {
     const { match } = this.props;
     get(`/projects/${match.params.id}`)
       .then(({ data }) => {
-        this.setState({ data });
+        this.setState({
+          data: {
+            ...data,
+            end_date: formatDate(data.end_date),
+            start_date: formatDate(data.start_date),
+          }
+        });
       })
-      .catch(() => {
-        window.location.replace('/me/projects');
+      .catch((error) => {
+        window.location.replace('/');
       });
   }
 

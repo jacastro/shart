@@ -164,8 +164,6 @@ router.post('/:user_id/projects/', function (req, res) {
       project['postulants'] = [];
       project.owner = user_id
 
-      console.log(project); 
-
       project.save()
         .then(newProject => {
           res.status(200).json(newProject)
