@@ -13,6 +13,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import WorkIcon from '@material-ui/icons/Work';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import AppContext from './context';
 
@@ -26,6 +27,8 @@ import Project from './pages/projects/project';
 
 import Header from './layout/header';
 
+import { get } from './services';
+
 import './app.scss';
 
 export default class App extends Component {
@@ -35,9 +38,10 @@ export default class App extends Component {
   };
 
   componentDidMount() {
-    fetch('/api/users/1')
-      .then(res => res.json())
-      .then(user => this.setState({ user }));
+    get('/users/1')
+      .then(({ data }) => {
+        this.setState({ user: data });
+      });
   }
 
   toggleDrawer = open => (event) => {
@@ -50,7 +54,7 @@ export default class App extends Component {
   };
 
   render() {
-    const { username, showLeftMenu } = this.state;
+    const { user, showLeftMenu } = this.state;
     return (
       <AppContext.Provider
         value={{
@@ -108,15 +112,19 @@ export default class App extends Component {
           <div role="presentation" onClick={this.toggleDrawer(false)} onKeyDown={this.toggleDrawer(false)}>
             <Header />
             <main className="main">
-              <Route path="/" component={Home} exact />
-              <Route path="/me" component={Profile} exact />
-              <Route path="/me/projects" component={ProjectOfUser} exact />
-              <Route path="/me/projects/create" component={CreateProject} exact />
-              <Route path="/me/projects/modify/:id" component={EditProjectPage} exact />
-              <Route path="/profile/:id" component={Profile} exact />
-              <Route path="/profile/:id/projects" component={ProjectOfUser} exact />
-              <Route path="/projects" component={Projects} exact />
-              <Route path="/projects/:id" component={Project} exact />
+              {user != null ? (
+                <React.Fragment>
+                  <Route path="/" component={Home} exact />
+                  <Route path="/me" component={Profile} exact />
+                  <Route path="/me/projects" component={ProjectOfUser} exact />
+                  <Route path="/me/projects/create" component={CreateProject} exact />
+                  <Route path="/me/projects/modify/:id" component={EditProjectPage} exact />
+                  <Route path="/profile/:id" component={Profile} exact />
+                  <Route path="/profile/:id/projects" component={ProjectOfUser} exact />
+                  <Route path="/projects" component={Projects} exact />
+                  <Route path="/projects/:id" component={Project} exact />
+                </React.Fragment>
+              ) : <CircularProgress />}
             </main>
           </div>
         </Router>
