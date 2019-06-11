@@ -169,6 +169,7 @@ router.post('/:user_id/projects/', function (req, res) {
           res.status(200).json(newProject)
         })
         .catch(err => {
+          console.log(err);
           res.status(500).json({ message: 'Something went wrong', error: err.message })
         })
     })

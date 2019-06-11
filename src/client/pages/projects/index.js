@@ -4,9 +4,10 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import AppContext from '../../context';
 import ProjectItem from '../../components/projectItem';
-import './styles.scss';
-const axios = require('axios');
 
+import { get } from '../../services';
+
+import './styles.scss';
 
 class ProjectsPage extends React.Component {
   state = {
@@ -14,17 +15,17 @@ class ProjectsPage extends React.Component {
   };
 
   componentDidMount() {
-    axios.get('../api/projects')
-    .then(response => {
-      const data = response.data.projects;
-      this.setState({ list: data });
-      // handle success
+    get('/projects')
+      .then(response => {
+        const data = response.data.projects;
+        this.setState({ list: data });
+        // handle success
 
-    })
-    .catch(function (error) {
-      // handle error
-      console.log(error);
-    });
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      });
   }
 
   render() {

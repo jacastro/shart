@@ -1,10 +1,13 @@
 import React, { createContext, useContext, useState } from 'react';
+
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
+
+import { post } from '../../services';
 
 import { phases } from '../../../config';
 
@@ -33,6 +36,7 @@ const steps = [
   },
   {
     title: 'Finalizar',
+    action: 'save',
     content: <LinearProgress />,
     disableNext: true
   }
@@ -41,6 +45,7 @@ const steps = [
 export const FormContext = createContext();
 
 const ModifyProjectPage = ({ data }) => {
+  const { user } = useContext(AppContext);
   const [activeStep, setActiveStep] = useState(0);
   const [values, setValues] = useState({
     name: 'Mi nuevo proyecto',
@@ -60,6 +65,8 @@ const ModifyProjectPage = ({ data }) => {
     ...data,
   });
 
+  const stepData = steps[activeStep];
+
   const handleChange = name => (event) => {
     setValues({ ...values, [name]: event.target ? event.target.value : event });
   };
@@ -74,10 +81,19 @@ const ModifyProjectPage = ({ data }) => {
 
   function handleNext() {
     setActiveStep((prevActiveStep) => {
-      if (prevActiveStep === 2) {
-        setTimeout(() => { handleNext(); }, 1000);
+      const newStep = prevActiveStep + 1;
+      const { action } = steps[newStep] || {};
+      if (action === 'save') {
+        post(`/users/${user.id}/projects`, values)
+          .then((response) => {
+            console.log("response", response.data);
+            handleNext();
+          })
+          .catch((error) => {
+            console.log("response", error.response);
+          });
       }
-      return prevActiveStep + 1;
+      return newStep;
     });
   }
 
@@ -88,8 +104,6 @@ const ModifyProjectPage = ({ data }) => {
   function handleReset() {
     setActiveStep(0);
   }
-
-  const stepData = steps[activeStep];
 
   return (
     <div className="create-prject">

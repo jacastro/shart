@@ -5,28 +5,26 @@ import React from 'react';
 import ProjectItem from '../../components/projectItem';
 import AppContext from '../../context';
 import './styles.scss';
-const axios = require('axios');
 
+import { get } from '../../services';
 
 class MyProjectsPage extends React.Component {
   state = {
     list: null,
-    userId: null
   };
 
   componentDidMount() {
-
-    axios.get('../api/users/1/projects')
-    .then(response => {
-      const data = response.data.projects;
-      this.setState({ list: data, userId: 1 });
-      // handle success
-
-    })
-    .catch(function (error) {
-      // handle error
-      console.log(error);
-    });
+    const { user } = this.context;
+    get(`/users/${user.id}/projects`)
+      .then(response => {
+        const data = response.data.projects;
+        this.setState({ list: data });
+        // handle success
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      });
   }
 
   render() {
