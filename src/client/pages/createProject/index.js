@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState } from 'react';
-import axios from 'axios';
 
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -7,6 +6,8 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
+
+import { post } from '../../services';
 
 import { phases } from '../../../config';
 
@@ -83,7 +84,7 @@ const ModifyProjectPage = ({ data }) => {
       const newStep = prevActiveStep + 1;
       const { action } = steps[newStep] || {};
       if (action === 'save') {
-        axios.post(`https://uade-seminario-2-tpo.herokuapp.com/api/users/${user.id}/projects`, values)
+        post(`/users/${user.id}/projects`, values)
           .then((response) => {
             console.log("response", response.data);
             handleNext();

@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress/CircularProgress';
 import AppContext from '../../context';
 
-const axios = require('axios');
+import { get } from '../../services';
 
 class Home extends React.Component {
   constructor(props) {
@@ -22,7 +22,7 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('../api/projects')
+    get('/projects')
       .then((response) => {
         const data = response.data.projects;
         this.setState({ projects: data });

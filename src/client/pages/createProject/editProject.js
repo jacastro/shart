@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import axios from 'axios';
-
 import CircularProgress from '@material-ui/core/CircularProgress';
+
+import { get } from '../../services';
 
 import ModifyProjectPage from '.';
 
@@ -15,7 +15,7 @@ export default class EditProjectPage extends Component {
 
   componentDidMount() {
     const { match } = this.props;
-    axios.get(`/api/projects/${match.params.id}`)
+    get(`/projects/${match.params.id}`)
       .then(({ data }) => {
         this.setState({ data });
       })
