@@ -24,6 +24,7 @@ import CreateProject from './pages/createProject';
 import EditProjectPage from './pages/createProject/editProject';
 import ProjectOfUser from './pages/projects/byUser';
 import Project from './pages/projects/project';
+import ProjectTasks from './pages/tasks';
 
 import Header from './layout/header';
 
@@ -123,6 +124,7 @@ export default class App extends Component {
                   <Route path="/profile/:id/projects" component={ProjectOfUser} exact />
                   <Route path="/projects" component={Projects} exact />
                   <Route path="/projects/:id" component={Project} exact />
+                  <Route path="/projects/:id/tasks" component={ProjectTasks} exact />
                 </React.Fragment>
               ) : <CircularProgress />}
             </main>

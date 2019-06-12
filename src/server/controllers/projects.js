@@ -182,7 +182,7 @@ router.put('/:id', (req, res) => {
   const permittedParams = [
     'name', 'description', 'category', 'current_phase', 'start_date', 'end_date', 'images',
     'need_collaborations', 'promoted_level', 'region', 'require_shipping',
-    'shipping_address', 'tags', 'collaborations'
+    'shipping_address', 'tags', 'collaborations', 'phases'
   ];
   Projects.findOne({ id: req.params.id })
     .then((project) => {
