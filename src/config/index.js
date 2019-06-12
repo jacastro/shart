@@ -48,7 +48,7 @@ export const phases = [
   },
 ];
 
-export const status = [
+export const statuses = [
   {
     id: 'todo',
     name: 'Planificada',

@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import uuid from 'uuid/v1';
 
 import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -23,7 +24,7 @@ const StatusStep = () => {
       tasks[taskIndex].name = event.target.value;
     } else {
       tasks.push({
-        id: 'a',
+        id: uuid(),
         name: '',
         status: 'todo',
       });

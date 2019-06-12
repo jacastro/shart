@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import keyIndex from 'react-key-index';
 import Moment from 'react-moment';
 import 'moment-timezone';
@@ -17,7 +18,6 @@ import Grid from '@material-ui/core/Grid';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import IconButton from '@material-ui/core/IconButton';
-import Link from '@material-ui/core/Link';
 import PlaceIcon from '@material-ui/icons/Place';
 import FaceIcon from '@material-ui/icons/Face';
 import ShareIcon from '@material-ui/icons/Share';
@@ -40,6 +40,8 @@ import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import Typography from '@material-ui/core/Typography';
 import AppContext from '../../context';
 
+import { get } from '../../services';
+
 import { phases } from '../../../config';
 
 class Project extends React.Component {
@@ -54,11 +56,10 @@ class Project extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`/api/projects/${this.props.match.params.id}`)
-      .then(res => res.json())
-      .then(project => this.setState({ 
-        project,
-        images: project.images.map(image => ({
+    get(`/projects/${this.props.match.params.id}`)
+      .then(response => this.setState({ 
+        project: response.data,
+        images: response.data.images.map(image => ({
           url: image,
           col: Math.floor(Math.random() * 3) + 1,
         }))
@@ -79,7 +80,7 @@ class Project extends React.Component {
             <CardHeader
               title={project.name}
               subheader={
-                <Link href={`/users/${project.owner.id}`}>{`Creado por @${project.owner.user_name}`}</Link>
+                <Link to={`/users/${project.owner.id}`}>{`Creado por @${project.owner.user_name}`}</Link>
             }
             />
             {project.images.length > 0
@@ -163,30 +164,32 @@ class Project extends React.Component {
                     )
                   }
                 </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="overline">Estado de avance del proyecto:</Typography>
-                  <Stepper>
-                    {phases.map((phase, index) => (
-                      <Step key={phase.id} active={project.current_phase === phase.id}>
-                        <StepLabel key={phase.id}>
-                          {phase.name.toUpperCase()}
-                          {phase.id === 'init'
-                        && (
-                        <Typography display="block" variant="overline">
-                          <Moment format="DD/MM/YYYY">{project.start_date}</Moment>
-                        </Typography>
-                        )}
-                          {phase.id === 'final'
-                        && (
-                        <Typography display="block" variant="overline">
-                          <Moment format="DD/MM/YYYY">{project.end_date}</Moment>
-                        </Typography>
-                        )}
-                        </StepLabel>
-                      </Step>
-                    ))}
-                  </Stepper>
-                </Grid>
+                <Link to={`/projects/${project.id}/tasks`}>
+                  <Grid item xs={12}>
+                    <Typography variant="overline">Estado de avance del proyecto:</Typography>
+                    <Stepper>
+                      {phases.map((phase, index) => (
+                        <Step key={phase.id} active={project.current_phase === phase.id}>
+                          <StepLabel key={phase.id}>
+                            {phase.name.toUpperCase()}
+                            {phase.id === 'init'
+                          && (
+                          <Typography display="block" variant="overline">
+                            <Moment format="DD/MM/YYYY">{project.start_date}</Moment>
+                          </Typography>
+                          )}
+                            {phase.id === 'final'
+                          && (
+                          <Typography display="block" variant="overline">
+                            <Moment format="DD/MM/YYYY">{project.end_date}</Moment>
+                          </Typography>
+                          )}
+                          </StepLabel>
+                        </Step>
+                      ))}
+                    </Stepper>
+                  </Grid>
+                </Link>
                 <Grid item xs={12} />
               </Grid>
             </CardContent>
