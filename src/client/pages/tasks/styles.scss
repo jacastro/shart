@@ -1,4 +1,15 @@
 .tasks {
+  &-phase {
+    &-icon {
+      color: #81C784;
+      margin-left: auto;
+
+      &.active {
+        color: #43A047;
+      }
+    }
+  }
+
   &-col {
     background: #eeeeee;
     padding: 1em;
