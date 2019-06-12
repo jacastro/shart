@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -79,30 +80,30 @@ const ModifyProjectPage = ({ data }) => {
     setValues({ ...values, [key]: value });
   };
 
-  function handleNext() {
-    setActiveStep((prevActiveStep) => {
-      const newStep = prevActiveStep + 1;
-      const { action } = steps[newStep] || {};
-      if (action === 'save') {
-        post(`/users/${user.id}/projects`, values)
-          .then((response) => {
-            console.log("response", response.data);
-            handleNext();
-          })
-          .catch((error) => {
-            console.log("response", error.response);
-          });
-      }
-      return newStep;
-    });
-  }
-
   function handleBack() {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
   }
 
   function handleReset() {
     setActiveStep(0);
+  }
+
+  function handleNext() {
+    setActiveStep((prevActiveStep) => {
+      const newStep = prevActiveStep + 1;
+      const { action } = steps[newStep] || {};
+      if (action === 'save') {
+        post(`/users/${user.id}/projects`, values)
+          .then(() => {
+            handleNext();
+          })
+          .catch((error) => {
+            console.log(error.response);
+            handleReset();
+          });
+      }
+      return newStep;
+    });
   }
 
   return (
@@ -121,12 +122,14 @@ const ModifyProjectPage = ({ data }) => {
       <div>
         {activeStep >= steps.length ? (
           <div>
-            <Typography>
+            <Typography variant="h4" gutterBottom>
               ¡Tu proyecto ha sido creado correctamente!
             </Typography>
-            <Button onClick={handleReset}>
-              Mis proyectos
-            </Button>
+            <Link to="/me/projects">
+              <Button variant="contained" color="primary">
+                Mis proyectos
+              </Button>
+            </Link>
           </div>
         ) : (
           <div>
