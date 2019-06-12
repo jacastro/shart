@@ -5,7 +5,13 @@ const Users = require('../models/users');
 const FullContact = require('../helpers/fullContact');
 
 router.get('/', (req, res) => {
-  Users.find().sort('user_name').select('-_id -__v')
+  const emailFilter = new RegExp(`.*${req.query.email || ''}.*`);
+  const userNameFilter = new RegExp(`.*${req.query.user_name || ''}.*`);
+
+  Users.find({
+    email: { $regex: emailFilter, $options: 'i' },
+    user_name: { $regex: userNameFilter, $options: 'i' }
+  }).sort('user_name').select('-_id -__v')
     .then((result) => {
       res.status(200).json({ users: result });
     })
