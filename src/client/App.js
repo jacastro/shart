@@ -125,6 +125,7 @@ export default class App extends Component {
                   <Route path="/projects" component={Projects} exact />
                   <Route path="/projects/:id" component={Project} exact />
                   <Route path="/projects/:id/tasks" component={ProjectTasks} exact />
+                  <Route path="/search/:type/:id" component={Projects} exact />
                 </React.Fragment>
               ) : <CircularProgress />}
             </main>
