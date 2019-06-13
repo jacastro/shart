@@ -4,8 +4,11 @@ const router = express.Router();
 const Clients = require('../models/clients');
 
 router.get('/', (req, res) => {
-  Clients.find()
-    .sort('full_name').select('-_id -__v')
+  const fullNameFilter = new RegExp(`.*${req.query.full_name || ''}.*`);
+
+  Clients.find({
+    full_name: { $regex: fullNameFilter, $options: 'i' }
+  }).sort('full_name').select('-_id -__v')
     .populate('user', '-_id -__v')
     .then((result) => {
       res.status(200).json({ clients: result });
