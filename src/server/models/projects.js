@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
-const autoIncrementModelID = require('../helpers/mongo');
+const uuid = require('node-uuid');
 
 const { Schema } = mongoose;
 
 const ProjectSchema = new Schema({
-  id: { type: Number, unique: true, min: 1 },
+  id: { type: String, default: uuid.v1 },
   name: { type: String, required: true, maxlength: 50 },
   description: { type: String, required: true, maxlength: 5000 },
   category: { type: String, required: true, maxlength: 100 },
@@ -49,14 +48,4 @@ const ProjectSchema = new Schema({
   ],
 });
 
-ProjectSchema.pre('save', (next) => {
-  if (!this.isNew) {
-    next();
-    return;
-  }
-
-  autoIncrementModelID('projects', this, next);
-});
-
-ProjectSchema.plugin(uniqueValidator);
 module.exports = mongoose.model('Project', ProjectSchema);
