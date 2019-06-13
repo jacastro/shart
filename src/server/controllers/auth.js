@@ -1,33 +1,35 @@
-var express = require('express')
-var router = express.Router()
-var Auth = require('../helpers/hash')
-var Key = require('../key')
-var JWT = require('jsonwebtoken')
-var Users = require('../models/users')
+/* eslint-disable no-underscore-dangle */
+const express = require('express');
+
+const router = express.Router();
+const JWT = require('jsonwebtoken');
+const Auth = require('../helpers/hash');
+const Key = require('../key');
+const Users = require('../models/users');
 
 // Signing
-router.post('/signin', function (req, res) {
+router.post('/signin', (req, res) => {
   Users
     .findOne({ email: req.body.email.toLowerCase().trim() }, (err, result) => {
       if (result) {
-        Auth.hash_compare(req.body.pass, result.digest, match => {
+        Auth.hash_compare(req.body.pass, result.digest, (match) => {
           if (match) {
             const jwtToken = JWT.sign({
               user_id: result.id,
               email: result.email,
               user_name: result.name
-            }, Key.tokenKey)
+            }, Key.tokenKey);
 
-            let json = Object.assign({}, result._doc, { token: jwtToken })
-            res.status(200).json(json)
+            const json = Object.assign({}, result._doc, { token: jwtToken });
+            res.status(200).json(json);
           } else {
-            res.status(403).json({ message: 'Invalid Password/Username' })
+            res.status(403).json({ message: 'Invalid Password/Username' });
           }
-        })
+        });
       } else {
-        res.status(403).json({ message: 'Invalid Password/Username' })
+        res.status(403).json({ message: 'Invalid Password/Username' });
       }
-    })
-})
+    });
+});
 
-module.exports = router
+module.exports = router;

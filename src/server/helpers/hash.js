@@ -1,42 +1,43 @@
-var Bcrypt = require('bcrypt')
-var Salt = 10
-var JWT = require('jsonwebtoken')
-var User = require('../models/users')
-var Key = require('../key')
+const Bcrypt = require('bcrypt');
+
+const Salt = 10;
+const JWT = require('jsonwebtoken');
+const User = require('../models/users');
+const Key = require('../key');
 
 module.exports.hash = (pass, callback) => {
   Bcrypt.hash(pass, Salt)
     .then((hashedPassword) => {
       if (callback) {
-        callback(hashedPassword)
+        callback(hashedPassword);
       }
-    })
-}
+    });
+};
 
 module.exports.hash_compare = (pass, hashToCompare, callback) => {
   Bcrypt.compare(pass, hashToCompare, (err, result) => {
     if (callback) {
-      callback(result)
+      callback(result);
     }
-  })
-}
+  });
+};
 
 module.exports.jwt_user = (req, res, next) => {
   try {
-    const token = req.headers.authorization.replace('Bearer ', '')
+    const token = req.headers.authorization.replace('Bearer ', '');
 
-    JWT.verify(token, Key.tokenKey, function (err, payload) {
+    JWT.verify(token, Key.tokenKey, (err, payload) => {
       if (payload) {
         User.findOne({ id: payload.user_id })
-          .then(user => {
-            req.user = user
-            next()
-          })
+          .then((user) => {
+            req.user = user;
+            next();
+          });
       } else {
-        next()
+        next();
       }
-    })
+    });
   } catch (e) {
-    next()
+    next();
   }
-}
+};
