@@ -96,10 +96,12 @@ class Project extends React.Component {
                     <Typography variant="overline">Ubicación:</Typography>
                     <Chip className="card-project-tags" label={project.region} icon={<PlaceIcon />} component="a" href={`/places/${project.region}`} />
                   </div>
-                  <div>
-                    <Typography variant="overline">Líder de Proyecto:</Typography>
-                    <Chip color="primary" className="card-project-tags" label={project.project_leader.full_name} icon={<FaceIcon />} component="a" href={`/users/${project.project_leader.id}`} />
-                  </div>
+                  {project.project_leader && (
+                    <div>
+                      <Typography variant="overline">Líder de Proyecto:</Typography>
+                      <Chip color="primary" className="card-project-tags" label={project.project_leader.full_name} icon={<FaceIcon />} component="a" href={`/users/${project.project_leader.id}`} />
+                    </div>
+                  )}
                   <div>
                     <Typography variant="overline">Posiciones abiertas & colaboraciones:</Typography>
                     <List dense disablePadding>
@@ -137,14 +139,14 @@ class Project extends React.Component {
                 <Grid item xs={4} className="card-project-meta">
                   <div>
                     <Typography variant="overline" gutterBottom>Categoría: </Typography>
-                    <Chip color="primary" className="card-project-tags" key={project.category} label={project.category} component="a" href={`/categories/${project.category}`} />
+                    <Chip color="primary" className="card-project-tags" key={project.category} label={project.category} component="a" href={`/search/category/${project.category}`} />
                   </div>
                   <div>
                     {project.tags.length > 0
                     && <Typography variant="overline" gutterBottom>Tags: </Typography>
                   }
                     {project.tags.map((tag, index) => (
-                      <Chip color="secondary" key={tag} className="card-project-tags" label={tag} component="a" href={`/tag/${tag}`} />
+                      <Chip color="secondary" key={tag} className="card-project-tags" label={tag} component="a" href={`/search/tags/${tag}`} />
                     ))}
                   </div>
                   {project.images.length > 1
@@ -164,32 +166,35 @@ class Project extends React.Component {
                     )
                   }
                 </Grid>
-                <Link to={`/projects/${project.id}/tasks`}>
-                  <Grid item xs={12}>
-                    <Typography variant="overline">Estado de avance del proyecto:</Typography>
-                    <Stepper>
-                      {phases.map((phase, index) => (
-                        <Step key={phase.id} active={project.current_phase === phase.id}>
-                          <StepLabel key={phase.id}>
-                            {phase.name.toUpperCase()}
-                            {phase.id === 'init'
-                          && (
-                          <Typography display="block" variant="overline">
-                            <Moment format="DD/MM/YYYY">{project.start_date}</Moment>
-                          </Typography>
-                          )}
-                            {phase.id === 'final'
-                          && (
-                          <Typography display="block" variant="overline">
-                            <Moment format="DD/MM/YYYY">{project.end_date}</Moment>
-                          </Typography>
-                          )}
-                          </StepLabel>
-                        </Step>
-                      ))}
-                    </Stepper>
-                  </Grid>
-                </Link>
+                <Grid item xs={12}>
+                  <Typography variant="overline">Estado de avance del proyecto:</Typography>
+                  <Link to={`/projects/${project.id}/tasks`}>
+                    <Button color="primary" variant="outlined" style={{ float: 'right' }}>
+                      Ver tareas
+                    </Button>
+                  </Link>
+                  <Stepper>
+                    {phases.map((phase, index) => (
+                      <Step key={phase.id} active={project.current_phase === phase.id}>
+                        <StepLabel key={phase.id}>
+                          {phase.name.toUpperCase()}
+                          {phase.id === 'init'
+                        && (
+                        <Typography display="block" variant="overline">
+                          <Moment format="DD/MM/YYYY">{project.start_date}</Moment>
+                        </Typography>
+                        )}
+                          {phase.id === 'final'
+                        && (
+                        <Typography display="block" variant="overline">
+                          <Moment format="DD/MM/YYYY">{project.end_date}</Moment>
+                        </Typography>
+                        )}
+                        </StepLabel>
+                      </Step>
+                    ))}
+                  </Stepper>
+                </Grid>
                 <Grid item xs={12} />
               </Grid>
             </CardContent>
@@ -205,7 +210,7 @@ class Project extends React.Component {
               && (
                 <Button href="#" className="card-project-apply" color="primary" variant="outlined">
                   <AddCircleIcon />
-  Postularme
+                  Postularme
                 </Button>
               )
               }
