@@ -31,17 +31,17 @@ Seed data
 var o1 = ObjectId();
 var me1 = ObjectId();
 db.users.insert({_id: o1, id: 1, email: "matiasberrueta@gmail.com", user_name: "mberrueta"})
-db.mes.insert({_id: me1, id: 1, full_name: "Matias Berrueta", phone: "11-1111-1111", biography: "...", address: "...", city: "bs as", postal_code: "0000", tags: ["a1", "a2"], user: o1 })
+db.mes.insert({_id: me1, id: 1, full_name: "Matias Berrueta", phone: "11-1111-1111", biography: "...", address: "...", city: "bs as", postal_code: "0000", tags: ["aaa", "a2"], user: o1 })
 
 var o2 = ObjectId();
 var me2 = ObjectId();
 db.users.insert({_id: o2, id: 2, email: "erikannunez@gmail.com", user_name: "eri"})
-db.mes.insert({_id: me2, id: 2, full_name: "Erica Nuñez", phone: "22-2222-2222", biography: "...", address: "...", city: "bs as", postal_code: "1111", tags: ["a1", "a2"], user: o2 })
+db.mes.insert({_id: me2, id: 2, full_name: "Erica Nuñez", phone: "22-2222-2222", biography: "...", address: "...", city: "bs as", postal_code: "1111", tags: ["bbb", "a2"], user: o2 })
 
 var o3 = ObjectId();
 var me3 = ObjectId();
 db.users.insert({_id: o3, id: 3, email: "otero.florencia96@gmail.com", user_name: "flor"})
-db.mes.insert({_id: me3, id: 3, full_name: "Florencia Otero", phone: "33-3333-3333", biography: "...", address: "...", city: "bs as", postal_code: "2222", tags: ["a1", "a2"], user: o3 })
+db.mes.insert({_id: me3, id: 3, full_name: "Florencia Otero", phone: "33-3333-3333", biography: "...", address: "...", city: "bs as", postal_code: "2222", tags: ["a1", "ccc"], user: o3 })
 
 var o4 = ObjectId();
 var me4 = ObjectId();

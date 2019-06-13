@@ -4,9 +4,17 @@ const router = express.Router();
 const Mes = require('../models/mes');
 
 router.get('/', (req, res) => {
-  Mes.find()
+  const fullNameFilter = new RegExp(`.*${req.query.full_name || ''}.*`);
+  const filter = { full_name: { $regex: fullNameFilter, $options: 'i' } };
+  if (req.query.tags) {
+    filter.tags = { $in: req.query.tags.split(',') };
+  }
+  Mes.find(filter)
     .sort('full_name').select('-_id -__v')
-    .populate('user', '-_id -__v')
+    .populate({
+      path: 'user',
+      select: '-_id -__v'
+    })
     .then((result) => {
       res.status(200).json({ micro_entrepreneur: result });
     })
