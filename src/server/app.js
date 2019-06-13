@@ -48,6 +48,7 @@ app.use('/api/mes', require('./controllers/mes'));
 app.use('/api/users', require('./controllers/projects'));
 app.use('/api/projects', require('./controllers/projects'));
 app.use('/api/projects', require('./controllers/phase_tasks'));
+app.use('/api/projects', require('./controllers/postulants'));
 app.use('/api/auth', require('./controllers/auth'));
 
 mongoose.connect(urlDB);

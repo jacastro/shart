@@ -40,6 +40,7 @@ const ProjectSchema = new Schema({
   ],
   postulants: [
     {
+      id: { type: String, default: uuid.v1 },
       phase: String,
       task: String,
       status: String,
