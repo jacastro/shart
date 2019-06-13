@@ -62,8 +62,22 @@ router.get('/:user_id/projects/', (req, res) => {
 });
 
 router.get('/', (req, res) => {
-  Projects
-    .find({}, '-_id -__v -rating_sum -rating_count')
+
+  const nameFilter = new RegExp(`.*${req.query.name || ''}.*`);
+  const descFilter = new RegExp(`.*${req.query.description || ''}.*`);
+  const catFilter = new RegExp(`.*${req.query.category || ''}.*`);
+  const regionFilter = new RegExp(`.*${req.query.region || ''}.*`);
+  const filter = {
+    name: { $regex: nameFilter, $options: 'i' },
+    category: { $regex: catFilter, $options: 'i' },
+    region: { $regex: regionFilter, $options: 'i' },
+    description: { $regex: descFilter, $options: 'i' }
+  };
+  if (req.query.tags) {
+    filter.tags = { $in: req.query.tags.split(',') };
+  }
+
+  Projects.find(filter, '-_id -__v -rating_sum -rating_count')
     .populate('owner', '-_id -__v')
     .populate({
       path: 'project_leader',
