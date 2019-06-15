@@ -5,7 +5,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
-const urlDB = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/uade_sem2_shart';
+const urlDB = process.env.MONGODB_URI || 'mongodb://localhost:27017/uade_sem2_shart';
 const mongoose = require('mongoose');
 
 const port = process.env.PORT || 80;
@@ -69,6 +69,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(`${__dirname}../../../dist/index.html`));
 });
 
+console.log('Running on port: ', port);
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);
 });
