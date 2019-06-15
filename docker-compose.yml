@@ -13,3 +13,14 @@ services:
     ports:
       - 27017:27017
     command: mongod --smallfiles --logpath=/dev/null # --quiet
+
+  # uncomment to run backend on docker 
+  # shart:
+  #   build: .
+  #   container_name: "shart"
+  #   environment:
+  #     - MONGODB_URI=mongodb://mongodb:27017/uade_sem2_shart
+  #   volumes:
+  #     - ./src:/home/app/src
+  #   ports:
+  #     - 9999:9999
