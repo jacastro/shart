@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import uuid from 'uuid/v1';
 
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -49,6 +50,7 @@ const ModifyProjectPage = ({ data }) => {
   const { user } = useContext(AppContext);
   const [activeStep, setActiveStep] = useState(0);
   const [values, setValues] = useState({
+    id: uuid(),
     name: 'Mi nuevo proyecto',
     category: null,
     tags: [],

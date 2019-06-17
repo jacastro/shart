@@ -1,6 +1,7 @@
 /* eslint-disable import/no-cycle */
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { CookiesProvider, withCookies } from 'react-cookie';
 
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
@@ -17,6 +18,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import AppContext from './context';
 
+import SignInSide from './pages/login';
 import Home from './pages/home';
 import Profile from './pages/profile';
 import Projects from './pages/projects';
@@ -32,14 +34,23 @@ import { get } from './services';
 
 import './app.scss';
 
-export default class App extends Component {
-  state = {
-    user: null,
-    showLeftMenu: false,
-  };
+class App extends Component {
+  constructor(props) {
+    super(props);
+
+    const { cookies } = props;
+
+    this.state = {
+      userId: cookies.get('userId') || null,
+      user: null,
+      showLeftMenu: false,
+    };
+  }
 
   componentDidMount() {
-    get('/users/1')
+    const { userId } = this.state;
+    // cookies.set('userId', 'dksands', { path: '/' });
+    get(`/users/${userId}`)
       .then(({ data }) => {
         this.setState({ user: data });
       });
@@ -55,83 +66,96 @@ export default class App extends Component {
   };
 
   render() {
-    const { user, showLeftMenu } = this.state;
+    const { user, showLeftMenu, userId } = this.state;
+
+    if (userId == null) {
+      return (
+        <CookiesProvider>
+          <SignInSide />
+        </CookiesProvider>
+      );
+    }
+
     return (
-      <AppContext.Provider
-        value={{
-          ...this.state,
-          toggleDrawer: this.toggleDrawer,
-        }}
-      >
-        <Router>
-          <Drawer open={showLeftMenu} onClose={this.toggleDrawer(false)}>
-            <List className="left-menu">
-              <Link to="/" onClick={this.toggleDrawer(false)}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <HomeIcon color="primary" />
-                  </ListItemIcon>
-                  <ListItemText primary="Inicio" />
-                </ListItem>
-              </Link>
-              <Link to="/projects" onClick={this.toggleDrawer(false)}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <ViewModuleIcon color="primary" />
-                  </ListItemIcon>
-                  <ListItemText primary="Proyectos" />
-                </ListItem>
-              </Link>
-              <Divider />
-              <Link to="/me" onClick={this.toggleDrawer(false)}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <AccountCircleIcon color="secondary" />
-                  </ListItemIcon>
-                  <ListItemText primary="Mi perfil" />
-                </ListItem>
-              </Link>
-              <Link to="/me/projects" onClick={this.toggleDrawer(false)}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <WorkIcon color="secondary" />
-                  </ListItemIcon>
-                  <ListItemText primary="Mis proyectos" />
-                </ListItem>
-              </Link>
-              <Divider />
-              <Link to="/me/projects/create" onClick={this.toggleDrawer(false)}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <AddCircleIcon color="action" />
-                  </ListItemIcon>
-                  <ListItemText primary="Crear Proyecto" />
-                </ListItem>
-              </Link>
-            </List>
-          </Drawer>
-          <div role="presentation" onClick={this.toggleDrawer(false)} onKeyDown={this.toggleDrawer(false)}>
-            <Header />
-            <main className="main">
-              {user != null ? (
-                <React.Fragment>
-                  <Route path="/" component={Home} exact />
-                  <Route path="/me" component={Profile} exact />
-                  <Route path="/me/projects" component={ProjectOfUser} exact />
-                  <Route path="/me/projects/create" component={CreateProject} exact />
-                  <Route path="/me/projects/modify/:id" component={EditProjectPage} exact />
-                  <Route path="/profile/:id" component={Profile} exact />
-                  <Route path="/profile/:id/projects" component={ProjectOfUser} exact />
-                  <Route path="/projects" component={Projects} exact />
-                  <Route path="/projects/:id" component={Project} exact />
-                  <Route path="/projects/:id/tasks" component={ProjectTasks} exact />
-                  <Route path="/search/:type/:id" component={Projects} exact />
-                </React.Fragment>
-              ) : <CircularProgress />}
-            </main>
-          </div>
-        </Router>
-      </AppContext.Provider>
+      <CookiesProvider>
+        <AppContext.Provider
+          value={{
+            ...this.state,
+            toggleDrawer: this.toggleDrawer,
+          }}
+        >
+          <Router>
+            <Drawer open={showLeftMenu} onClose={this.toggleDrawer(false)}>
+              <List className="left-menu">
+                <Link to="/" onClick={this.toggleDrawer(false)}>
+                  <ListItem button>
+                    <ListItemIcon>
+                      <HomeIcon color="primary" />
+                    </ListItemIcon>
+                    <ListItemText primary="Inicio" />
+                  </ListItem>
+                </Link>
+                <Link to="/projects" onClick={this.toggleDrawer(false)}>
+                  <ListItem button>
+                    <ListItemIcon>
+                      <ViewModuleIcon color="primary" />
+                    </ListItemIcon>
+                    <ListItemText primary="Proyectos" />
+                  </ListItem>
+                </Link>
+                <Divider />
+                <Link to="/me" onClick={this.toggleDrawer(false)}>
+                  <ListItem button>
+                    <ListItemIcon>
+                      <AccountCircleIcon color="secondary" />
+                    </ListItemIcon>
+                    <ListItemText primary="Mi perfil" />
+                  </ListItem>
+                </Link>
+                <Link to="/me/projects" onClick={this.toggleDrawer(false)}>
+                  <ListItem button>
+                    <ListItemIcon>
+                      <WorkIcon color="secondary" />
+                    </ListItemIcon>
+                    <ListItemText primary="Mis proyectos" />
+                  </ListItem>
+                </Link>
+                <Divider />
+                <Link to="/me/projects/create" onClick={this.toggleDrawer(false)}>
+                  <ListItem button>
+                    <ListItemIcon>
+                      <AddCircleIcon color="action" />
+                    </ListItemIcon>
+                    <ListItemText primary="Crear Proyecto" />
+                  </ListItem>
+                </Link>
+              </List>
+            </Drawer>
+            <div role="presentation" onClick={this.toggleDrawer(false)} onKeyDown={this.toggleDrawer(false)}>
+              <Header />
+              <main className="main">
+                {user != null ? (
+                  <React.Fragment>
+                    <Route path="/" component={Home} exact />
+                    <Route path="/me" component={Profile} exact />
+                    <Route path="/me/projects" component={ProjectOfUser} exact />
+                    <Route path="/me/projects/create" component={CreateProject} exact />
+                    <Route path="/me/projects/modify/:id" component={EditProjectPage} exact />
+                    <Route path="/profile/:id" component={Profile} exact />
+                    <Route path="/profile/:id/projects" component={ProjectOfUser} exact />
+                    <Route path="/projects" component={Projects} exact />
+                    <Route path="/projects/:id" component={Project} exact />
+                    <Route path="/projects/:id/tasks" component={ProjectTasks} exact />
+                    <Route path="/search/:type/:id" component={Projects} exact />
+                  </React.Fragment>
+                ) : <CircularProgress />}
+              </main>
+            </div>
+          </Router>
+        </AppContext.Provider>
+      </CookiesProvider>
     );
   }
 }
+
+export default withCookies(App);

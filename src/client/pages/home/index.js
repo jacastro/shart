@@ -49,7 +49,7 @@ class Home extends React.Component {
               </Button>
             </Typography>
             {projects == null ? <CircularProgress /> : (
-              <GridList cols={2.5}>
+              <GridList cols={3}>
                 {projects.map(project => (
                   <GridListTile key={project.id}>
                     <img src={project.images[0]} alt={project.name} />
@@ -70,7 +70,7 @@ class Home extends React.Component {
           <Container className="home-projects">
             <Typography variant="h2" gutterBottom>Recomendados para vos</Typography>
             {projects == null ? <CircularProgress /> : (
-              <GridList cols={2.5}>
+              <GridList cols={3}>
                 {projects.map(project => (
                   <GridListTile key={project.id}>
                     <img src={project.images[0]} alt={project.name} />
@@ -91,7 +91,7 @@ class Home extends React.Component {
           <Container className="home-projects">
             <Typography variant="h2" gutterBottom>Tendencias</Typography>
             {projects == null ? <CircularProgress /> : (
-              <GridList cols={2.5}>
+              <GridList cols={3}>
                 {projects.map(project => (
                   <GridListTile key={project.id}>
                     <img src={project.images[0]} alt={project.name} />
@@ -112,7 +112,7 @@ class Home extends React.Component {
           <Container className="home-projects">
             <Typography variant="h2" gutterBottom>Recién salidos del horno</Typography>
             {projects == null ? <CircularProgress /> : (
-              <GridList cols={2.5}>
+              <GridList cols={3}>
                 {projects.map(project => (
                   <GridListTile key={project.id}>
                     <img src={project.images[0]} alt={project.name} />
@@ -133,7 +133,7 @@ class Home extends React.Component {
           <Container className="home-projects">
             <Typography variant="h2" gutterBottom>Anteriores</Typography>
             {projects == null ? <CircularProgress /> : (
-              <GridList cols={2.5}>
+              <GridList cols={3}>
                 {projects.map(project => (
                   <GridListTile key={project.id}>
                     <img src={project.images[0]} alt={project.name} />
