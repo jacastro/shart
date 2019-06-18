@@ -13,10 +13,8 @@ import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined'
 import { FormContext, } from '.';
 import Subtitle from '../../components/subtitle';
 
-const StatusStep = () => {
-  const { values, handleChangeValue } = useContext(FormContext);
-
-  console.log(values);
+const TasksStep = () => {
+  const { values, handleChange, handleChangeValue } = useContext(FormContext);
 
   const handleChangeTask = (phaseIndex, taskIndex) => (event) => {
     const { tasks } = values.phases[phaseIndex];
@@ -43,9 +41,25 @@ const StatusStep = () => {
 
   return (
     <div style={{ textAlign: 'left' }}>
+      <Subtitle title="Sobre el estado actual" />
+      <TextField
+        select
+        label="¿En qué etapa se encuentra tu proyecto?"
+        value={values.current_phase}
+        onChange={handleChange('current_phase')}
+        margin="normal"
+        variant="outlined"
+        style={{ width: '48%' }}
+      >
+        {values.phases.map(({ id, name }) => (
+          <MenuItem key={id} value={id}>
+            {name}
+          </MenuItem>
+        ))}
+      </TextField>
       {phasesToShow.map((phase, phaseIndex) => (
         <React.Fragment>
-          <Subtitle title={phase.name} />
+          <Subtitle title={`Fase: ${phase.name}`} />
           {phase.tasks.map((task, taskIndex) => (
             <TextField
               label={`Descripción de la tarea Nº${taskIndex + 1} de ${phase.name}`}
@@ -78,4 +92,4 @@ const StatusStep = () => {
   );
 };
 
-export default StatusStep;
+export default TasksStep;

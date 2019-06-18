@@ -62,22 +62,7 @@ const StatusStep = () => {
         )}
       </Grid>
       <Grid container justify="space-between">
-        <Subtitle title="Sobre el estado actual" />
-        <TextField
-          select
-          label="¿En qué etapa se encuentra tu proyecto?"
-          value={values.current_phase}
-          onChange={handleChange('current_phase')}
-          margin="normal"
-          variant="outlined"
-          style={{ width: '48%' }}
-        >
-          {values.phases.map(({ id, name }) => (
-            <MenuItem key={id} value={id}>
-              {name}
-            </MenuItem>
-          ))}
-        </TextField>
+        <Subtitle title="Sobre tus colaboradores" />
         <FormControlLabel
           style={{ width: '48%' }}
           control={(
