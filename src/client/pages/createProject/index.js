@@ -83,7 +83,7 @@ const ModifyProjectPage = ({ data }) => {
     current_phase_num: null,
     current_phase: 'init',
     region: 'bsas',
-    phases: data ? undefined : phases.map(phase => ({ ...phase, tasks: [] })),
+    phases: phases.map(phase => ({ ...phase, tasks: [] })),
     ...data,
   });
 
