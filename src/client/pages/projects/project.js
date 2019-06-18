@@ -1,6 +1,5 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import keyIndex from 'react-key-index';
 import Moment from 'react-moment';
 import 'moment-timezone';
 
@@ -26,6 +25,8 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import EditIcon from '@material-ui/icons/Edit';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -56,9 +57,11 @@ class Project extends React.Component {
   }
 
   componentDidMount() {
+    const { user } = this.context;
     get(`/projects/${this.props.match.params.id}`)
-      .then(response => this.setState({ 
+      .then(response => this.setState({
         project: response.data,
+        isMyProject: response.data.owner.id === user.id,
         images: response.data.images.map(image => ({
           url: image,
           col: Math.floor(Math.random() * 3) + 1,
@@ -71,16 +74,26 @@ class Project extends React.Component {
   }
 
   render() {
-    const { project, images } = this.state;
+    const { project, images, isMyProject } = this.state;
 
     return (
       <React.Fragment>
         {project == null ? <CircularProgress /> : (
           <Card className="card-project">
             <CardHeader
+              action={isMyProject && [
+                <Link to={`/me/projects/modify/${project.id}`}>
+                  <IconButton aria-label="Edit">
+                    <EditIcon />
+                  </IconButton>
+                </Link>,
+                <IconButton aria-label="Delete">
+                  <DeleteForeverIcon />
+                </IconButton>
+              ]}
               title={project.name}
               subheader={
-                <Link to={`/users/${project.owner.id}`}>{`Creado por @${project.owner.user_name}`}</Link>
+                <Link to={`/profile/${project.owner.id}`}>{`Creado por @${project.owner.user_name}`}</Link>
             }
             />
             {project.images.length > 0
@@ -198,23 +211,27 @@ class Project extends React.Component {
                 <Grid item xs={12} />
               </Grid>
             </CardContent>
-            <Divider variant="middle" />
-            <CardActions>
-              <IconButton className="card-project-action" aria-label="Add to favorites">
-                <FavoriteIcon />
-              </IconButton>
-              <IconButton className="card-project-action" aria-label="Compartir">
-                <ShareIcon />
-              </IconButton>
-              {project.need_collaborations
-              && (
-                <Button href="#" className="card-project-apply" color="primary" variant="outlined">
-                  <AddCircleIcon />
-                  Postularme
-                </Button>
-              )
-              }
-            </CardActions>
+            {!isMyProject && (
+              <React.Fragment>
+                <Divider variant="middle" />
+                <CardActions>
+                  <IconButton className="card-project-action" aria-label="Add to favorites">
+                    <FavoriteIcon />
+                  </IconButton>
+                  <IconButton className="card-project-action" aria-label="Compartir">
+                    <ShareIcon />
+                  </IconButton>
+                  {project.need_collaborations
+                  && (
+                    <Button href="#" className="card-project-apply" color="primary" variant="outlined">
+                      <AddCircleIcon />
+                      Postularme
+                    </Button>
+                  )
+                  }
+                </CardActions>
+              </React.Fragment>
+            )}
           </Card>
         )}
       </React.Fragment>

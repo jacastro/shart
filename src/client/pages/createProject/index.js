@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-import { post } from '../../services';
+import { post, put } from '../../services';
 
 import { phases } from '../../../config';
 
@@ -21,7 +21,7 @@ import TaskStep from './taskStep';
 
 import './createProject.scss';
 
-const steps = [
+const stepsCreate = [
   {
     title: 'Sobre tu proyecto',
     content: <ConfigStep />,
@@ -35,6 +35,25 @@ const steps = [
     title: 'Configurar Tareas',
     content: <TaskStep />,
     nextText: 'Crear proyecto'
+  },
+  {
+    title: 'Finalizar',
+    action: 'create',
+    content: <LinearProgress />,
+    disableNext: true
+  }
+];
+
+const stepsEdit = [
+  {
+    title: 'Sobre tu proyecto',
+    content: <ConfigStep />,
+    disableBack: true,
+  },
+  {
+    title: 'Estado',
+    content: <StatusStep />,
+    nextText: 'Guardar cambios'
   },
   {
     title: 'Finalizar',
@@ -68,6 +87,7 @@ const ModifyProjectPage = ({ data }) => {
     ...data,
   });
 
+  const steps = data ? stepsEdit : stepsCreate;
   const stepData = steps[activeStep];
 
   const handleChange = name => (event) => {
@@ -94,8 +114,17 @@ const ModifyProjectPage = ({ data }) => {
     setActiveStep((prevActiveStep) => {
       const newStep = prevActiveStep + 1;
       const { action } = steps[newStep] || {};
-      if (action === 'save') {
+      if (action === 'create') {
         post(`/users/${user.id}/projects`, values)
+          .then(() => {
+            handleNext();
+          })
+          .catch((error) => {
+            console.log(error.response);
+            handleReset();
+          });
+      } else if (action === 'save') {
+        put(`/projects/${data.id}`, values)
           .then(() => {
             handleNext();
           })
@@ -125,7 +154,7 @@ const ModifyProjectPage = ({ data }) => {
         {activeStep >= steps.length ? (
           <div>
             <Typography variant="h4" gutterBottom>
-              ¡Tu proyecto ha sido creado correctamente!
+              {data ? '¡Tus cambios fueron guardados!' : '¡Tu proyecto ha sido creado correctamente!'}
             </Typography>
             <Link to="/me/projects">
               <Button variant="contained" color="primary">
