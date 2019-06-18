@@ -37,11 +37,16 @@ import ViewListIcon from '@material-ui/icons/ViewList';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 import Typography from '@material-ui/core/Typography';
 import AppContext from '../../context';
 
-import { get } from '../../services';
+import { get, del } from '../../services';
 
 import { phases } from '../../../config';
 
@@ -49,10 +54,12 @@ class Project extends React.Component {
   constructor(props) {
     super(props);
     this.toggle = this.toggle.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
     this.state = {
       project: null,
       open: false,
       images: [],
+      openDialog: false,
     };
   }
 
@@ -73,8 +80,22 @@ class Project extends React.Component {
     this.setState({ open: !this.state.open });
   }
 
+  handleDelete() {
+    const { history, match } = this.props;
+    const project = { ...this.state.project };
+    this.setState({ project: null, openDialog: false });
+    del(`/projects/${match.params.id}`)
+      .then(() => {
+        history.replace('/me/projects');
+      })
+      .catch((error) => {
+        console.log(error.response);
+        this.setState({ project });
+      });
+  }
+
   render() {
-    const { project, images, isMyProject } = this.state;
+    const { project, images, isMyProject, openDialog } = this.state;
 
     return (
       <React.Fragment>
@@ -87,7 +108,7 @@ class Project extends React.Component {
                     <EditIcon />
                   </IconButton>
                 </Link>,
-                <IconButton aria-label="Delete">
+                <IconButton aria-label="Delete" onClick={() => this.setState({ openDialog: true })}>
                   <DeleteForeverIcon />
                 </IconButton>
               ]}
@@ -234,6 +255,27 @@ class Project extends React.Component {
             )}
           </Card>
         )}
+        <Dialog
+          open={openDialog}
+          onClose={() => this.setState({ openDialog: false })}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">¿Estás seguro que deseas borrar el proyecto?</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Esta acción no puede deshacerse.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.setState({ openDialog: false })} variant="contained" color="primary" autoFocus>
+              Cancelar
+            </Button>
+            <Button onClick={this.handleDelete} variant="contained" autoFocus>
+              Borrar
+            </Button>
+          </DialogActions>
+        </Dialog>
       </React.Fragment>
     );
   }
