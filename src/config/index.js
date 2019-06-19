@@ -74,3 +74,8 @@ export const tags = [
     label: 'Diversión',
   },
 ];
+
+export const getTagName = (value) => {
+  const myTag = tags.find(tag => tag.value === value);
+  return myTag ? myTag.label : value;
+};
