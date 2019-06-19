@@ -1,7 +1,10 @@
 const express = require('express');
 
 const router = express.Router();
+// eslint-disable-next-line no-unused-vars
 const Users = require('../models/users');
+
+
 const FullContact = require('../helpers/fullContact');
 
 router.get('/', (req, res) => {
@@ -11,7 +14,10 @@ router.get('/', (req, res) => {
   Users.find({
     email: { $regex: emailFilter, $options: 'i' },
     user_name: { $regex: userNameFilter, $options: 'i' }
-  }).sort('user_name').select('-_id -__v')
+  }).populate('me')
+    .populate('client')
+    .sort('user_name')
+    // .select('-_id -__v')
     .then((result) => {
       res.status(200).json({ users: result });
     })
@@ -22,8 +28,9 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
   Users.findOne({ id: req.params.id })
-    .select('-_id -__v')
-    .populate('user', '-_id -__v')
+    // .select('-_id -__v')
+    .populate('me')
+    .populate('client')
     .then((result) => {
       if (result) {
         res.status(200).json(result);
