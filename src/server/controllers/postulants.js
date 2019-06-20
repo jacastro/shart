@@ -6,6 +6,7 @@ const express = require('express');
 const router = express.Router();
 const Projects = require('../models/projects');
 const Mes = require('../models/mes');
+const Users = require('../models/users');
 
 router.post('/:project_id/postulant', (req, res) => {
   if (!req.params.project_id) {
@@ -168,6 +169,87 @@ router.post('/:project_id/postulants/:postulant_id/accept', (req, res) => {
               res.status(500).json({ message: 'Something went wrong', error: err.message });
             });
         });
+    });
+});
+
+// / Get all the projects that I'm postulated to
+router.get('/postulants/:user_id', (req, res) => {
+  if (!req.params.user_id) {
+    res.status(404).json({ errors: 'user not found' });
+    return;
+  }
+
+  Users.findOne({ id: req.params.user_id })
+    .populate({
+      path: 'postulants.collaborator',
+      select: '-_id -__v',
+      populate: [{
+        path: 'user',
+        select: '-_id -__v'
+      }]
+    })
+    .then((user) => {
+      if (!user || !user._id) {
+        res.status(404).json({ errors: 'user not found' });
+        return;
+      }
+
+      const nameFilter = new RegExp(`.*${req.query.name || ''}.*`);
+      const descFilter = new RegExp(`.*${req.query.description || ''}.*`);
+      const catFilter = new RegExp(`.*${req.query.category || ''}.*`);
+      const regionFilter = new RegExp(`.*${req.query.region || ''}.*`);
+      const filter = {
+        'postulants.collaborator': user.collaborator,
+        name: { $regex: nameFilter, $options: 'i' },
+        category: { $regex: catFilter, $options: 'i' },
+        region: { $regex: regionFilter, $options: 'i' },
+        description: { $regex: descFilter, $options: 'i' }
+      };
+      if (req.query.tags) {
+        filter.tags = { $in: req.query.tags.split(',') };
+      }
+      if (req.query.only_need_collaboration) {
+        filter.need_collaborations = true;
+        filter.finished = false;
+        filter['phases.tasks.collaborator'] = null;
+      }
+
+      Projects.find(filter, '-_id -__v -rating_sum -rating_count')
+        .populate('owner', '-_id -__v')
+        .populate({
+          path: 'project_leader',
+          select: '-_id -__v',
+          populate: [{
+            path: 'user',
+            select: '-_id -__v'
+          }]
+        })
+        .populate({
+          path: 'phases.tasks.collaborator',
+          select: '-_id -__v',
+          populate: [{
+            path: 'user',
+            select: '-_id -__v',
+          }]
+        })
+        .populate({
+          path: 'postulants.collaborator',
+          select: '-_id -__v',
+          populate: [{
+            path: 'user',
+            select: '-_id -__v'
+          }]
+        })
+
+        .then((projects) => {
+          res.status(200).json({ projects });
+        })
+        .catch((err) => {
+          res.status(500).json({ message: 'Something went wrong', error: err });
+        });
+    })
+    .catch((err) => {
+      res.status(500).json({ message: 'Something went wrong', error: err });
     });
 });
 

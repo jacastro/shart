@@ -13,6 +13,7 @@ const ProjectSchema = new Schema({
   end_date: Date,
   images: [String],
   need_collaborations: { type: Boolean, required: true },
+  finished: { type: Boolean, required: true },
   project_leader: { type: Schema.Types.ObjectId, ref: 'Me' },
   owner: { type: Schema.Types.ObjectId, ref: 'User' },
   promoted_level: String,
