@@ -93,11 +93,11 @@ db.projects.insert({
   view_counts: 1,
   phases: [
     {
-      id: 'bce337ee-048b-45db-ac80-046109dc5ccf',
+      id: 'design',
       name: 'Diseño',
       tasks: [
         {
-          id: 'd0d15c19-045e-4a74-9f5e-5c2cdb4af085',
+          id: 'develop',
           name: 'Desarrollo',
           status: 'in_progress',
           collaborator: me2
@@ -139,7 +139,13 @@ db.projects.insert({
   require_shipping: false,
   shipping_address: '',
   tags: ['green', 'trees', 'weedings'],
-  view_counts: 1
+  view_counts: 1,
+  phases: [
+        {
+            id: "design",
+            name: "design"
+        }
+    ]
 })
 
 ```

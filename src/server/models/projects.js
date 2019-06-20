@@ -42,7 +42,8 @@ const ProjectSchema = new Schema({
     {
       id: { type: String, default: uuid.v1 },
       phase: String,
-      task: String,
+      task_id: String,
+      task_name: String,
       status: String,
       collaborator: { type: Schema.Types.ObjectId, ref: 'Me' }
     }
