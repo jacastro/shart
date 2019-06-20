@@ -36,6 +36,11 @@ router.get('/:user_id/projects/', (req, res) => {
       if (req.query.tags) {
         filter.tags = { $in: req.query.tags.split(',') };
       }
+      if (req.query.only_need_collaboration) {
+        filter.need_collaborations = true;
+        filter.finished = false;
+        filter['phases.tasks.collaborator'] = null;
+      }
 
       Projects.find(filter, '-_id -__v -rating_sum -rating_count')
         .populate('owner', '-_id -__v')
