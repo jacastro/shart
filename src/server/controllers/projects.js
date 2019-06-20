@@ -90,6 +90,11 @@ router.get('/', (req, res) => {
   if (req.query.tags) {
     filter.tags = { $in: req.query.tags.split(',') };
   }
+  if (req.query.only_need_collaboration) {
+    filter.need_collaborations = true;
+    filter.finished = false;
+    filter['phases.tasks.collaborator'] = null;
+  }
 
   Projects.find(filter, '-_id -__v -rating_sum -rating_count')
     .populate('owner', '-_id -__v')
@@ -210,7 +215,7 @@ router.put('/:id', (req, res) => {
   const permittedParams = [
     'name', 'description', 'category', 'current_phase', 'start_date', 'end_date', 'images',
     'need_collaborations', 'promoted_level', 'region', 'require_shipping',
-    'shipping_address', 'tags', 'collaborations', 'phases'
+    'shipping_address', 'tags', 'collaborations', 'phases', 'finished'
   ];
   Projects.findOne({ id: req.params.id })
     .then((project) => {

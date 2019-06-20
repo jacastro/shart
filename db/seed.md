@@ -82,6 +82,7 @@ db.projects.insert({
   end_date: new Date('2019-07-18'),
   images: ['https://i.ebayimg.com/images/g/ud8AAOSwDFBaF3cU/s-l300.jpg'],
   need_collaborations: true,
+  finished: false,
   project_leader: me1,
   owner: o1,
   promoted_level: '',
@@ -131,6 +132,7 @@ db.projects.insert({
   end_date: new Date('2019-05-18'),
   images: ['https://www.bonsaiempire.es/great-bonsai-album/acer-bonsai-pall.jpg'],
   need_collaborations: false,
+  finished: false,
   project_leader: me4,
   owner: o4,
   promoted_level: '',
@@ -148,4 +150,5 @@ db.projects.insert({
     ]
 })
 
+db.projects.updateMany({}, { $set: { need_collaborations: true }})
 ```
