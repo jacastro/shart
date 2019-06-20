@@ -129,16 +129,13 @@ router.post('/:project_id/postulants/:postulant_id/accept', (req, res) => {
         return;
       }
 
+      console.log(phase);
 
-      Projects.update({
+      Projects.updateOne({
         _id: project._id,
-        'postulants.id': req.params.postulant_id,
-        'phases.id': phase.id,
+        'phases.id': postulant.phase,
       },
       {
-        $pull: {
-          postulants: postulant
-        },
         $push: {
           'phases.$.tasks': {
             id: postulant.task_id,
@@ -149,16 +146,27 @@ router.post('/:project_id/postulants/:postulant_id/accept', (req, res) => {
         }
       })
         .then(() => {
-          Projects.findOne({ _id: project._id })
-            .then((newProject) => {
-              res.status(200).json(newProject);
+          Projects.updateOne({
+            _id: project._id,
+            'postulants.id': req.params.postulant_id,
+          },
+          {
+            $pull: {
+              postulants: postulant
+            }
+          })
+            .then(() => {
+              Projects.findOne({ _id: project._id })
+                .then((newProject) => {
+                  res.status(200).json(newProject);
+                })
+                .catch((err) => {
+                  res.status(500).json({ message: 'Something went wrong', error: err.message });
+                });
             })
             .catch((err) => {
               res.status(500).json({ message: 'Something went wrong', error: err.message });
             });
-        })
-        .catch((err) => {
-          res.status(500).json({ message: 'Something went wrong', error: err.message });
         });
     });
 });
