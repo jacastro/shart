@@ -81,6 +81,80 @@ router.get('/:user_id/projects/', (req, res) => {
     });
 });
 
+// Get all projects I'm working on /api/users/:user_id/working-projects
+router.get('/:user_id/working-projects/', (req, res) => {
+  if (!req.params.user_id) {
+    res.status(404).json({ errors: 'user not found' });
+    return;
+  }
+
+  Users.findOne({ id: req.params.user_id })
+    .populate('me')
+    .then((user) => {
+      if (!user) {
+        res.status(404).json({ errors: 'user not found' });
+        return;
+      }
+      if (!user.me) {
+        res.status(404).json({ errors: 'user is not ME' });
+        return;
+      }
+
+      const nameFilter = new RegExp(`.*${req.query.name || ''}.*`);
+      const descFilter = new RegExp(`.*${req.query.description || ''}.*`);
+      const catFilter = new RegExp(`.*${req.query.category || ''}.*`);
+      const regionFilter = new RegExp(`.*${req.query.region || ''}.*`);
+      const filter = {
+        'phases.tasks.collaborator': user.me,
+        name: { $regex: nameFilter, $options: 'i' },
+        category: { $regex: catFilter, $options: 'i' },
+        region: { $regex: regionFilter, $options: 'i' },
+        description: { $regex: descFilter, $options: 'i' },
+        finished: false
+      };
+      if (req.query.tags) {
+        filter.tags = { $in: req.query.tags.split(',') };
+      }
+
+      Projects.find(filter, '-_id -__v -rating_sum -rating_count')
+        .populate('owner', '-_id -__v')
+        .populate({
+          path: 'project_leader',
+          select: '-_id -__v',
+          populate: [{
+            path: 'user',
+            select: '-_id -__v'
+          }]
+        })
+        .populate({
+          path: 'phases.tasks.collaborator',
+          select: '-_id -__v',
+          populate: [{
+            path: 'user',
+            select: '-_id -__v',
+          }]
+        })
+        .populate({
+          path: 'postulants.collaborator',
+          select: '-_id -__v',
+          populate: [{
+            path: 'user',
+            select: '-_id -__v'
+          }]
+        })
+
+        .then((projects) => {
+          res.status(200).json({ projects });
+        })
+        .catch((err) => {
+          res.status(500).json({ message: 'Something went wrong', error: err });
+        });
+    })
+    .catch((err) => {
+      res.status(500).json({ message: 'Something went wrong', error: err });
+    });
+});
+
 router.get('/', (req, res) => {
   const nameFilter = new RegExp(`.*${req.query.name || ''}.*`);
   const descFilter = new RegExp(`.*${req.query.description || ''}.*`);
