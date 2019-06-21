@@ -50,6 +50,7 @@ app.use('/api/projects', require('./controllers/projects'));
 app.use('/api/projects', require('./controllers/phase_tasks'));
 app.use('/api/projects', require('./controllers/postulants'));
 app.use('/api/auth', require('./controllers/auth'));
+app.use('/api/tags', require('./controllers/tags'));
 
 mongoose.connect(urlDB);
 
