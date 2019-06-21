@@ -18,3 +18,14 @@
 .tags {
   margin: -6px 0;
 }
+
+.multiselect {
+  &-label {
+    transform: translate(14px, -6px) scale(0.75) !important;
+    background: #fff;
+  }
+  
+  > div {
+    min-height: 56px;
+  }
+}
