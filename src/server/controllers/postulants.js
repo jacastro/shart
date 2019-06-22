@@ -14,11 +14,9 @@ router.post('/:project_id/postulant', (req, res) => {
     return;
   }
 
-  ['collaborator_id', 'task_id', 'task_name', 'phase'].forEach((attr) => {
+  ['collaborator_id', 'task_id', 'phase'].forEach((attr) => {
     if (!req.body[attr]) {
       res.status(404).json({ errors: `${attr} is required` });
-      // eslint-disable-next-line no-useless-return
-      return;
     }
   });
 
@@ -122,52 +120,39 @@ router.post('/:project_id/postulants/:postulant_id/accept', (req, res) => {
         res.status(404).json({ errors: 'project / postulant not found' });
         return;
       }
-
-      const postulant = project.postulants.filter(p => p.id === req.params.postulant_id)[0];
-      const phase = project.phases.filter(p => p.id === postulant.phase);
-      if (!phase) {
-        res.status(404).json({ errors: 'phase not found' });
-        return;
+      const postulantIndex = project.postulants.findIndex(p => p.id === req.params.postulant_id);
+      const postulant = project.postulants[postulantIndex];
+      if (!postulant) {
+        res.status(404).json({ errors: 'postulant not found' });
+      }
+      if (!postulant.collaborator) {
+        res.status(404).json({ errors: `postulant ${postulant.id} doesn't has collaborator set` });
       }
 
-      console.log(phase);
+      const phaseIndex = project.phases.findIndex(p => p.id === postulant.phase);
+      const phase = project.phases[phaseIndex];
+      if (!phase) {
+        res.status(404).json({ errors: `phase ${postulant.phase} not found` });
+        return;
+      }
+      const taskIndex = phase.tasks.findIndex(t => t.id === postulant.task_id);
+      const task = phase.tasks[taskIndex];
+      if (!task) {
+        res.status(404).json({ errors: `task ${postulant.task_id} not found` });
+      }
 
-      Projects.updateOne({
-        _id: project._id,
-        'phases.id': postulant.phase,
-      },
-      {
-        $push: {
-          'phases.$.tasks': {
-            id: postulant.task_id,
-            name: postulant.task_name,
-            status: postulant.status,
-            collaborator: postulant.collaborator
-          }
-        }
+      project.phases[phaseIndex].tasks[taskIndex].collaborator = postulant.collaborator;
+      project.postulants.splice(postulantIndex, 1);
+
+      Projects.updateOne({ _id: project._id }, {
+        phases: project.phases,
+        postulants: project.postulants
       })
         .then(() => {
-          Projects.updateOne({
-            _id: project._id,
-            'postulants.id': req.params.postulant_id,
-          },
-          {
-            $pull: {
-              postulants: postulant
-            }
-          })
-            .then(() => {
-              Projects.findOne({ _id: project._id })
-                .then((newProject) => {
-                  res.status(200).json(newProject);
-                })
-                .catch((err) => {
-                  res.status(500).json({ message: 'Something went wrong', error: err.message });
-                });
-            })
-            .catch((err) => {
-              res.status(500).json({ message: 'Something went wrong', error: err.message });
-            });
+          res.status(200).json(project);
+        })
+        .catch((err) => {
+          res.status(500).json({ message: 'Something went wrong', error: err.message });
         });
     });
 });
