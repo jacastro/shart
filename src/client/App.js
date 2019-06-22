@@ -44,6 +44,7 @@ class App extends Component {
       userId: cookies.get('userId') || null,
       user: null,
       showLeftMenu: false,
+      me: null,
     };
   }
 
@@ -52,7 +53,7 @@ class App extends Component {
     // cookies.set('userId', 'dksands', { path: '/' });
     get(`/users/${userId}`)
       .then(({ data }) => {
-        this.setState({ user: data });
+        this.setState({ user: data, me: data.me || {} });
       });
   }
 

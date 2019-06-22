@@ -7,15 +7,9 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
+import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
-import ArrowBack from '@material-ui/icons/ArrowBack';
-import ArrowForward from '@material-ui/icons/ArrowForward';
-import CheckCircle from '@material-ui/icons/CheckCircle';
-import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -27,9 +21,22 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
-import { phases, statuses } from '../../../config';
+import AddIcon from '@material-ui/icons/Add';
+import ArrowBack from '@material-ui/icons/ArrowBack';
+import ArrowForward from '@material-ui/icons/ArrowForward';
+import CheckCircle from '@material-ui/icons/CheckCircle';
+import PersonIcon from '@material-ui/icons/Person';
+import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
-import { get, post, put } from '../../services';
+import { phases, statuses } from '../../../config';
+import { getAcronym } from '../../../utils/users';
+import ProjectUtils from '../../../utils/projects';
+
+import { get, post, put, del } from '../../services';
+
+import AppContext from '../../context';
 
 import './styles.scss';
 
@@ -46,19 +53,23 @@ export default class ProjectTasks extends React.Component {
       selectedTaskId: 0,
       taskName: null,
       phaseName: null,
+      isMyProject: null,
     };
     this.handleClose = this.handleClose.bind(this);
     this.handleChangeTaskName = this.handleChangeTaskName.bind(this);
     this.handleChangePhaseName = this.handleChangePhaseName.bind(this);
     this.handleCreateTask = this.handleCreateTask.bind(this);
     this.handleCreatePhase = this.handleCreatePhase.bind(this);
-    this.handleModifyTask = this.handleModifyTask.bind(this);
+    this.handleModifyTaskName = this.handleModifyTaskName.bind(this);
+    this.handleRemoveTaskCollaborator = this.handleRemoveTaskCollaborator.bind(this);
   }
 
   componentDidMount() {
     const { match } = this.props;
+    const { user = {} } = this.context;
     get(`/projects/${match.params.id}`)
       .then(({ data: project }) => {
+        const isMyProject = project.owner.id === user.id;
         if (project.phases.length === 0) {
           const projectPhases = phases.map(phase => ({ ...phase, tasks: [] }));
           put(`/projects/${project.id}`, { phases: projectPhases })
@@ -67,11 +78,12 @@ export default class ProjectTasks extends React.Component {
                 project: {
                   ...project,
                   phases: projectPhases,
-                }
+                },
+                isMyProject,
               });
             });
         } else {
-          this.setState({ project });
+          this.setState({ project, isMyProject });
         }
       });
   }
@@ -80,13 +92,50 @@ export default class ProjectTasks extends React.Component {
     this.setState({ dialogCreateOpen: true, selectedPhaseId, selectedStatusId });
   }
 
-  handleClickModifyOpen(selectedPhaseId, selectedTaskId) {
-    const { project } = this.state;
+  handleClickTask(selectedPhaseId, selectedTaskId) {
+    const { project, isMyProject } = this.state;
+    const { user = {}, me = {} } = this.context;
 
     const phaseData = project.phases[selectedPhaseId];
     const taskData = phaseData.tasks[selectedTaskId];
 
-    this.setState({ dialogModifyOpen: true, taskName: taskData.name, selectedPhaseId, selectedTaskId });
+    console.log(user);
+
+    if (isMyProject) {
+      return this.setState({ dialogModifyOpen: true, taskName: taskData.name, selectedPhaseId, selectedTaskId });
+    }
+
+    if (taskData.collaborator) {
+      return alert('No puedes postularte porque esta tarea ya tiene un colaborador designado.');
+    }
+
+    if (taskData.status !== 'todo') {
+      return alert('No puedes postularte porque esta tarea ya está en progreso');
+    }
+
+    if (!project.need_collaborations) {
+      return alert('No puedes postularte porque este proyecto no admite colaboradores');
+    }
+
+    const postulant = ProjectUtils.wasPostuled(project, me.id, phaseData.id, taskData.id);
+    if (postulant) {
+      project.postulants = project.postulants.filter(aPostulant => aPostulant.id !== postulant.id);
+      this.setState({ project });
+      
+      del(`/projects/${project.id}/postulants/${postulant.id}`);
+    } else {
+      const postulantData = {
+        id: uuid(),
+        phase: phaseData.id,
+        task_id: taskData.id,
+        task_name: taskData.name,
+        collaborator_id: me.id,
+      };
+      project.postulants.push(postulantData);
+      this.setState({ project });
+
+      post(`/projects/${project.id}/postulant`, postulantData);
+    }
   }
 
   handleChangeTaskName(event) {
@@ -146,7 +195,7 @@ export default class ProjectTasks extends React.Component {
     post(`/projects/${project.id}/phases/${phaseData.id}/tasks`, task);
   }
 
-  handleModifyTask() {
+  handleModifyTaskName() {
     const { project, selectedPhaseId, selectedTaskId, taskName } = this.state;
 
     const phaseData = project.phases[selectedPhaseId];
@@ -154,6 +203,19 @@ export default class ProjectTasks extends React.Component {
     taskData.name = taskName;
 
     this.setState({ project, dialogModifyOpen: false, taskName: null });
+
+    put(`/projects/${project.id}/phases/${phaseData.id}/tasks/${taskData.id}`, taskData);
+  }
+
+  handleRemoveTaskCollaborator() {
+    const { project, selectedPhaseId, selectedTaskId } = this.state;
+
+    const phaseData = project.phases[selectedPhaseId];
+    const taskData = phaseData.tasks[selectedTaskId];
+    taskData.collaborator = null;
+    taskData.collaborator_id = null;
+
+    this.setState({ project, dialogModifyOpen: false });
 
     put(`/projects/${project.id}/phases/${phaseData.id}/tasks/${taskData.id}`, taskData);
   }
@@ -182,7 +244,8 @@ export default class ProjectTasks extends React.Component {
   }
 
   render() {
-    const { project, dialogCreateOpen, dialogModifyOpen, dialogCreatePhaseOpen, taskName, phaseName, selectedPhaseId, selectedStatusId } = this.state;
+    const { project, dialogCreateOpen, dialogModifyOpen, dialogCreatePhaseOpen, taskName, phaseName, selectedPhaseId, selectedTaskId, selectedStatusId, isMyProject } = this.state;
+    const { me } = this.context;
 
     let phaseActive = true;
 
@@ -191,7 +254,10 @@ export default class ProjectTasks extends React.Component {
     }
 
     const phaseData = project.phases[selectedPhaseId];
+    const taskData = phaseData.tasks[selectedTaskId];
     const statusData = statuses[selectedStatusId];
+
+    console.log(this.state);
 
     return (
       <div>
@@ -218,26 +284,49 @@ export default class ProjectTasks extends React.Component {
                           <Typography gutterBottom className="tasks-col-title" color="textSecondary" variant="subtitle2" align="left">
                             {status.name}
                           </Typography>
-                          {tasks.map((task, taskIndex) => (
-                            task.status === status.id ? (
-                              <Paper className="tasks-card">
-                                <Typography onClick={() => this.handleClickModifyOpen(phaseId, taskIndex)}>{task.name}</Typography>
-                                {statusIndex !== 0 && (
-                                  <Fab size="small" aria-label="Add" className="tasks-card-move-left" onClick={() => this.handleMove(phaseId, taskIndex, statusIndex - 1)}>
-                                    <ArrowBack />
-                                  </Fab>
-                                )}
-                                {statusIndex !== (statuses.length - 1) && (
-                                  <Fab size="small" aria-label="Add" className="tasks-card-move-right" onClick={() => this.handleMove(phaseId, taskIndex, statusIndex + 1)}>
-                                    <ArrowForward />
-                                  </Fab>
-                                )}
-                              </Paper>
-                            ) : null
-                          ))}
-                          <Fab color="primary" aria-label="Add" className="tasks-add" onClick={() => this.handleClickCreateOpen(phaseId, statusIndex)}>
-                            <AddIcon />
-                          </Fab>
+                          {tasks.map((task, taskIndex) => {
+                            const wasPostuled = ProjectUtils.wasPostuled(project, me.id, id, task.id);
+                            const postulants = ProjectUtils.getPostulants(project, id, task.id);
+                            const isMyTask = (!task.collaborator && isMyProject) || (task.collaborator && task.collaborator.id === me.id);
+                            const canApply = !isMyProject && !wasPostuled && !task.collaborator && task.status === 'todo' && project.need_collaborations;
+                            return (
+                              task.status === status.id ? (
+                                <div className={`tasks-card ${isMyTask ? 'my-card' : ''} ${canApply ? 'can-apply' : ''}`}>
+                                  <div
+                                    onClick={() => this.handleClickTask(phaseId, taskIndex)}
+                                    role="presentation"
+                                  >
+                                    {canApply && (
+                                      <Avatar className="tasks-card-avatar"><PersonAddIcon /></Avatar>
+                                    )}
+                                    {task.collaborator && (
+                                      <Avatar className="tasks-card-avatar">{getAcronym(task.collaborator) || <PersonIcon />}</Avatar>
+                                    )}
+                                    <div className="tasks-card-type task">Tarea</div>
+                                    {isMyTask && <div className="tasks-card-type owner">Responsable</div>}
+                                    {isMyProject && postulants.length > 0 && <div className="tasks-card-type postulants">{postulants.length}</div>}
+                                    {!isMyProject && wasPostuled && <div className="tasks-card-type postuled">Postulado</div>}
+                                    <Typography>{task.name}</Typography>
+                                  </div>
+                                  {statusIndex !== 0 && isMyTask && (
+                                    <Fab size="small" aria-label="Add" className="tasks-card-move-left" onClick={() => this.handleMove(phaseId, taskIndex, statusIndex - 1)}>
+                                      <ArrowBack />
+                                    </Fab>
+                                  )}
+                                  {statusIndex !== (statuses.length - 1) && isMyTask && (
+                                    <Fab size="small" aria-label="Add" className="tasks-card-move-right" onClick={() => this.handleMove(phaseId, taskIndex, statusIndex + 1)}>
+                                      <ArrowForward />
+                                    </Fab>
+                                  )}
+                                </div>
+                              ) : null
+                            );
+                          })}
+                          {isMyProject && (
+                            <Fab color="primary" aria-label="Add" className="tasks-add" onClick={() => this.handleClickCreateOpen(phaseId, statusIndex)}>
+                              <AddIcon />
+                            </Fab>
+                          )}
                         </div>
                       </Grid>
                     ))}
@@ -275,7 +364,7 @@ export default class ProjectTasks extends React.Component {
           </DialogActions>
         </Dialog>
         <Dialog open={dialogModifyOpen} onClose={this.handleClose} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">{`Modificar tarea ${phaseData.name}`}</DialogTitle>
+          <DialogTitle id="form-dialog-title">{`Modificar tarea ${taskData.name}`}</DialogTitle>
           <DialogContent>
             <TextField
               autoFocus
@@ -287,10 +376,15 @@ export default class ProjectTasks extends React.Component {
             />
           </DialogContent>
           <DialogActions>
+            {(taskData.collaborator || taskData.collaborator_id) && (
+              <Button onClick={this.handleRemoveTaskCollaborator} color="secondary">
+                Borrar al colaborador
+              </Button>
+            )}
             <Button onClick={this.handleClose} color="primary">
               Cancelar
             </Button>
-            <Button onClick={this.handleModifyTask} variant="contained" color="primary">
+            <Button onClick={this.handleModifyTaskName} variant="contained" color="primary">
               Guardar
             </Button>
           </DialogActions>
@@ -329,3 +423,5 @@ export default class ProjectTasks extends React.Component {
     );
   }
 }
+
+ProjectTasks.contextType = AppContext;

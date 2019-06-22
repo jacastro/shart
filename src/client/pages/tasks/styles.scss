@@ -11,7 +11,7 @@
   }
 
   &-col {
-    background: #eeeeee;
+    background: #F4F5F7;
     padding: 1em;
     border-radius: .6em;
 
@@ -22,15 +22,79 @@
   }
 
   &-card {
-    padding: .5em 1.8em;
+    padding: .5em .8em;
     text-align: left;
     position: relative;
     margin-bottom: .5em;
+    border-radius: 4px;
+    box-shadow: 0px 1px 2px 0px rgba(9, 30, 66, 0.25);
+    background: rgba(255, 255, 255, .8);
+    transition: all 0.3s ease-in-out !important;
+    opacity: .8;
+    cursor: default;
 
-    &:hover {
-      .tasks-card-move-left,
-      .tasks-card-move-right {
+    &.my-card {
+      cursor: pointer;
+
+      &:hover {
+        box-shadow: 0px 1px 8px 0px rgba(3, 169, 244, .4);
+        background: rgba(255, 255, 255, 1);
         opacity: 1;
+        padding: .5em 1.8em;
+  
+        .tasks-card-move-left,
+        .tasks-card-move-right {
+          opacity: 1;
+        }
+      }
+    }
+
+    &.can-apply {
+      cursor: pointer;
+
+      .tasks-card-avatar {
+        background-color: #00C853;
+        opacity: 0.3;
+      }
+
+      &:hover {
+        box-shadow: 0px 1px 8px 0px rgba(0, 200, 83, .4);
+        background: rgba(255, 255, 255, 1);
+        opacity: 1;
+
+        .tasks-card-avatar {
+          opacity: 1;
+        }
+      }
+    }
+
+    .tasks-card-avatar {
+      float: right;
+      background-color: #673AB7;
+      margin-top: 4px;
+    }
+
+    &-type {
+      font-size: 10px;
+      text-transform: uppercase;
+      background: #0288D1;
+      display: inline-block;
+      padding: 3px 5px;
+      color: #fff;
+      border-radius: 2px;
+      margin-bottom: 5px;
+      margin-right: 3px;
+
+      &.postuled {
+        background: #FFA000;
+      }
+
+      &.owner {
+        background: #00C853;
+      }
+
+      &.postulants {
+        background: #D81B60;
       }
     }
 
@@ -41,14 +105,24 @@
       bottom: 0;
       opacity: 0;
       transition: all 0.3s ease-in-out !important;
+      margin: auto !important;
+      box-shadow: none !important;
+      background: #fff !important;
     }
 
     &-move-left {
-      left: -20px;
+      left: -12px;
     }
 
     &-move-right {
-      right: -20px;
+      right: -12px;
     }
   }
+}
+
+.MuiDialog-paper {
+  padding: 14px;
+  min-width: 500px;
+  text-align: left;
+  min-height: 260px;
 }
