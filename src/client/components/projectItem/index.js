@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
 import AppContext from '../../context';
 
-const ProjectItem = ({ id, name, description, category, tags, owner }) => {
+const ProjectItem = ({ id, name, description, category, images, tags, owner }) => {
   const { user } = useContext(AppContext);
   const goTo = `/projects/${id}`;
   return (
@@ -19,8 +19,8 @@ const ProjectItem = ({ id, name, description, category, tags, owner }) => {
       <Link to={goTo}>
         <CardActionArea>
           <CardMedia
-            image="/static/images/cards/contemplative-reptile.jpg"
-            title="Contemplative Reptile"
+            image={images[0]}
+            title={name}
           />
           <CardContent>
             <Typography color="textSecondary" gutterBottom>
@@ -39,25 +39,29 @@ const ProjectItem = ({ id, name, description, category, tags, owner }) => {
         </CardActionArea>
       </Link>
       <CardActions>
-      { owner.id === user.id ? 
-        <Button size="small" color="primary">
+        { owner.id === user.id
+          ? (
+            <Button size="small" color="primary" href={goTo}>
           Ver mi proyecto
-        </Button>
-      :
-        <Button size="small" color="primary">
+            </Button>
+          )
+          : (
+            <Button size="small" color="primary">
           Formar parte
-        </Button>
+            </Button>
+          )
       }
       </CardActions>
     </Card>
-  )
-}
+  );
+};
 
 ProjectItem.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string,
   description: PropTypes.string,
   category: PropTypes.string,
+  images: PropTypes.arrayOf(PropTypes.string),
   tags: PropTypes.arrayOf(PropTypes.string),
 };
 
@@ -65,6 +69,7 @@ ProjectItem.defaultProps = {
   name: 'A project item',
   description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce porta est a neque posuere, fringilla auctor ante consectetur.',
   category: 'A category',
+  images: '/static/images/cards/contemplative-reptile.jpg',
   tags: ['Diseño', 'Toys'],
 };
 
