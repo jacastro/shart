@@ -34,7 +34,7 @@ class MyProjectsPage extends React.Component {
       <React.Fragment>
         <Typography gutterBottom variant="h2" color="textSecondary" align="left">Mis proyectos</Typography>
         {list == null ? <CircularProgress /> : (
-          <Grid container justify="center" spacing={32}>
+          <Grid container spacing={3}>
             {
               list.map((project, index) => (
                 <Grid key={index} item xs={4}>
