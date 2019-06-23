@@ -24,6 +24,7 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import WatchLaterIcon from '@material-ui/icons/WatchLaterOutlined';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
 import Dialog from '@material-ui/core/Dialog';
@@ -173,7 +174,8 @@ class Project extends React.Component {
                   <Typography variant="overline">Estado de avance del proyecto:</Typography>
                   <Link to={`/projects/${project.id}/tasks`}>
                     <Button color="primary" variant="outlined" style={{ float: 'right' }}>
-                      Ver tareas
+                      <WatchLaterIcon className="mr5px" />
+                      Seguimiento de tareas
                     </Button>
                   </Link>
                   <Stepper>
