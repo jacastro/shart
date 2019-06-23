@@ -253,9 +253,9 @@ export default class ProjectTasks extends React.Component {
       return <CircularProgress />;
     }
 
-    const phaseData = project.phases[selectedPhaseId];
-    const taskData = phaseData.tasks[selectedTaskId];
-    const statusData = statuses[selectedStatusId];
+    const phaseData = project.phases[selectedPhaseId] || {};
+    const taskData = phaseData.tasks[selectedTaskId] || {};
+    const statusData = statuses[selectedStatusId] || {};
 
     console.log(this.state);
 
