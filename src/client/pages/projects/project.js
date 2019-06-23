@@ -133,7 +133,7 @@ class Project extends React.Component {
                   {project.project_leader && (
                     <div>
                       <Typography variant="overline">Líder de Proyecto:</Typography>
-                      <Chip color="primary" className="card-project-tags" label={project.project_leader.full_name} icon={<FaceIcon />} component="a" href={`/users/${project.project_leader.id}`} />
+                      <Chip color="primary" className="card-project-tags" label={project.project_leader.full_name} icon={<FaceIcon />} component="a" href={`/users/${project.project_leader.user.id}`} />
                     </div>
                   )}
                   <div>
