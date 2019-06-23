@@ -20,7 +20,8 @@ import AppContext from './context';
 
 import SignInSide from './pages/login';
 import Home from './pages/home';
-import Profile from './pages/profile';
+import Profile from './pages/profile/index';
+import MeProfile from './pages/profile/MeProfile';
 import Projects from './pages/projects';
 import CreateProject from './pages/createProject';
 import EditProjectPage from './pages/createProject/editProject';
@@ -148,6 +149,7 @@ class App extends Component {
                     <Route path="/projects/:id" component={Project} exact />
                     <Route path="/projects/:id/tasks" component={ProjectTasks} exact />
                     <Route path="/search/:type/:id" component={Projects} exact />
+                    <Route path="/users/:id" component={MeProfile} exact />
                   </React.Fragment>
                 ) : <CircularProgress />}
               </main>
