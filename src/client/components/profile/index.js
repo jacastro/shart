@@ -3,9 +3,12 @@ import { deepOrange, deepPurple } from '@material-ui/core/colors';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import { React } from 'react';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import { useCookies } from 'react-cookie';
+import { CookiesProvider, withCookies } from 'react-cookie';
+import FormControl from '@material-ui/core/FormControl';
 
 const useStyles = makeStyles(theme => ({
   avatar: {
@@ -40,26 +43,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const logout = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(['userId']);
-  removeCookie('userId', { path: '/' });
-  location.reload();
-};
-
 const Profile = ({ me, email, user_name, myProfile }) => {
   const classes = useStyles();
-  console.log(me, email, user_name);
-  const [values, setValues] = React.useState({
-    name: 'Nombre',
-    age: ''
-  });
+  const [cookies, setCookie, removeCookie] = useCookies(['userId']);
 
-  const handleChange = name => (event) => {
-    setValues({ ...values, [name]: event.target.value });
+  const logout = () => {
+    removeCookie('userId', { path: '/' });
+    location.reload();
   };
 
   return (
-    <React.Fragment>
+	  <FormControl>
       <Grid container>
         <Avatar className={classes.purpleAvatar}>{user_name}</Avatar>
       </Grid>
@@ -74,7 +68,6 @@ const Profile = ({ me, email, user_name, myProfile }) => {
             disabled
             className={classes.textField}
             value={me.full_name}
-            onChange={handleChange('name')}
             margin="normal"
 						/>
           <TextField
@@ -98,7 +91,6 @@ const Profile = ({ me, email, user_name, myProfile }) => {
             disabled
             className={classes.textField}
             value={me.phone}
-            onChange={handleChange('phone')}
             margin="normal"
 					/>
           <TextField
@@ -108,7 +100,6 @@ const Profile = ({ me, email, user_name, myProfile }) => {
             className={classes.textField}
             value={email}
             fullWidth
-            onChange={handleChange('email')}
             margin="normal"
 					/>
         </Grid>
@@ -124,7 +115,6 @@ const Profile = ({ me, email, user_name, myProfile }) => {
             disabled
             className={classes.textField}
             value={me.address}
-            onChange={handleChange('email')}
             margin="normal"
 				/>
           <TextField
@@ -133,7 +123,6 @@ const Profile = ({ me, email, user_name, myProfile }) => {
             disabled
             className={classes.textField}
             value={me.city}
-            onChange={handleChange('phone')}
             margin="normal"
 				/>
           <TextField
@@ -142,7 +131,6 @@ const Profile = ({ me, email, user_name, myProfile }) => {
             disabled
             className={classes.textField}
             value={me.postal_code}
-            onChange={handleChange('phone')}
             margin="normal"
 				/>
         </Grid>
@@ -162,7 +150,7 @@ const Profile = ({ me, email, user_name, myProfile }) => {
 				  : null
 				}
       </div>
-    </React.Fragment>
+	  </FormControl>
   );
 };
 

@@ -33,7 +33,7 @@ class ProfilePage extends React.Component {
       <CookiesProvider>
         <React.Fragment>
           <div>
-            { userDetail ? <Profile me={userDetail.me} email={userDetail.email} user_name={userDetail.user_name} myProfile = {(userDetail.id === user.id)} /> : null }
+            { userDetail ? <Profile me={userDetail.me} email={userDetail.email} user_name={userDetail.user_name} myProfile {...userDetail.id === user.id} /> : null }
           </div>
         </React.Fragment>
       </CookiesProvider>
