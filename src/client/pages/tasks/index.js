@@ -20,6 +20,13 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import IconButton from '@material-ui/core/IconButton';
 
 import AddIcon from '@material-ui/icons/Add';
 import ArrowBack from '@material-ui/icons/ArrowBack';
@@ -39,6 +46,7 @@ import { get, post, put, del } from '../../services';
 import AppContext from '../../context';
 
 import './styles.scss';
+import DialogProfile from '../../components/profile/dialogProfile';
 
 export default class ProjectTasks extends React.Component {
   constructor(props) {
@@ -54,6 +62,10 @@ export default class ProjectTasks extends React.Component {
       taskName: null,
       phaseName: null,
       isMyProject: null,
+      postulants: [],
+      dialogProfileOpen: false,
+      userData: {},
+      meData: {},
     };
     this.handleClose = this.handleClose.bind(this);
     this.handleChangeTaskName = this.handleChangeTaskName.bind(this);
@@ -62,6 +74,8 @@ export default class ProjectTasks extends React.Component {
     this.handleCreatePhase = this.handleCreatePhase.bind(this);
     this.handleModifyTaskName = this.handleModifyTaskName.bind(this);
     this.handleRemoveTaskCollaborator = this.handleRemoveTaskCollaborator.bind(this);
+    this.handleAcceptPostulant = this.handleAcceptPostulant.bind(this);
+    this.handleViewCollaborator = this.handleViewCollaborator.bind(this);
   }
 
   componentDidMount() {
@@ -101,12 +115,18 @@ export default class ProjectTasks extends React.Component {
 
     console.log(user);
 
-    if (isMyProject) {
-      return this.setState({ dialogModifyOpen: true, taskName: taskData.name, selectedPhaseId, selectedTaskId });
+    if (isMyProject || (taskData.collaborator && taskData.collaborator.id === me.id)) {
+      return this.setState({
+        dialogModifyOpen: true,
+        taskName: taskData.name,
+        selectedPhaseId,
+        selectedTaskId,
+        postulants: ProjectUtils.getPostulants(project, phaseData.id, taskData.id),
+      });
     }
 
     if (taskData.collaborator) {
-      return alert('No puedes postularte porque esta tarea ya tiene un colaborador designado.');
+      return this.handleViewCollaborator(taskData.collaborator);
     }
 
     if (taskData.status !== 'todo') {
@@ -136,6 +156,27 @@ export default class ProjectTasks extends React.Component {
 
       post(`/projects/${project.id}/postulant`, postulantData);
     }
+  }
+
+  handleViewCollaborator(collaborator) {
+    this.setState({
+      meData: collaborator,
+      userData: collaborator.user,
+      dialogProfileOpen: true,
+    });
+  }
+
+  handleAcceptPostulant(postulant) {
+    const { project, selectedPhaseId, selectedTaskId } = this.state;
+
+    const phaseData = project.phases[selectedPhaseId];
+    const taskData = phaseData.tasks[selectedTaskId];
+
+    taskData.collaborator = postulant.collaborator;
+    project.postulants = project.postulants.filter(aPostulant => aPostulant.id !== postulant.id);
+    this.setState({ project, dialogModifyOpen: false });
+
+    post(`/projects/${project.id}/postulants/${postulant.id}/accept`);
   }
 
   handleChangeTaskName(event) {
@@ -244,7 +285,7 @@ export default class ProjectTasks extends React.Component {
   }
 
   render() {
-    const { project, dialogCreateOpen, dialogModifyOpen, dialogCreatePhaseOpen, taskName, phaseName, selectedPhaseId, selectedTaskId, selectedStatusId, isMyProject } = this.state;
+    const { project, dialogCreateOpen, dialogModifyOpen, dialogCreatePhaseOpen, taskName, phaseName, selectedPhaseId, selectedTaskId, selectedStatusId, isMyProject, postulants, dialogProfileOpen, userData, meData } = this.state;
     const { me } = this.context;
 
     let phaseActive = true;
@@ -257,7 +298,7 @@ export default class ProjectTasks extends React.Component {
     const taskData = phaseData.tasks[selectedTaskId] || {};
     const statusData = statuses[selectedStatusId] || {};
 
-    console.log(this.state);
+    console.log(project, postulants);
 
     return (
       <div>
@@ -342,6 +383,12 @@ export default class ProjectTasks extends React.Component {
             );
           })}
         </div>
+        <DialogProfile
+          {...userData}
+          me={meData}
+          visible={dialogProfileOpen}
+          onClose={() => this.setState({ dialogProfileOpen: false })}
+        />
         <Dialog open={dialogCreateOpen} onClose={this.handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">{`Agregar tarea ${statusData.name} a ${phaseData.name}`}</DialogTitle>
           <DialogContent>
@@ -375,7 +422,40 @@ export default class ProjectTasks extends React.Component {
               fullWidth
             />
           </DialogContent>
+          {postulants.length > 0 && (
+            <DialogContent>
+              <Divider />
+              <List subheader={<ListSubheader component="div">Tiene postulantes para aceptar</ListSubheader>}>
+                {postulants.map((postulant) => {
+                  return (
+                    <ListItem key={postulant.id} role="presentation" dense button onClick={() => this.handleViewCollaborator(postulant.collaborator)}>
+                      <ListItemAvatar>
+                        <Avatar>{getAcronym(postulant.collaborator) || <PersonIcon />}</Avatar>
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={postulant.collaborator.full_name}
+                        secondary={postulant.collaborator.user.email}
+                      />
+                      <ListItemSecondaryAction>
+                        <IconButton onClick={() => this.handleViewCollaborator(postulant.collaborator)}>
+                          <PersonIcon />
+                        </IconButton>
+                        <IconButton className="dialog-accept-postulant" edge="end" button onClick={() => this.handleAcceptPostulant(postulant)}>
+                          <CheckCircleOutline />
+                        </IconButton>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  );
+                })}
+              </List>
+            </DialogContent>
+          )}
           <DialogActions>
+            {taskData.collaborator && (
+              <Button onClick={() => this.handleViewCollaborator(taskData.collaborator)} color="primary">
+                Ver perfil del colaborador
+              </Button>
+            )}
             {(taskData.collaborator || taskData.collaborator_id) && (
               <Button onClick={this.handleRemoveTaskCollaborator} color="secondary">
                 Borrar al colaborador
