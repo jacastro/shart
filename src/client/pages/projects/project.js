@@ -36,8 +36,6 @@ import Typography from '@material-ui/core/Typography';
 import AppContext from '../../context';
 
 import { get, del } from '../../services';
-
-import { phases } from '../../../config';
 import ProjectTaskList from '../../components/projectTaskList';
 
 class Project extends React.Component {
@@ -179,9 +177,9 @@ class Project extends React.Component {
                     </Button>
                   </Link>
                   <Stepper>
-                    {phases.map((phase, index) => (
+                    {project.phases.map((phase, index) => (
                       <Step key={`ph-${phase.id}`} active={project.current_phase === phase.id}>
-                        <StepLabel key={phase.id}>
+                        <StepLabel>
                           {phase.name.toUpperCase()}
                           {phase.id === 'init'
                         && (
@@ -235,7 +233,7 @@ class Project extends React.Component {
           <DialogTitle id="alert-dialog-title">¿Estás seguro que deseas borrar el proyecto?</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Esta acción no puede deshacerse.
+              Esta acción no se puede deshacer.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
