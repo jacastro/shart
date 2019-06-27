@@ -134,6 +134,11 @@ class Project extends React.Component {
                   <div>
                     <p><Typography variant="overline">Posiciones abiertas & colaboraciones:</Typography></p>
                     <div id="project-phases">
+                      {isMyProject && project.postulants && project.postulants.length > 0 && (
+                        <Link to={`/projects/${project.id}/tasks`}>
+                          <Chip className="postulations" icon={<WatchLaterIcon />} color="secondary" label="Tienes 3 postulaciones pendientes para aprobar" />
+                        </Link>
+                      )}
                       {project.phases.map((phase, index) => (
                         <ProjectTaskList id={index} {...phase} />
                       ))}
@@ -179,22 +184,20 @@ class Project extends React.Component {
                     </Button>
                   </Link>
                   <Stepper>
-                    {phases.map((phase, index) => (
+                    {project.phases.map((phase, index) => (
                       <Step key={`ph-${phase.id}`} active={project.current_phase === phase.id}>
                         <StepLabel key={phase.id}>
                           {phase.name.toUpperCase()}
-                          {phase.id === 'init'
-                        && (
-                        <Typography display="block" variant="overline">
-                          <Moment format="DD/MM/YYYY">{project.start_date}</Moment>
-                        </Typography>
-                        )}
-                          {phase.id === 'final'
-                        && (
-                        <Typography display="block" variant="overline">
-                          <Moment format="DD/MM/YYYY">{project.end_date}</Moment>
-                        </Typography>
-                        )}
+                          {index === 0 && (
+                            <Typography display="block" variant="overline">
+                              <Moment format="DD/MM/YYYY">{project.start_date}</Moment>
+                            </Typography>
+                          )}
+                          {index === (project.phases.length - 1) && (
+                            <Typography display="block" variant="overline">
+                              <Moment format="DD/MM/YYYY">{project.end_date}</Moment>
+                            </Typography>
+                          )}
                         </StepLabel>
                       </Step>
                     ))}
