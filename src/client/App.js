@@ -14,6 +14,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import WorkIcon from '@material-ui/icons/Work';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
+import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import AppContext from './context';
@@ -26,6 +27,7 @@ import Projects from './pages/projects';
 import CreateProject from './pages/createProject';
 import EditProjectPage from './pages/createProject/editProject';
 import ProjectOfUser from './pages/projects/byUser';
+import CollaborationsOfUser from './pages/projects/collaborations';
 import Project from './pages/projects/project';
 import ProjectTasks from './pages/tasks';
 
@@ -102,7 +104,7 @@ class App extends Component {
                     <ListItemIcon>
                       <ViewModuleIcon color="primary" />
                     </ListItemIcon>
-                    <ListItemText primary="Proyectos" />
+                    <ListItemText primary="Proyectos abiertos" />
                   </ListItem>
                 </Link>
                 <Divider />
@@ -120,6 +122,14 @@ class App extends Component {
                       <WorkIcon color="secondary" />
                     </ListItemIcon>
                     <ListItemText primary="Mis proyectos" />
+                  </ListItem>
+                </Link>
+                <Link to="/me/projects/collaborations" onClick={this.toggleDrawer(false)}>
+                  <ListItem button>
+                    <ListItemIcon>
+                      <SupervisedUserCircleIcon color="secondary" />
+                    </ListItemIcon>
+                    <ListItemText primary="Colaboraciones" />
                   </ListItem>
                 </Link>
                 <Divider />
@@ -141,6 +151,7 @@ class App extends Component {
                     <Route path="/" component={Home} exact />
                     <Route path="/me" component={Profile} exact />
                     <Route path="/me/projects" component={ProjectOfUser} exact />
+                    <Route path="/me/projects/collaborations" component={CollaborationsOfUser} exact />
                     <Route path="/me/projects/create" component={CreateProject} exact />
                     <Route path="/me/projects/modify/:id" component={EditProjectPage} exact />
                     <Route path="/profile/:id" component={Profile} exact />

@@ -9,6 +9,7 @@ import { categories, tags } from '../../../config';
 import { get } from '../../services';
 
 import './styles.scss';
+import ProjectList from '../../components/projectItem/list';
 
 const titleType = {
   tags: id => `Proyectos con etiqueta ${categories.find(category => category.value === id).label}`,
@@ -26,6 +27,7 @@ class ProjectsPage extends React.Component {
 
     get('/projects', {
       [type]: id,
+      only_need_collaboration: true,
     })
       .then((response) => {
         const data = response.data.projects;
@@ -40,20 +42,7 @@ class ProjectsPage extends React.Component {
     const title = type ? titleType[type](id) : 'Todos los proyectos';
 
     return (
-      <React.Fragment>
-        <Typography gutterBottom variant="h2" color="textSecondary" align="left">{title}</Typography>
-        {list == null ? <CircularProgress /> : (
-          <Grid container spacing={3}>
-            {
-              list.map((project, index) => (
-                <Grid key={project} item xs={4}>
-                  <ProjectItem id={index} {...project} />
-                </Grid>
-              ))
-            }
-          </Grid>
-        )}
-      </React.Fragment>
+      <ProjectList list={list} title={title} loading={list == null} />
     );
   }
 }
