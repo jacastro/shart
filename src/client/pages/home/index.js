@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
@@ -11,7 +12,11 @@ import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress/CircularProgress';
 import AppContext from '../../context';
 
+import ProjectList from './list';
+
 import { get } from '../../services';
+
+import './styles.scss';
 
 class Home extends React.Component {
   constructor(props) {
@@ -22,136 +27,49 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    get('/projects')
+    const { user } = this.context;
+    const userTags = (user.me && user.me.tags) || [];
+
+    get(`/users/${user.id}/projects`)
       .then(({ data }) => {
         this.setState({ projects: data });
-        // handle success
-      })
-      .catch((error) => {
-        // handle error
-        console.log(error);
+      });
+    get('/projects', { tags: userTags.join(',') })
+      .then(({ data }) => {
+        this.setState({ listRecommended: data.projects || [] });
+      });
+    get('/projects/top-new', { limit: 5 })
+      .then(({ data }) => {
+        this.setState({ listTopNew: data.projects });
+      });
+    get('/projects/top-rated', { limit: 5 })
+      .then(({ data }) => {
+        this.setState({ listTopRated: data.projects });
+      });
+    get('/projects/top-viewed', { limit: 5 })
+      .then(({ data }) => {
+        this.setState({ listTopViewed: data.projects });
       });
   }
 
   render() {
-    const { projects } = this.state;
+    const { projects, listTopNew, listTopRated, listTopViewed, listRecommended } = this.state;
 
     return (
-      <React.Fragment>
-        <Container className="container-home">
-          <Container className="home-projects">
-            <Typography id="my-projects" variant="h2" gutterBottom>
-              Mis Proyectos
-              <Button variant="contained" color="primary" href="/me/projects/create">
-                <AddIcon />
-                Nuevo Proyecto
-              </Button>
-            </Typography>
-            {projects == null ? <CircularProgress /> : (
-              <GridList cols={3}>
-                {projects.map(project => (
-                  <GridListTile key={project.id}>
-                    <img src={project.images[0]} alt={project.name} />
-                    <GridListTileBar
-                      title={project.name.toUpperCase()}
-                      subtitle={`Creado por @${project.owner.user_name}`}
-                      actionIcon={(
-                        <IconButton aria-label="Información del Proyecto" color="secondary" href={`/projects/${project.id}`}>
-                          <InfoIcon />
-                        </IconButton>
-                      )}
-                    />
-                  </GridListTile>
-                ))}
-              </GridList>
-            )}
-          </Container>
-          <Container className="home-projects">
-            <Typography variant="h2" gutterBottom>Recomendados para vos</Typography>
-            {projects == null ? <CircularProgress /> : (
-              <GridList cols={3}>
-                {projects.map(project => (
-                  <GridListTile key={project.id}>
-                    <img src={project.images[0]} alt={project.name} />
-                    <GridListTileBar
-                      title={project.name.toUpperCase()}
-                      subtitle={`Creado por @${project.owner.user_name}`}
-                      actionIcon={(
-                        <IconButton aria-label="Información del Proyecto" color="secondary" href={`/projects/${project.id}`}>
-                          <InfoIcon />
-                        </IconButton>
-                      )}
-                    />
-                  </GridListTile>
-                ))}
-              </GridList>
-            )}
-          </Container>
-          <Container className="home-projects">
-            <Typography variant="h2" gutterBottom>Tendencias</Typography>
-            {projects == null ? <CircularProgress /> : (
-              <GridList cols={3}>
-                {projects.map(project => (
-                  <GridListTile key={project.id}>
-                    <img src={project.images[0]} alt={project.name} />
-                    <GridListTileBar
-                      title={project.name.toUpperCase()}
-                      subtitle={`Creado por @${project.owner.user_name}`}
-                      actionIcon={(
-                        <IconButton aria-label="Información del Proyecto" color="secondary" href={`/projects/${project.id}`}>
-                          <InfoIcon />
-                        </IconButton>
-                      )}
-                    />
-                  </GridListTile>
-                ))}
-              </GridList>
-            )}
-          </Container>
-          <Container className="home-projects">
-            <Typography variant="h2" gutterBottom>Recién salidos del horno</Typography>
-            {projects == null ? <CircularProgress /> : (
-              <GridList cols={3}>
-                {projects.map(project => (
-                  <GridListTile key={project.id}>
-                    <img src={project.images[0]} alt={project.name} />
-                    <GridListTileBar
-                      title={project.name.toUpperCase()}
-                      subtitle={`Creado por @${project.owner.user_name}`}
-                      actionIcon={(
-                        <IconButton aria-label="Información del Proyecto" color="secondary" href={`/projects/${project.id}`}>
-                          <InfoIcon />
-                        </IconButton>
-                      )}
-                    />
-                  </GridListTile>
-                ))}
-              </GridList>
-            )}
-          </Container>
-          <Container className="home-projects">
-            <Typography variant="h2" gutterBottom>Anteriores</Typography>
-            {projects == null ? <CircularProgress /> : (
-              <GridList cols={3}>
-                {projects.map(project => (
-                  <GridListTile key={project.id}>
-                    <img src={project.images[0]} alt={project.name} />
-                    <GridListTileBar
-                      title={project.name.toUpperCase()}
-                      subtitle={`Creado por @${project.owner.user_name}`}
-                      actionIcon={(
-                        <IconButton aria-label="Información del Proyecto" color="secondary" href={`/projects/${project.id}`}>
-                          <InfoIcon />
-                        </IconButton>
-                      )}
-                    />
-                  </GridListTile>
-                ))}
-              </GridList>
-            )}
-          </Container>
-        </Container>
-      </React.Fragment>
+      <Container className="container-home">
+        <ProjectList list={projects} title="Mis Proyectos" loading={projects == null}>
+          <Link to="/me/projects/create">
+            <Button variant="contained" color="primary" className="create-project-button">
+              <AddIcon />
+              Nuevo Proyecto
+            </Button>
+          </Link>
+        </ProjectList>
+        <ProjectList list={listRecommended} title="Recomendados para vos" loading={listRecommended == null} />
+        <ProjectList list={listTopViewed} title="Los más vistos" loading={listTopViewed == null} />
+        <ProjectList list={listTopRated} title="Los más valorados" loading={listTopRated == null} />
+        <ProjectList list={listTopNew} title="Recién salidos del horno" loading={listTopNew == null} />
+      </Container>
     );
   }
 }
