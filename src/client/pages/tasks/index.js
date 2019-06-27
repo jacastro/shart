@@ -214,7 +214,7 @@ export default class ProjectTasks extends React.Component {
   }
 
   handleClose() {
-    this.setState({ dialogCreateOpen: false, dialogModifyOpen: false, taskName: null });
+    this.setState({ dialogCreateOpen: false, dialogModifyOpen: false, dialogCreatePhaseOpen: false, taskName: null });
   }
 
   handleCreateTask() {
@@ -375,7 +375,7 @@ export default class ProjectTasks extends React.Component {
                 </ExpansionPanelDetails>
                 <Divider />
                 <ExpansionPanelActions>
-                  {project.current_phase !== id && <Button size="small" color="secondary" onClick={() => this.handleDeletePhase(phaseId)}>Eliminar fase</Button>}
+                  {project.current_phase !== id && phaseId !== 0 && phaseId !== (project.phases.length - 1) && <Button size="small" color="secondary" onClick={() => this.handleDeletePhase(phaseId)}>Eliminar fase</Button>}
                   {project.current_phase !== id && <Button size="small" onClick={() => this.handleSetCurrentPhase(phaseId)}>Marcar como fase activa</Button>}
                   <Button size="small" color="primary" onClick={() => this.handleAddPhase(phaseId)}>Agregar una fase</Button>
                 </ExpansionPanelActions>
@@ -486,7 +486,7 @@ export default class ProjectTasks extends React.Component {
                 value={selectedPhaseId}
                 onChange={event => this.setState({ selectedPhaseId: event.target.value })}
               >
-                {project.phases.map(({ name }, phaseIndex) => <MenuItem value={phaseIndex}>{name}</MenuItem>)}
+                {project.phases.map(({ name }, phaseIndex) => (phaseIndex > 0 ? <MenuItem value={phaseIndex}>{name}</MenuItem> : null))}
               </Select>
             </FormControl>
           </DialogContent>
