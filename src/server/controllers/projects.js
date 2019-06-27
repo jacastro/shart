@@ -28,7 +28,7 @@ function shuffle(array) {
   return array;
 }
 
-function findProjects(req, res, filter = {}, sort) {
+function findProjects(req, res, filter = {}, sort, limit = 9999) {
   const nameFilter = new RegExp(`.*${req.query.name || ''}.*`);
   const descFilter = new RegExp(`.*${req.query.description || ''}.*`);
   const catFilter = new RegExp(`.*${req.query.category || ''}.*`);
@@ -48,6 +48,7 @@ function findProjects(req, res, filter = {}, sort) {
 
   const orderBy = sort || {};
   Projects.find(filter, '-_id -__v -rating_sum -rating_count', orderBy)
+    .limit(limit)
     .populate('owner', '-_id -__v')
     .populate({
       path: 'project_leader',
@@ -133,12 +134,30 @@ router.get('/:user_id/working-projects/', (req, res) => {
         finished: false
       };
 
-      const orderBy = { sort: { start_date: 'desc' } };
-      findProjects(req, res, filter, orderBy);
+      const orderBy = { sort: { raiting: 'desc' } };
+      findProjects(req, res, filter, orderBy, 5);
     })
     .catch((err) => {
       res.status(500).json({ message: 'Something went wrong', error: err });
     });
+});
+
+// Get top 3 rated projects
+router.get('/top-rated/', (req, res) => {
+  const orderBy = { sort: { rating: 'desc' } };
+  findProjects(req, res, undefined, orderBy, 3);
+});
+
+// Get top 3 viewed projects
+router.get('/top-viewed/', (req, res) => {
+  const orderBy = { sort: { view_counts: 'desc' } };
+  findProjects(req, res, undefined, orderBy, 3);
+});
+
+// Get top 3 new projects
+router.get('/top-new/', (req, res) => {
+  const orderBy = { sort: { start_date: 'desc' } };
+  findProjects(req, res, undefined, orderBy, 3);
 });
 
 // Get all
