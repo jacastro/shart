@@ -83,6 +83,7 @@ const ModifyProjectPage = ({ data }) => {
     current_phase_num: null,
     current_phase: 'init',
     region: 'bsas',
+    finished: false,
     phases: phases.map(phase => ({ ...phase, tasks: [] })),
     ...data,
   });
@@ -156,6 +157,16 @@ const ModifyProjectPage = ({ data }) => {
             <Typography variant="h4" gutterBottom>
               {data ? '¡Tus cambios fueron guardados!' : '¡Tu proyecto ha sido creado correctamente!'}
             </Typography>
+            {data && (
+              <React.Fragment>
+                <Link to={`/projects/${data.id}/tasks`}>
+                  <Button variant="contained">
+                    Editar las tareas y fases del proyecto
+                  </Button>
+                </Link>
+                <br />
+              </React.Fragment>
+            )}
             <Link to="/me/projects">
               <Button variant="contained" color="primary">
                 Mis proyectos
