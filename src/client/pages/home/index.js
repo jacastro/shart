@@ -23,8 +23,7 @@ class Home extends React.Component {
 
   componentDidMount() {
     get('/projects')
-      .then((response) => {
-        const data = response.data.projects;
+      .then(({ data }) => {
         this.setState({ projects: data });
         // handle success
       })
