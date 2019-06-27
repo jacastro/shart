@@ -28,7 +28,7 @@ function shuffle(array) {
   return array;
 }
 
-function findProjects(req, res, filter = {}, sort, limit = 9999) {
+function findProjects(req, res, filter = {}, sort, limit = 999) {
   const nameFilter = new RegExp(`.*${req.query.name || ''}.*`);
   const descFilter = new RegExp(`.*${req.query.description || ''}.*`);
   const catFilter = new RegExp(`.*${req.query.category || ''}.*`);
@@ -44,6 +44,10 @@ function findProjects(req, res, filter = {}, sort, limit = 9999) {
     filter.need_collaborations = true;
     filter.finished = false;
     filter['phases.tasks.collaborator'] = null;
+  }
+
+  if (req.query.limit) {
+    limit = parseInt(req.query.limit, 10);
   }
 
   const orderBy = sort || {};
