@@ -17,8 +17,7 @@ class MyProjectsPage extends React.Component {
   componentDidMount() {
     const { user } = this.context;
     get(`/users/${user.id}/projects`)
-      .then(response => {
-        const data = response.data.projects;
+      .then(({ data }) => {
         this.setState({ list: data });
         // handle success
       })

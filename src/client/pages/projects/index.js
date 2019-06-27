@@ -29,8 +29,7 @@ class ProjectsPage extends React.Component {
       [type]: id,
       only_need_collaboration: true,
     })
-      .then((response) => {
-        const data = response.data.projects;
+      .then(({ data }) => {
         this.setState({ list: data });
       });
   }
