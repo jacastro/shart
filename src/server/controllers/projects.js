@@ -5,6 +5,7 @@ const params = require('params');
 
 const router = express.Router();
 const Users = require('../models/users');
+const Mes = require('../models/mes');
 const Projects = require('../models/projects');
 
 // Get all my projects /api/users/:user_id/projects
@@ -294,11 +295,38 @@ router.put('/:id', (req, res) => {
   const permittedParams = [
     'name', 'description', 'category', 'current_phase', 'start_date', 'end_date', 'images',
     'need_collaborations', 'promoted_level', 'region', 'require_shipping',
-    'shipping_address', 'tags', 'collaborations', 'phases', 'finished'
+    'shipping_address', 'tags', 'collaborations', 'finished'
   ];
   Projects.findOne({ id: req.params.id })
-    .then((project) => {
+    .then(async (project) => {
       if (project) {
+        if (req.params.phases) {
+          await project.phases.forEach((phase1) => {
+            const p2 = req.params.phases.find(phase2 => phase2.id === phase1.id);
+
+            if (p2) {
+              phase1.name = p2.name;
+
+              if (p2.tasks) {
+                phase1.tasks.forEach(async (task1) => {
+                  const t2 = p2.tasks.find(task2 => task2.id === task1.id);
+
+                  if (t2) {
+                    task1.name = t2.name;
+                    task1.status = t2.status;
+
+                    if (t2.collaborator) {
+                      const me = await Mes.findOne({ id: t2.collaborator.id });
+                      task1.collaborator = me._id;
+                    }
+                  }
+                });
+              }
+            }
+          });
+        }
+
+
         const parameters = params(req.body).only(permittedParams);
         project.set(parameters);
         project.save()
