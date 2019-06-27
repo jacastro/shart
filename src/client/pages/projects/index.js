@@ -18,6 +18,9 @@ const titleType = {
 class ProjectsPage extends React.Component {
   state = {
     list: null,
+    listTopNew: null,
+    listTopRated: null,
+    listTopViewed: null,
   };
 
   componentDidMount() {
@@ -31,6 +34,54 @@ class ProjectsPage extends React.Component {
         const data = response.data.projects;
         this.setState({ list: data });
       });
+
+    get('/projects/top-new', {
+      [type]: id,
+    })
+      .then((response) => {
+        const data = response.data.projects;
+        this.setState({ listTopNew: data });
+      });
+
+    get('/projects/top-rated', {
+      [type]: id,
+    })
+      .then((response) => {
+        const data = response.data.projects;
+        this.setState({ listTopRated: data });
+      });
+
+    get('/projects/top-viewed', {
+      [type]: id,
+    })
+      .then((response) => {
+        const data = response.data.projects;
+        this.setState({ listTopViewed: data });
+      });
+
+    // get('/projects&tags=???????', {
+    //   [type]: id,
+    // })
+    //   .then((response) => {
+    //     const data = response.data.projects;
+    //     this.setState({ listRecommended: data });
+    //   });
+
+    // get('/users/ae4cc7ac-0052-47e0-b2b1-499c6461e509/projects', {
+    //   [type]: id,
+    // })
+    //   .then((response) => {
+    //     const data = response.data.projects;
+    //     this.setState({ myProjects: data });
+    //   });
+
+    // get('/users/ae4cc7ac-0052-47e0-b2b1-499c6461e509/working-projects', {
+    //   [type]: id,
+    // })
+    //   .then((response) => {
+    //     const data = response.data.projects;
+    //     this.setState({ myWorkingProjects: data });
+    //   });
   }
 
   render() {
