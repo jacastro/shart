@@ -169,60 +169,6 @@ router.get('/', (req, res) => {
   findProjects(req, res);
 });
 
-// router.get('/', (req, res) => {
-//   const nameFilter = new RegExp(`.*${req.query.name || ''}.*`);
-//   const descFilter = new RegExp(`.*${req.query.description || ''}.*`);
-//   const catFilter = new RegExp(`.*${req.query.category || ''}.*`);
-//   const regionFilter = new RegExp(`.*${req.query.region || ''}.*`);
-//   const filter = {
-//     name: { $regex: nameFilter, $options: 'i' },
-//     category: { $regex: catFilter, $options: 'i' },
-//     region: { $regex: regionFilter, $options: 'i' },
-//     description: { $regex: descFilter, $options: 'i' }
-//   };
-//   if (req.query.tags) {
-//     filter.tags = { $in: req.query.tags.split(',') };
-//   }
-//   if (req.query.only_need_collaboration) {
-//     filter.need_collaborations = true;
-//     filter.finished = false;
-//     filter['phases.tasks.collaborator'] = null;
-//   }
-
-//   Projects.find(filter, '-_id -__v -rating_sum -rating_count')
-//     .populate('owner', '-_id -__v')
-//     .populate({
-//       path: 'project_leader',
-//       select: '-_id -__v',
-//       populate: [{
-//         path: 'user',
-//         select: '-_id -__v'
-//       }]
-//     })
-//     .populate({
-//       path: 'phases.tasks.collaborator',
-//       select: '-_id -__v',
-//       populate: [{
-//         path: 'user',
-//         select: '-_id -__v',
-//       }]
-//     })
-//     .populate({
-//       path: 'postulants.collaborator',
-//       select: '-_id -__v',
-//       populate: [{
-//         path: 'user',
-//         select: '-_id -__v'
-//       }]
-//     })
-//     .then((projects) => {
-//       res.status(200).json({ projects });
-//     })
-//     .catch((err) => {
-//       res.status(500).json({ message: 'Something went wrong', error: err });
-//     });
-// });
-
 router.get('/:id', (req, res) => {
   if (!req.params.id) {
     res.status(404).json({ errors: 'project not found' });
@@ -313,30 +259,66 @@ router.put('/:id', (req, res) => {
   Projects.findOne({ id: req.params.id })
     .then(async (project) => {
       if (project) {
-        if (req.params.phases) {
-          await project.phases.forEach((phase1) => {
-            const p2 = req.params.phases.find(phase2 => phase2.id === phase1.id);
+        if (req.body.phases) {
+          const phasesToDelete = [];
+          
+          // add new ones
+          await req.body.phases.forEach((phase) => {
+            const exists = project.phases.includes(p => p.id === phase.id);
+            if (!exists) {
+              project.phases.push(phase);
+            }
+          });
+          await project.phases.forEach(async (phase1, phaseIndex) => {
+            const p2 = req.body.phases.find(phase2 => phase2.id === phase1.id);
 
+            // updating an existing phase
             if (p2) {
               phase1.name = p2.name;
+              const tasksToDelete = [];
 
               if (p2.tasks) {
-                phase1.tasks.forEach(async (task1) => {
+                // add new ones
+                await p2.tasks.forEach(async (task) => {
+                  const exists = phase1.tasks.includes(t => t.id === task.id);
+                  if (!exists) {
+                    if (task.collaborator) {
+                      const me = await Mes.findOne({ id: task.collaborator.id });
+                      task.collaborator = me._id;
+                    }
+                    phase1.tasks.push(task);
+                  }
+                });
+                
+                phase1.tasks.forEach(async (task1, taskIndex) => {
                   const t2 = p2.tasks.find(task2 => task2.id === task1.id);
 
+                  // updating an existing task
                   if (t2) {
                     task1.name = t2.name;
                     task1.status = t2.status;
 
+                    console.log("==========================")
                     if (t2.collaborator) {
                       const me = await Mes.findOne({ id: t2.collaborator.id });
                       task1.collaborator = me._id;
                     }
+                  } else {
+                    // task needs to be deleted
+                    tasksToDelete.push(taskIndex);
+                    console.log("DELETE task INDEX: ", phaseIndex)
                   }
                 });
+                await tasksToDelete.forEach((i) => { phase1.tasks.splice(i, 1); });
               }
+            } else {
+              // phase needs to be deleted
+              phasesToDelete.push(phaseIndex);
+              console.log("DELETE PHASE INDEX: ", phaseIndex)
             }
           });
+
+          await phasesToDelete.forEach((i) => { project.phases.splice(i, 1); });
         }
 
 
