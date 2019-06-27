@@ -16,6 +16,7 @@
 Seed data
 
 ```sh
+
 db.users.find() view all
 # remove all
 db.users.remove({})
