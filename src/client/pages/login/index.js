@@ -100,6 +100,11 @@ export default function SignInSide() {
                 autoFocus
                 value={email}
                 onChange={event => setEmail(event.target.value)}
+                onKeyPress={(event) => {
+                  if (event.key === 'Enter') {
+                    login();
+                  }
+                }}
               />
               <TextField
                 variant="outlined"
@@ -113,6 +118,11 @@ export default function SignInSide() {
                 autoComplete="current-password"
                 value={password}
                 onChange={event => setPassword(event.target.value)}
+                onKeyPress={(event) => {
+                  if (event.key === 'Enter') {
+                    login();
+                  }
+                }}
               />
               {loading ? <CircularProgress /> : (
                 <Button
