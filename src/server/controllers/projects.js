@@ -257,66 +257,17 @@ router.put('/:id', (req, res) => {
     'shipping_address', 'tags', 'collaborations', 'finished'
   ];
 
-  req.body.phases.forEach((p, i) => {
-    p.tasks.forEach((_, j) => {
-      req.body.phases[i].tasks[j].collaborator = undefined;
-    });
-  });
-
   Projects.findOne({ id: req.params.id })
     .then((project) => {
       if (project) {
         if (req.body.phases) {
-          const phasesToDelete = [];
-
-          project.phases.forEach((currentPhase, phaseIndex) => {
-            const newPhase = req.body.phases.find(phase2 => phase2.id === currentPhase.id);
-
-            // updating an existing phase
-            if (newPhase) {
-              console.log('Updating phase ', newPhase.id)
-              currentPhase.name = newPhase.name;
-              const tasksToDelete = [];
-
-              if (newPhase.tasks) {
-                currentPhase.tasks.forEach((currentTask, taskIndex) => {
-                  const newTask = newPhase.tasks.find(t => t.id === currentTask.id);
-                  
-                  // updating an existing task
-                  if (newTask) {
-                    currentTask.name = newTask.name;
-                    currentTask.status = newTask.status;
-                  } else {
-                    // task needs to be deleted
-                    tasksToDelete.push(taskIndex);
-                  }
-                });
-                tasksToDelete.reverse().forEach((i) => { currentPhase.tasks.splice(i, 1); });
-                // add new ones
-                newPhase.tasks.forEach((newTask) => {
-                  const exists = currentPhase.tasks.find(t => t.id === newTask.id);
-                  if (exists == null) {
-                    currentPhase.tasks.push(newTask);
-                  }
-                });
-              }
-            } else {
-              console.log('Deleting phase ', currentPhase.id)
-
-              // phase needs to be deleted
-              phasesToDelete.push(phaseIndex);
-            }
+          const newPhases = req.body.phases.map((reqPhase) => {
+            const projectPhase = project.phases.find(({ id }) => id === reqPhase.id) || reqPhase;
+            projectPhase.name = reqPhase.name;
+            return projectPhase;
           });
 
-          // add new ones
-          req.body.phases.forEach((phase) => {
-            const exists = project.phases.find(p => p.id === phase.id);
-            if (exists == null) {
-              project.phases.push(phase);
-            }
-          });
-          console.log(phasesToDelete)
-          phasesToDelete.reverse().forEach((i) => { project.phases.splice(i, 1); });
+          project.phases = newPhases;
         }
 
         const parameters = params(req.body).only(permittedParams);
