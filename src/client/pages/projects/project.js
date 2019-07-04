@@ -22,6 +22,11 @@ import ShareIcon from '@material-ui/icons/Share';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import WatchLaterIcon from '@material-ui/icons/WatchLaterOutlined';
@@ -39,6 +44,7 @@ import { get, del } from '../../services';
 
 import { phases } from '../../../config';
 import ProjectTaskList from '../../components/projectTaskList';
+import { getAcronym } from '../../../utils/users';
 
 class Project extends React.Component {
   constructor(props) {
@@ -93,7 +99,7 @@ class Project extends React.Component {
         {project == null ? <CircularProgress /> : (
           <Card className="card-project">
             <CardHeader
-              action={isMyProject && [
+              action={isMyProject ? [
                 <Link to={`/me/projects/modify/${project.id}`}>
                   <IconButton aria-label="Edit">
                     <EditIcon />
@@ -102,85 +108,124 @@ class Project extends React.Component {
                 <IconButton aria-label="Delete" onClick={() => this.setState({ openDialog: true })}>
                   <DeleteForeverIcon />
                 </IconButton>
+              ] : [
+                <IconButton className="card-project-action" aria-label="Add to favorites">
+                  <FavoriteIcon />
+                </IconButton>,
+                <IconButton className="card-project-action" aria-label="Compartir">
+                  <ShareIcon />
+                </IconButton>
               ]}
               title={project.name}
-              subheader={
-                <Link to={`/profile/${project.owner.id}`}>{`Creado por @${project.owner.user_name}`}</Link>
-            }
             />
-            {project.images.length > 0
-            && <CardMedia className="card-project-media" image={project.images[0]} />
-            }
+            <Grid container>
+              <Grid item xs={8} className="card-project-meta">
+                {project.images.length > 0 && (
+                  <CardMedia className="card-project-media" image={project.images[0]} />
+                )}
+              </Grid>
+              <Grid item xs={4} className="card-project-right">
+                {project.images.length > 1
+                  && (
+                    <div>
+                      <Typography variant="overline" gutterBottom>Imágenes del Proyecto:</Typography>
+                      <div className="card-project-gallery-root">
+                        <GridList cellHeight={100} className="card-project-gallery" cols={3}>
+                          {images.map((image, index) => (
+                            <GridListTile key={`image-${image.url}`} cols={image.col}>
+                              <img src={image.url} alt={image.url} />
+                            </GridListTile>
+                          ))}
+                        </GridList>
+                      </div>
+                    </div>
+                  )
+                }
+                <List>
+                  <ListItem>
+                    <ListItemText primary={project.description} />
+                  </ListItem>
+                </List>
+                <Divider />
+                <List>
+                  <Link to={`/profile/${project.owner.id}`}>
+                    <ListItem button>
+                      <ListItemAvatar>
+                        <Avatar>
+                          {getAcronym(project.owner) || <FaceIcon />}
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText primary={project.owner.user_name} secondary="Creador del proyecto" />
+                    </ListItem>
+                  </Link>
+                  <Link to={`/profile/${project.project_leader.id}`}>
+                    <ListItem button>
+                      <ListItemAvatar>
+                        <Avatar>
+                          {getAcronym(project.project_leader) || <FaceIcon />}
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText primary={project.project_leader.full_name} secondary="Lider de Proyecto" />
+                    </ListItem>
+                  </Link>
+                </List>
+                <Divider />
+                <List>
+                  <ListItem>
+                    <ListItemText secondary="Categoría" />
+                    <Link to={`/search/category/${project.category}`}>
+                      <Chip
+                        color="primary"
+                        className="card-project-tags"
+                        label={project.category}
+                      />
+                    </Link>
+                  </ListItem>
+                  {project.tags.length > 0 && (
+                    <ListItem>
+                      <ListItemText secondary="Tags" />
+                      {project.tags.map((tag, index) => (
+                        <Link to={`/search/tags/${tag}`}>
+                          <Chip
+                            key={`tag-${tag}`}
+                            color="secondary"
+                            className="card-project-tags"
+                            label={tag}
+                          />
+                        </Link>
+                      ))}
+                    </ListItem>
+                  )}
+                  <ListItem>
+                    <ListItemText secondary="Ubicación" />
+                    <Link to={`/search/places/${project.region}`}>
+                      <Chip
+                        className="card-project-tags"
+                        label={project.region}
+                        icon={<PlaceIcon />}
+                      />
+                    </Link>
+                  </ListItem>
+                </List>
+              </Grid>
+            </Grid>
             <CardContent>
               <Grid container spacing={5}>
-                <Grid item xs={8} className="card-project-meta">
-                  <div>
-                    <p><Typography variant="body2" display="block">{project.description}</Typography></p>
-                  </div>
-                  <div>
-                    <p>
-                      <Typography variant="overline">Ubicación:</Typography>
-                      <Chip className="card-project-tags" label={project.region} icon={<PlaceIcon />} component="a" href={`/places/${project.region}`} />
-                    </p>
-                  </div>
-                  {project.project_leader && (
-                    <div>
-                      <p>
-                        <Typography variant="overline">Líder de Proyecto:</Typography>
-                        <Chip color="primary" className="card-project-tags" label={project.project_leader.full_name} icon={<FaceIcon />} component="a" href={`/users/${project.project_leader.id}`} />
-                      </p>
-                    </div>
-                  )}
-                  <div>
-                    <p><Typography variant="overline">Posiciones abiertas & colaboraciones:</Typography></p>
-                    <div id="project-phases">
-                      {isMyProject && project.postulants && project.postulants.length > 0 && (
-                        <Link to={`/projects/${project.id}/tasks`}>
-                          <Chip className="postulations" icon={<WatchLaterIcon />} color="secondary" label="Tienes 3 postulaciones pendientes para aprobar" />
-                        </Link>
-                      )}
-                      {project.phases.map((phase, index) => (
-                        <ProjectTaskList id={index} {...phase} />
-                      ))}
-                    </div>
-                  </div>
-                </Grid>
-                <Grid item xs={4} className="card-project-meta">
-                  <div>
-                    <Typography variant="overline" gutterBottom>Categoría: </Typography>
-                    <Chip color="primary" className="card-project-tags" key={`cat${project.category}`} id={`cat${project.category}`} label={project.category} component="a" href={`/search/category/${project.category}`} />
-                  </div>
-                  <div>
-                    {project.tags.length > 0
-                    && <Typography variant="overline" gutterBottom>Tags: </Typography>
-                  }
-                    {project.tags.map((tag, index) => (
-                      <Chip key={`tag-${tag}`} id={`tag-${tag}`} color="secondary" className="card-project-tags" label={tag} component="a" href={`/search/tags/${tag}`} />
-                    ))}
-                  </div>
-                  {project.images.length > 1
-                    && (
-                      <div>
-                        <Typography variant="overline" gutterBottom>Imágenes del Proyecto:</Typography>
-                        <div className="card-project-gallery-root">
-                          <GridList cellHeight={100} className="card-project-gallery" cols={3}>
-                            {images.map((image, index) => (
-                              <GridListTile key={`image-${image.url}`} cols={image.col}>
-                                <img src={image.url} alt={image.url} />
-                              </GridListTile>
-                            ))}
-                          </GridList>
-                        </div>
-                      </div>
-                    )
-                  }
-                </Grid>
                 <Grid item xs={12}>
                   <Typography variant="overline">Estado de avance del proyecto:</Typography>
                   <Link to={`/projects/${project.id}/tasks`}>
                     <Button color="primary" variant="outlined" style={{ float: 'right' }}>
-                      <WatchLaterIcon className="mr5px" />
-                      Seguimiento de tareas
+                      {isMyProject ? (
+                        <React.Fragment>
+                          <WatchLaterIcon className="mr5px" />
+                          Seguimiento de tareas
+                        </React.Fragment>
+                      ) : (
+                        <React.Fragment>
+                          <AddCircleIcon className="mr5px" />
+                          Ver tareas para postularme
+                        </React.Fragment>
+                      )}
                     </Button>
                   </Link>
                   <Stepper>
@@ -203,30 +248,8 @@ class Project extends React.Component {
                     ))}
                   </Stepper>
                 </Grid>
-                <Grid item xs={12} />
               </Grid>
             </CardContent>
-            {!isMyProject && (
-              <React.Fragment>
-                <Divider variant="middle" />
-                <CardActions>
-                  <IconButton className="card-project-action" aria-label="Add to favorites">
-                    <FavoriteIcon />
-                  </IconButton>
-                  <IconButton className="card-project-action" aria-label="Compartir">
-                    <ShareIcon />
-                  </IconButton>
-                  {project.need_collaborations
-                  && (
-                    <Button href="#" className="card-project-apply" color="primary" variant="outlined">
-                      <AddCircleIcon />
-                      Postularme
-                    </Button>
-                  )
-                  }
-                </CardActions>
-              </React.Fragment>
-            )}
           </Card>
         )}
         <Dialog
