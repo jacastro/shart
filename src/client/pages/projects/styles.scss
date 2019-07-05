@@ -1,3 +1,7 @@
+a {
+  color: inherit;
+}
+
 .project {
   &-item {
     text-align: left;
@@ -102,6 +106,4 @@
 
 .postulations {
   background-color: #8E24AA !important;
-  margin: -14px 0 14px 0 !important;
-  cursor: pointer;
 }

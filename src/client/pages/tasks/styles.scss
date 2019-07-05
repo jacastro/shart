@@ -1,3 +1,12 @@
+@keyframes postule {
+  from {box-shadow: 0px 1px 2px 0px rgba(0, 200, 83, .4);}
+  to {box-shadow: 0px 1px 8px 0px rgba(0, 200, 83, .5);}
+}
+
+a {
+  color: inherit;
+}
+
 .tasks {
   &-phase {
     &-icon {
@@ -6,6 +15,26 @@
 
       &.active {
         color: #43A047;
+      }
+    }
+
+    &-postule {
+      &-apply {
+        background-color: rgba(0, 200, 83, 1);
+        color: #fff;
+        padding: 3px 6px;
+        border-radius: 20px;
+        font-size: 12px;
+        margin: 2px 2px 2px 20px;
+      }
+
+      &-list {
+        background-color: #D81B60;
+        color: #fff;
+        padding: 3px 6px;
+        border-radius: 20px;
+        font-size: 12px;
+        margin: 2px 2px 2px 20px;
       }
     }
   }
@@ -51,6 +80,11 @@
 
     &.can-apply {
       cursor: pointer;
+      animation-name: postule;
+      animation-duration: 500ms;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+      opacity: .9;
 
       .tasks-card-avatar {
         background-color: #00C853;
@@ -58,7 +92,8 @@
       }
 
       &:hover {
-        box-shadow: 0px 1px 8px 0px rgba(0, 200, 83, .4);
+        box-shadow: 0px 1px 8px 0px rgba(0, 200, 83, .8) !important;
+        animation: none;
         background: rgba(255, 255, 255, 1);
         opacity: 1;
 
@@ -117,6 +152,11 @@
     &-move-right {
       right: -12px;
     }
+  }
+
+  &-add {
+    height: 36px !important;
+    margin-top: 1em !important; 
   }
 }
 
