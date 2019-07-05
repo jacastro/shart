@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import uuid from 'uuid/v1';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
@@ -27,6 +28,8 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import IconButton from '@material-ui/core/IconButton';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import LinkUI from '@material-ui/core/Link';
 
 import AddIcon from '@material-ui/icons/Add';
 import ArrowBack from '@material-ui/icons/ArrowBack';
@@ -298,15 +301,59 @@ export default class ProjectTasks extends React.Component {
     const taskData = phaseData.tasks[selectedTaskId] || {};
     const statusData = statuses[selectedStatusId] || {};
 
-    console.log(project, postulants);
+    const phases = project.phases.map((phase, id) => {
+      const tasks = phase.tasks.map((task) => {
+        const wasPostuled = ProjectUtils.wasPostuled(project, me.id, phase.id, task.id);
+        return {
+          ...task,
+          wasPostuled,
+          postulantsList: ProjectUtils.getPostulants(project, phase.id, task.id),
+          isMyTask: (!task.collaborator && isMyProject) || (task.collaborator && task.collaborator.id === me.id),
+          canApply: !isMyProject && !wasPostuled && !task.collaborator && task.status === 'todo' && project.need_collaborations,
+        };
+      });
+      return {
+        ...phase,
+        tasks,
+        canApplyCount: tasks.filter(task => task.canApply).length,
+        postulantsCount: tasks.filter(task => task.postulantsList.length > 0).length,
+      };
+    });
+
+    console.log(phases);
 
     return (
       <div>
-        <Typography gutterBottom variant="h2" color="textSecondary" align="left">{project.name}</Typography>
+        <Breadcrumbs gutterBottom aria-label="Breadcrumb">
+          {isMyProject ? (
+            <Link to="/me/projects">
+              <LinkUI color="inherit">
+                Mis proyectos
+              </LinkUI>
+            </Link>
+          ) : (
+            <Link to={`/search/category/${project.category}`}>
+              <LinkUI color="inherit">
+                {`Proyectos categoría ${project.category}`}
+              </LinkUI>
+            </Link>
+          )}
+          <Link to={`/projects/${project.id}`}>
+            <LinkUI color="inherit">
+              {project.name}
+            </LinkUI>
+          </Link>
+          <Typography color="textPrimary">Tareas</Typography>
+        </Breadcrumbs>
+        <Typography variant="h2" color="textSecondary" align="left">{project.name}</Typography>
+        <Typography gutterBottom variant="h6" color="textPrimary" align="left">
+          {isMyProject ? 'Sos dueño de este proyecto' : `Un proyecto de ${project.owner.user_name}`}
+        </Typography>
+        <br />
         <div>
-          {project.phases.map(({ id, name, tasks }, phaseId) => {
+          {phases.map(({ id, name, tasks, canApplyCount, postulantsCount }, phaseId) => {
             phaseActive = project.current_phase === id ? false : phaseActive;
-            return (
+            return (tasks.length > 0 || isMyProject) && (
               <ExpansionPanel>
                 <ExpansionPanelSummary
                   expandIcon={<ExpandMoreIcon />}
@@ -314,6 +361,8 @@ export default class ProjectTasks extends React.Component {
                   id={id}
                 >
                   <Typography>{name}</Typography>
+                  {canApplyCount > 0 && !isMyProject && <span className="tasks-phase-postule-apply">{`${canApplyCount} tareas para postularme`}</span>}
+                  {postulantsCount > 0 && isMyProject && <span className="tasks-phase-postule-list">{`${postulantsCount} tareas con postulantes para revisar`}</span>}
                   {phaseActive && <CheckCircleOutline className="tasks-phase-icon" />}
                   {project.current_phase === id && <CheckCircle className="tasks-phase-icon active" />}
                 </ExpansionPanelSummary>
@@ -326,10 +375,7 @@ export default class ProjectTasks extends React.Component {
                             {status.name}
                           </Typography>
                           {tasks.map((task, taskIndex) => {
-                            const wasPostuled = ProjectUtils.wasPostuled(project, me.id, id, task.id);
-                            const postulants = ProjectUtils.getPostulants(project, id, task.id);
-                            const isMyTask = (!task.collaborator && isMyProject) || (task.collaborator && task.collaborator.id === me.id);
-                            const canApply = !isMyProject && !wasPostuled && !task.collaborator && task.status === 'todo' && project.need_collaborations;
+                            const { wasPostuled, postulantsList, isMyTask, canApply } = task;
                             return (
                               task.status === status.id ? (
                                 <div className={`tasks-card ${isMyTask ? 'my-card' : ''} ${canApply ? 'can-apply' : ''}`}>
@@ -345,7 +391,7 @@ export default class ProjectTasks extends React.Component {
                                     )}
                                     <div className="tasks-card-type task">Tarea</div>
                                     {isMyTask && <div className="tasks-card-type owner">Responsable</div>}
-                                    {isMyProject && postulants.length > 0 && <div className="tasks-card-type postulants">{postulants.length}</div>}
+                                    {isMyProject && postulantsList.length > 0 && <div className="tasks-card-type postulants">{postulantsList.length}</div>}
                                     {!isMyProject && wasPostuled && <div className="tasks-card-type postuled">Postulado</div>}
                                     <Typography>{task.name}</Typography>
                                   </div>
@@ -363,9 +409,11 @@ export default class ProjectTasks extends React.Component {
                               ) : null
                             );
                           })}
+                          {isMyProject && tasks.length === 0 && <Typography variant="body2" color="textSecondary" align="center">Aún no tienes tareas en la fase</Typography>}
                           {isMyProject && (
-                            <Fab color="primary" aria-label="Add" className="tasks-add" onClick={() => this.handleClickCreateOpen(phaseId, statusIndex)}>
+                            <Fab variant="extended" color="primary" aria-label="Add" className="tasks-add" onClick={() => this.handleClickCreateOpen(phaseId, statusIndex)}>
                               <AddIcon />
+                              Agregar una tarea
                             </Fab>
                           )}
                         </div>
@@ -373,12 +421,14 @@ export default class ProjectTasks extends React.Component {
                     ))}
                   </Grid>
                 </ExpansionPanelDetails>
-                <Divider />
-                <ExpansionPanelActions>
-                  {project.current_phase !== id && phaseId !== 0 && phaseId !== (project.phases.length - 1) && <Button size="small" color="secondary" onClick={() => this.handleDeletePhase(phaseId)}>Eliminar fase</Button>}
-                  {project.current_phase !== id && <Button size="small" onClick={() => this.handleSetCurrentPhase(phaseId)}>Marcar como fase activa</Button>}
-                  <Button size="small" color="primary" onClick={() => this.handleAddPhase(phaseId)}>Agregar una fase</Button>
-                </ExpansionPanelActions>
+                {isMyProject && [
+                  <Divider />,
+                  <ExpansionPanelActions>
+                    {project.current_phase !== id && phaseId !== 0 && phaseId !== (project.phases.length - 1) && <Button size="small" color="secondary" onClick={() => this.handleDeletePhase(phaseId)}>Eliminar fase</Button>}
+                    {project.current_phase !== id && <Button size="small" onClick={() => this.handleSetCurrentPhase(phaseId)}>Marcar como fase activa</Button>}
+                    <Button size="small" color="primary" onClick={() => this.handleAddPhase(phaseId)}>Agregar una fase</Button>
+                  </ExpansionPanelActions>
+                ]}
               </ExpansionPanel>
             );
           })}
