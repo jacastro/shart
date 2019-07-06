@@ -5,18 +5,25 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import ProjectItem from '.';
+import EmptyProjectItem from './empty';
 
 const ProjectList = ({ title, list, loading }) => (
   <div>
     <Typography gutterBottom variant="h2" color="textSecondary" align="left">{title}</Typography>
     {loading ? <CircularProgress /> : (
-      <Grid container spacing={3}>
+      <Grid container spacing={3} justify="center" alignItems="center">
         {
-          list.map((project, index) => (
-            <Grid key={project} item xs={4}>
-              <ProjectItem id={index} {...project} />
+          list.length === 0 ? (
+            <Grid item xs={6}>
+              <EmptyProjectItem id="404" />
             </Grid>
-          ))
+          ) : (
+            list.map((project, index) => (
+              <Grid key={project} item xs={4}>
+                <ProjectItem id={index} {...project} />
+              </Grid>
+            ))
+          )
         }
       </Grid>
     )}

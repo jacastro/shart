@@ -39,7 +39,7 @@ const ProjectItem = ({ id, name, description, category, images, tags, owner }) =
         </CardActionArea>
       </Link>
       <CardActions>
-        { owner.id === user.id
+        { (owner || {}).id === user.id
           ? (
             <Button size="small" color="primary" href={goTo}>
           Ver mi proyecto
