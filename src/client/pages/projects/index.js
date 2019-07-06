@@ -14,6 +14,7 @@ import ProjectList from '../../components/projectItem/list';
 const titleType = {
   category: id => `Proyectos con categoría ${(categories.find(category => category.value === id) || {}).label || id}`,
   tags: id => `Proyectos de etiqueta ${(tags.find(tag => tag.value === id) || {}).label || id}`,
+  region: id => `Proyectos en  ${id}`,
 };
 
 class ProjectsPage extends React.Component {

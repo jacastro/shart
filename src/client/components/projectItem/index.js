@@ -10,8 +10,9 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
 import AppContext from '../../context';
+import PlaceIcon from '@material-ui/icons/Place';
 
-const ProjectItem = ({ id, name, description, category, images, tags, owner }) => {
+const ProjectItem = ({ id, name, description, category, images, tags, owner, region }) => {
   const { user } = useContext(AppContext);
   const goTo = `/projects/${id}`;
   return (
@@ -35,6 +36,7 @@ const ProjectItem = ({ id, name, description, category, images, tags, owner }) =
           </CardContent>
           <CardContent>
             {tags.map(tag => <Chip label={tag} />)}
+            {<Chip icon={<PlaceIcon />} label={region} />}
           </CardContent>
         </CardActionArea>
       </Link>

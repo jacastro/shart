@@ -231,7 +231,7 @@ class Project extends React.Component {
                     )}
                     <ListItem>
                       <ListItemText secondary="Ubicación" />
-                      <Link to={`/search/places/${project.region}`}>
+                      <Link to={`/search/region/${project.region}`}>
                         <Chip
                           className="card-project-tags"
                           label={project.region}
