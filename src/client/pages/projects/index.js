@@ -12,8 +12,9 @@ import './styles.scss';
 import ProjectList from '../../components/projectItem/list';
 
 const titleType = {
-  tags: id => `Proyectos con etiqueta ${categories.find(category => category.value === id).label}`,
-  category: id => `Proyectos de categoría ${tags.find(tag => tag.value === id).label}`,
+  category: id => `Proyectos con categoría ${(categories.find(category => category.value === id) || {}).label || id}`,
+  tags: id => `Proyectos de etiqueta ${(tags.find(tag => tag.value === id) || {}).label || id}`,
+  region: id => `Proyectos en  ${id}`,
 };
 
 class ProjectsPage extends React.Component {
