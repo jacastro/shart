@@ -8,6 +8,7 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
+import Badge from '@material-ui/core/Badge';
 
 const ProjectList = ({ title, list, loading, children }) => (
   <React.Fragment>
@@ -20,15 +21,12 @@ const ProjectList = ({ title, list, loading, children }) => (
         {list.map(project => (
           <GridListTile key={project.id}>
             <Link to={`/projects/${project.id}`}>
-              <img className="MuiGridListTile-imgFullWidth" src={project.images[0]} alt={project.name} />
+              <Badge color="secondary" badgeContent={project.rating}>
+                <img className="MuiGridListTile-imgFullWidth" src={project.images[0]} alt={project.name} />
+              </Badge>
               <GridListTileBar
                 title={project.name.toUpperCase()}
                 subtitle={`Creado por @${project.owner.user_name}`}
-                actionIcon={(
-                  <IconButton aria-label="Información del Proyecto" color="secondary" href={`/projects/${project.id}`}>
-                    <InfoIcon />
-                  </IconButton>
-                )}
               />
             </Link>
           </GridListTile>
