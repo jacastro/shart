@@ -141,7 +141,12 @@ class Project extends React.Component {
                   </Link>,
                   <IconButton key="2" aria-label="Delete" onClick={() => this.setState({ openDialog: true })}>
                     <DeleteForeverIcon />
-                  </IconButton>
+                  </IconButton>,
+                  <Rating
+                    className="card-project-action"
+                    value={project.rating}
+                    editing={false}
+                  />
                 ] : (
                   <Rating
                     className="card-project-action"
