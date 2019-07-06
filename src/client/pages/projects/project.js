@@ -40,9 +40,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
+import Rating from 'material-ui-rating';
 import AppContext from '../../context';
 
-import { get, del } from '../../services';
+import { get, del, post } from '../../services';
 
 import { phases } from '../../../config';
 import ProjectTaskList from '../../components/projectTaskList';
@@ -93,6 +94,20 @@ class Project extends React.Component {
       });
   }
 
+  handleRate(project, value) {
+    const rating = { rating: value };
+    console.log(value, rating)
+    post(`/projects/${project.id}/rate`, rating)
+      .then(() => {
+        project.rating = value;
+        this.setState({ project });
+      })
+      .catch((error) => {
+        console.log(error.response);
+        this.setState({ project });
+      });
+  }
+
   render() {
     const { project, images, isMyProject, openDialog } = this.state;
 
@@ -119,22 +134,23 @@ class Project extends React.Component {
             <Card className="card-project">
               <CardHeader
                 action={isMyProject ? [
-                  <Link to={`/me/projects/modify/${project.id}`}>
+                  <Link key="1" to={`/me/projects/modify/${project.id}`}>
                     <IconButton aria-label="Edit">
                       <EditIcon />
                     </IconButton>
                   </Link>,
-                  <IconButton aria-label="Delete" onClick={() => this.setState({ openDialog: true })}>
+                  <IconButton key="2" aria-label="Delete" onClick={() => this.setState({ openDialog: true })}>
                     <DeleteForeverIcon />
                   </IconButton>
-                ] : [
-                  <IconButton className="card-project-action" aria-label="Add to favorites">
-                    <FavoriteIcon />
-                  </IconButton>,
-                  <IconButton className="card-project-action" aria-label="Compartir">
-                    <ShareIcon />
-                  </IconButton>
-                ]}
+                ] : (
+                  <Rating
+                    className="card-project-action"
+                    value={project.rating}
+                    max={5}
+                    onChange={(value) => this.handleRate(project, value)}
+                  />
+                )
+                }
                 title={project.name}
               />
               <Grid container>
@@ -217,8 +233,8 @@ class Project extends React.Component {
                     {project.tags.length > 0 && (
                       <ListItem>
                         <ListItemText secondary="Tags" />
-                        {project.tags.map((tag, index) => (
-                          <Link to={`/search/tags/${tag}`}>
+                        {project.tags.map(tag => (
+                          <Link key={tag} to={`/search/tags/${tag}`}>
                             <Chip
                               key={`tag-${tag}`}
                               color="secondary"
