@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'https://uade-seminario-2-tpo.herokuapp.com/api';
+const baseUrl = process.env.API_URI || 'https://shart-online.herokuapp.com/api';
 
 export const get = (url, data) => axios.get(`${baseUrl}${url}`, { params: data });
 
