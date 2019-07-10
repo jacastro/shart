@@ -1,9 +1,5 @@
 import React from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
 import AppContext from '../../context';
-import ProjectItem from '../../components/projectItem';
 import { categories, tags } from '../../../config';
 
 import { get } from '../../services';

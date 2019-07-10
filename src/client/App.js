@@ -16,6 +16,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Container from '@material-ui/core/Container';
 
 import AppContext from './context';
 
@@ -32,7 +33,7 @@ import Project from './pages/projects/project';
 import ProjectTasks from './pages/tasks';
 
 import Header from './layout/header';
-
+import Footer from './layout/footer';
 import { get } from './services';
 
 import './app.scss';
@@ -145,7 +146,7 @@ class App extends Component {
             </Drawer>
             <div role="presentation" onClick={this.toggleDrawer(false)} onKeyDown={this.toggleDrawer(false)}>
               <Header />
-              <main className="main">
+              <Container className="main">
                 {user != null ? (
                   <React.Fragment>
                     <Route path="/" component={Home} exact />
@@ -163,7 +164,8 @@ class App extends Component {
                     <Route path="/users/:id" component={MeProfile} exact />
                   </React.Fragment>
                 ) : <CircularProgress />}
-              </main>
+              </Container>
+              <Footer />
             </div>
           </Router>
         </AppContext.Provider>

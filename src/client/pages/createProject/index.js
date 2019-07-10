@@ -139,7 +139,7 @@ const ModifyProjectPage = ({ data }) => {
   }
 
   return (
-    <div className="create-prject">
+    <div className="create-project">
       <Stepper activeStep={activeStep}>
         {steps.map((step) => {
           const stepProps = {};

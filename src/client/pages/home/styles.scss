@@ -11,18 +11,22 @@
 }
 
 .container-home {
-  max-width: 100% !important;
-  position: absolute !important;
-  left: 0 !important;
-  right: 0 !important;
+  //max-width: 100% !important;
+  //position: absolute !important;
+  //left: 0 !important;
+  //right: 0 !important;
 }
 
 .MuiBadge-badge {
   top: 5% !important;
   right: 20px !important;
-  border: 2px solid;
+  border: 1px solid;
 }
 
 .MuiGridListTile-imgFullWidth {
-  transform: translateY(0%) !important;
+  //transform: translateY(0%) !important;
+  //top: 0% !important;
+}
+.inside-badge{
+  top: -230px;
 }
