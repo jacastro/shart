@@ -211,7 +211,7 @@ class Project extends React.Component {
                       </ListItem>
                     </Link>
                     {project.project_leader && (
-                      <Link to={`/profile/${project.project_leader.id}`}>
+                      <Link to={`/profile/${project.project_leader.user.id}`}>
                         <ListItem button>
                           <ListItemAvatar>
                             <Avatar>
