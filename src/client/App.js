@@ -155,7 +155,7 @@ class App extends Component {
                     <Route path="/me/projects/collaborations" component={CollaborationsOfUser} exact />
                     <Route path="/me/projects/create" component={CreateProject} exact />
                     <Route path="/me/projects/modify/:id" component={EditProjectPage} exact />
-                    <Route path="/profile/:id" component={Profile} exact />
+                    <Route path="/profile/:id" component={MeProfile} exact />
                     <Route path="/profile/:id/projects" component={ProjectOfUser} exact />
                     <Route path="/projects" component={Projects} exact />
                     <Route path="/projects/:id" component={Project} exact />

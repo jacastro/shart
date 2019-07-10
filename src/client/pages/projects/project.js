@@ -182,7 +182,7 @@ class Project extends React.Component {
                     </List>
                     <Divider />
                     <List>
-                      <Link to={`/profile/${project.owner.id}`}>
+                      <Link to={`/profile/${project.project_leader.user.id}`}>
                         <ListItem button>
                           <ListItemAvatar>
                             <Avatar>
