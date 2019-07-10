@@ -182,7 +182,7 @@ class Project extends React.Component {
                     </List>
                     <Divider />
                     <List>
-                      <Link to={`/profile/${project.project_leader.user.id}`}>
+                      <Link to={`/profile/${project.owner.id}`}>
                         <ListItem button>
                           <ListItemAvatar>
                             <Avatar>
@@ -193,7 +193,7 @@ class Project extends React.Component {
                         </ListItem>
                       </Link>
                       {project.project_leader && (
-                        <Link to={`/profile/${project.project_leader.id}`}>
+                        <Link to={`/profile/${project.project_leader.user.id}`}>
                           <ListItem button>
                             <ListItemAvatar>
                               <Avatar>
