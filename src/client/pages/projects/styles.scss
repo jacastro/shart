@@ -92,6 +92,9 @@ a {
 .mr15px{
   margin-right: 15px;
 }
+.pt15px{
+  padding-top: 15px;
+}
 .txtTop{
   vertical-align: text-top;
 }
@@ -106,4 +109,15 @@ a {
 
 .postulations {
   background-color: #8E24AA !important;
+}
+.create-project,
+.user-profile,
+.pycontainer{
+  margin: 32px 0;
+}
+.MuiChip-root{
+  margin: 0 5px 5px 0;
+}
+.MuiBreadcrumbs-root{
+  margin-bottom: 15px !important;
 }

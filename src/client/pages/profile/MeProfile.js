@@ -31,7 +31,7 @@ class MeProfile extends React.Component {
   render (){
     const { user } = this.state;
     return (
-      <div>
+      <div className="user-profile">
         { user ? <Profile me={user.me} email={user.email} user_name={user.user_name} /> : null }
       </div>
     );

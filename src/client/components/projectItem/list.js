@@ -3,13 +3,12 @@ import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
 import ProjectItem from '.';
 import EmptyProjectItem from './empty';
 
 const ProjectList = ({ title, list, loading }) => (
-  <div>
-    <Typography gutterBottom variant="h2" color="textSecondary" align="left">{title}</Typography>
+  <div className="pycontainer">
+    <Typography gutterBottom variant="h3" component="h2" color="textSecondary" align="left">{title}</Typography>
     {loading ? <CircularProgress /> : (
       <Grid container spacing={3} justify="center" alignItems="center">
         {

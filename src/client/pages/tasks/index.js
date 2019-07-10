@@ -144,7 +144,7 @@ export default class ProjectTasks extends React.Component {
     if (postulant) {
       project.postulants = project.postulants.filter(aPostulant => aPostulant.id !== postulant.id);
       this.setState({ project });
-      
+
       del(`/projects/${project.id}/postulants/${postulant.id}`);
     } else {
       const postulantData = {
@@ -323,7 +323,7 @@ export default class ProjectTasks extends React.Component {
     console.log(phases);
 
     return (
-      <div>
+      <div className="pycontainer">
         <Breadcrumbs gutterBottom aria-label="Breadcrumb">
           {isMyProject ? (
             <Link to="/me/projects">

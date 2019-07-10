@@ -6,8 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
-import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
+import StarRateIcon from '@material-ui/icons/StarRate';
 import Badge from '@material-ui/core/Badge';
 
 const ProjectList = ({ title, list, loading, children }) => (
@@ -17,18 +16,17 @@ const ProjectList = ({ title, list, loading, children }) => (
       {children}
     </Typography>
     {loading ? <CircularProgress /> : (
-      <GridList cols={3.5} cellHeight={280}>
+      <GridList component="div" cols={3.5} cellHeight={280}>
         {list.map(project => (
-          <GridListTile key={project.id}>
-            <Link to={`/projects/${project.id}`}>
-              <Badge color="secondary" badgeContent={project.rating}>
-                <img className="MuiGridListTile-imgFullWidth" src={project.images[0]} alt={project.name} />
-              </Badge>
-              <GridListTileBar
-                title={project.name.toUpperCase()}
-                subtitle={`Creado por @${project.owner.user_name}`}
-              />
-            </Link>
+          <GridListTile component="a" key={project.id} cols={1} rows={1} href={`/projects/${project.id}`}>
+            <img src={project.images[0]} alt={project.name} />
+            <GridListTileBar
+              title={project.name.toUpperCase()}
+              subtitle={`Creado por @${project.owner.user_name}`}
+              actionIcon={
+                <Badge className="inside-badge" color="secondary" badgeContent={project.rating} />
+              }
+            />
           </GridListTile>
         ))}
       </GridList>
