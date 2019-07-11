@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 
 const ProjectSchema = new Schema({
   id: { type: String, default: uuid.v1 },
-  name: { type: String, required: true, maxlength: 50 },
+  name: { type: String, required: true, maxlength: 500 },
   description: { type: String, required: true, maxlength: 5000 },
   category: { type: String, required: true, maxlength: 100 },
   current_phase: { type: String, required: true, maxlength: 50 },
