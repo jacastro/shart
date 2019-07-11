@@ -17,22 +17,15 @@ Seed data
 
 ```sh
 
-db.users.find() view all
-# remove all
 db.users.remove({})
 db.mes.remove({})
 db.clients.remove({})
 db.projects.remove({})
-#  db.users.find({ email: 'dummy1@gmail.com' })
-#  db.users.find({ user_name: { $regex: 'o$' } })
-
-## Mes
-###############################
 
 var o1 = ObjectId();
 var me1 = ObjectId();
 db.users.insert({ _id: o1, id: 'ae4cc7ac-0052-47e0-b2b1-499c6461e509', email: 'matiasberrueta@gmail.com', user_name: 'mberrueta' })
-db.mes.insert({ _id: me1, id: 'ea1195ad-2732-49c4-a753-bc0eb6ba8180', full_name: 'Matias Berrueta', phone: '+54(011)-3455477', biography: 'Herreria', address: 'Av Independencia 1235', city: 'Buenos Aires', postal_code: '2345', tags: ['Herreria', 'Diseño'], user: o1 })
+db.mes.insert({ _id: me1, id: 'ea1195ad-2732-49c4-a753-bc0eb6ba8180', full_name: 'Matias Berrueta', phone: '+54(011)-3455477', biography: 'Herreria', address: 'Av Independencia 1235', city: 'Buenos Aires', postal_code: '2345', tags: ['toys', 'star-wars'], user: o1 })
 
 var o2 = ObjectId();
 var me2 = ObjectId();
@@ -42,7 +35,7 @@ db.mes.insert({ _id: me2, id: '9d8628e3-189a-4637-a470-44b2b6a55d84', full_name:
 var o3 = ObjectId();
 var me3 = ObjectId();
 db.users.insert({ _id: o3, id: '902d84c4-54aa-403d-953c-53be2206f130', email: 'otero.florencia96@gmail.com', user_name: 'flor' })
-db.mes.insert({ _id: me3, id: 'fae57ec3-f23c-4464-8c5d-9427a37bc811', full_name: 'Florencia Otero', phone: '+54(011)-7895477', biography: 'Modelar arcilla', address: 'Carlos Calvo 2464', city: 'Buenos Aires', postal_code: '1224', tags: ['toys', 'jueguetes'], user: o3 })
+db.mes.insert({ _id: me3, id: 'fae57ec3-f23c-4464-8c5d-9427a37bc811', full_name: 'Florencia Otero', phone: '+54(011)-7895477', biography: 'Modelar arcilla', address: 'Carlos Calvo 2464', city: 'Buenos Aires', postal_code: '1224', tags: ['toys', 'marvel'], user: o3 })
 
 var o4 = ObjectId();
 var me4 = ObjectId();
@@ -80,9 +73,6 @@ db.users.insert({ _id: o10, id: 'dd11c073-7dba-4914-8c99-6272afb5481e', email: '
 db.mes.insert({ _id: me10, id: '998c6921-6736-4f4a-93b5-e639ce5830c0', full_name: 'Augusto Zenon Moreno', phone: '+54(939)-2000302', biography: 'Lic. en diseño industrial', address: 'Avenida Zambrano No. 761', city: 'Jujuy', postal_code: '78706', tags: ['Diseño', 'Pintura'], user: o10 })
 
 
-## Clients
-###############################
-
 o = ObjectId();
 db.users.insert({ _id: o, id: '0f2e83e4-4d0a-4725-a461-5cfeee8deaef', email: 'hcorvay2@gmail.com', user_name: 'hcorvay2' })
 db.clients.insert({ id: '56c5c2b8-b6db-444f-a4a8-033a339a9777', full_name: 'Nahuel A. Cameno Orvay', phone: '+54(242)-8888905', user: o })
@@ -106,10 +96,6 @@ db.clients.insert({ id: '624c74db-d902-47c5-8959-6412d8554b40', full_name: 'Aman
 o = ObjectId();
 db.users.insert({ _id: o, id: 'aecf14fa-e143-4485-b90b-269b7e3075d0', email: 'cbflorencia1@gmail.com', user_name: 'cbflorencia1' })
 db.clients.insert({ id: '55dc2902-dca9-4441-98bd-cfff7b3f910b', full_name: 'Florencia Costanzo Albite', phone: '+54(343)-9445764', user: o })
-
-## Projects
-###############################
-
 
 db.projects.insert({
   id: '3d80c2d5-6e56-4301-87d6-5394865d2e39',
@@ -187,7 +173,7 @@ db.projects.insert({
       status: 'todo',
       collaborator: me8
     }
-  ],
+  ]
 })
 
 db.projects.insert({
@@ -854,5 +840,463 @@ db.projects.insert({
   ]
 })
 
+db.projects.insert({
+  id: 'c7896de5-ef56-4150-8e0d-7c5596320138',
+  name: 'X-RAY Trooper by KosmoToys',
+  description: 'Figura coleccionable en resina. Stromptrooper en resina transparente con esqueleto interno en contraste.',
+  category: 'toys',
+  current_phase: 'init',
+  start_date: new Date('2019-12-1'),
+  end_date: new Date('2019-12-18'),
+  images: [
+    'https://images.vinylpulse.com/vp_pics/from_windows_live_writer/487440fd5429_C7C7/44784918564_d80e478de0_o.jpg',
+    'https://i1.wp.com/theconventioncollective.com/wp-content/uploads/2018/11/Image-DKE-Xray-trooper-DCON-2.jpg?w=696',
+    'https://scontent-dfw5-2.cdninstagram.com/vp/fb5183474131216b8bc8174cb7088405/5D7DCAB9/t51.2885-15/e35/62146139_105626920618706_261984992462814823_n.jpg?_nc_ht=scontent-ort2-2.cdninstagram.com&se=7&ig_cache_key=MjA1ODA4Mjg0NzA5ODE5OTQ1MA%3D%3D.2',
+    'https://scontent-lax3-1.cdninstagram.com/vp/f32ad44828d4165c999ac859ff7cd37f/5D8C9824/t51.2885-15/e35/61787820_2316095115137855_3044971487668394392_n.jpg?_nc_ht=scontent-lax3-1.cdninstagram.com&se=7&ig_cache_key=MjA2NTM4NzU4NDQ3NDY1NjkxOA%3D%3D.2',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR13_zlap4opiWJeYfJKXxV8b336K8LzRe9uoAh3mDI8PPmnhMzqw'
+
+    ],
+  need_collaborations: false,
+  finished: false,
+  project_leader: me3,
+  owner: o2,
+  promoted_level: '',
+  rating: 1,
+  region: 'bsas',
+  require_shipping: false,
+  shipping_address: '',
+  tags: ['toys', 'fun', 'star-wars', 'handicraft', 'gift'],
+  view_counts: 1,
+  phases: [
+    {
+      id: 'init',
+      name: 'Inicio'
+    },
+    {
+      id: 'design',
+      name: 'Diseño',
+      tasks: [
+        {
+          id: '01',
+          name: 'Envío',
+          status: 'todo'
+        }
+      ]
+    },
+    {
+      id: 'development',
+      name: 'Desarrollo',
+      tasks: [
+        {
+          id: '02',
+          name: 'Desarrollo',
+          status: 'todo'
+        }
+      ]
+    },
+    {
+      id: 'decoration',
+      name: 'Decoración'
+    },
+    {
+      id: 'ship',
+      name: 'Envío'
+    },
+    {
+      id: 'final',
+      name: 'Fin'
+    }
+  ]
+})
+
+db.projects.insert({
+  id: '1e10bf70-82dc-43eb-9f15-58becf52c3dc',
+  name: 'Caja Set Patrulla Canina Paw Patrol Vehiculos Friccion',
+  description: 'Muñecos Paw Patrol + Auto / vehículo a fricción. EL JUEGO COMPLETO DE 6 MODELOS DIFERENTES',
+  category: 'toys',
+  current_phase: 'init',
+  start_date: new Date('2019-09-21'),
+  end_date: new Date('2019-12-18'),
+  images: [
+    'https://http2.mlstatic.com/caja-set-patrulla-canina-paw-patrol-vehiculos-friccion-D_NQ_NP_855618-MLA31363745243_072019-F.webp'
+    ],
+  need_collaborations: true,
+  finished: false,
+  project_leader: me4,
+  owner: o3,
+  promoted_level: '',
+  rating: 1,
+  region: 'bsas',
+  require_shipping: false,
+  shipping_address: '',
+  tags: ['toys', 'fun', 'patrol', 'gift'],
+  view_counts: 1,
+  phases: [
+    {
+      id: 'init',
+      name: 'Inicio'
+    },
+    {
+      id: 'design',
+      name: 'Diseño',
+      tasks: [
+        {
+          id: '01',
+          name: 'Envío',
+          status: 'todo'
+        }
+      ]
+    },
+    {
+      id: 'development',
+      name: 'Desarrollo',
+      tasks: [
+        {
+          id: '02',
+          name: 'Desarrollo',
+          status: 'todo'
+        }
+      ]
+    },
+    {
+      id: 'decoration',
+      name: 'Decoración'
+    },
+    {
+      id: 'ship',
+      name: 'Envío'
+    },
+    {
+      id: 'final',
+      name: 'Fin'
+    }
+  ]
+});
+
+db.projects.insert({
+  id: 'd7f43877-c1e5-4aca-a305-f15ea0ef9515',
+  name: 'Cubo Didactico 2 Vias Con Reloj Abaco Madera Cubeta',
+  description: 'Cubo Didáctico con 5 actividades para que el niño estimule su Aprendizaje y movimientos motrices.\nCon Divertidos colores para atraer su atencion.\nBuscacamino, Abaco Contador con 40 unidades, Reloj, Prono de 2 Vías, entre otros\nMedidas: 15 cm. x 15 cm. x 15 cm. Aprox\nMaterial: Madera',
+  category: 'toys',
+  current_phase: 'init',
+  start_date: new Date('2020-02-11'),
+  end_date: new Date('2020-03-18'),
+  images: [
+    'https://http2.mlstatic.com/prono-didactico-cubo-2-vias-con-reloj-abaco-madera-cubeta-D_NQ_NP_748404-MLA31128458593_062019-F.webp',
+    'https://http2.mlstatic.com/prono-didactico-cubo-2-vias-con-reloj-abaco-madera-cubeta-D_NQ_NP_984478-MLA31128444467_062019-F.webp'
+
+    ],
+  need_collaborations: true,
+  finished: false,
+  project_leader: me5,
+  owner: o4,
+  promoted_level: '',
+  rating: 1,
+  region: 'bsas',
+  require_shipping: false,
+  shipping_address: '',
+  tags: ['toys', 'fun', 'madera', 'gift'],
+  view_counts: 1,
+  phases: [
+    {
+      id: 'init',
+      name: 'Inicio'
+    },
+    {
+      id: 'design',
+      name: 'Diseño',
+      tasks: [
+        {
+          id: '01',
+          name: 'Envío',
+          status: 'todo'
+        }
+      ]
+    },
+    {
+      id: 'development',
+      name: 'Desarrollo',
+      tasks: [
+        {
+          id: '02',
+          name: 'Desarrollo',
+          status: 'todo'
+        }
+      ]
+    },
+    {
+      id: 'decoration',
+      name: 'Decoración'
+    },
+    {
+      id: 'ship',
+      name: 'Envío'
+    },
+    {
+      id: 'final',
+      name: 'Fin'
+    }
+  ]
+});
+
+db.projects.insert({
+  id: '72b1b190-1dd8-4680-a6a4-00eb48f0e5a5',
+  name: 'Tren De Madera Didactico Para Niños Gateo Coordinacion',
+  description: '- Compuesto de una Locomotora y 2 Vagones\n- Sumamente Colorido\n- Estimula el arrastre, Gateo y primeros pasos en los niños\n- Desarrolla el Pensamiento Lógico\n- Favorece la coordinación visual y motora\n- Material: Madera y Metal\n- Largo Total: 40 cm. (Locomotora + 2 vagones)\n- Largo por vagon: 12 cm. Aprox.\n- Ancho: 7 cm. Aprox.\n- Altura: 9 cm. Aprox.\n- Para niños mayores de 3 Años',
+  category: 'toys',
+  current_phase: 'init',
+  start_date: new Date('2020-02-11'),
+  end_date: new Date('2020-03-18'),
+  images: [
+    'https://http2.mlstatic.com/tren-de-madera-didactico-para-ninos-gateo-coordinacion-D_NQ_NP_999345-MLA31066715718_062019-F.webp'
+    ],
+  need_collaborations: true,
+  finished: false,
+  project_leader: me5,
+  owner: o4,
+  promoted_level: '',
+  rating: 1,
+  region: 'bsas',
+  require_shipping: false,
+  shipping_address: '',
+  tags: ['toys', 'fun', 'madera', 'gift'],
+  view_counts: 1,
+  phases: [
+    {
+      id: 'init',
+      name: 'Inicio'
+    },
+    {
+      id: 'design',
+      name: 'Diseño',
+      tasks: [
+        {
+          id: '01',
+          name: 'Envío',
+          status: 'todo'
+        }
+      ]
+    },
+    {
+      id: 'development',
+      name: 'Desarrollo',
+      tasks: [
+        {
+          id: '02',
+          name: 'Desarrollo',
+          status: 'todo'
+        }
+      ]
+    },
+    {
+      id: 'decoration',
+      name: 'Decoración'
+    },
+    {
+      id: 'ship',
+      name: 'Envío'
+    },
+    {
+      id: 'final',
+      name: 'Fin'
+    }
+  ]
+});
+
+db.projects.insert({
+  id: 'ef4c13db-e508-4bf7-90a8-1b73d21b32d7',
+  name: 'Robot Articulado Madera Transformer Auto',
+  description: 'Robot Madera Transformer\n- Medidas: 15 cm altura\n- Material: Madera excelente terminación.\n- Articulación interna con elástico.',
+  category: 'toys',
+  current_phase: 'init',
+  start_date: new Date('2020-03-11'),
+  end_date: new Date('2020-04-18'),
+  images: [
+    'https://http2.mlstatic.com/robot-articulado-madera-transformer-auto-D_NQ_NP_905831-MLA31130780032_062019-F.webp',
+    'https://http2.mlstatic.com/robot-articulado-madera-transformer-auto-D_NQ_NP_762896-MLA27464704219_052018-F.webp',
+    'https://http2.mlstatic.com/robot-articulado-madera-transformer-auto-D_NQ_NP_820835-MLA31130758341_062019-F.webp'
+
+    ],
+  need_collaborations: true,
+  finished: false,
+  project_leader: me5,
+  owner: o4,
+  promoted_level: '',
+  rating: 1,
+  region: 'bsas',
+  require_shipping: false,
+  shipping_address: '',
+  tags: ['toys', 'fun', 'madera', 'gift'],
+  view_counts: 1,
+  phases: [
+    {
+      id: 'init',
+      name: 'Inicio'
+    },
+    {
+      id: 'design',
+      name: 'Diseño',
+      tasks: [
+        {
+          id: '01',
+          name: 'Envío',
+          status: 'todo'
+        }
+      ]
+    },
+    {
+      id: 'development',
+      name: 'Desarrollo',
+      tasks: [
+        {
+          id: '02',
+          name: 'Desarrollo',
+          status: 'todo'
+        }
+      ]
+    },
+    {
+      id: 'decoration',
+      name: 'Decoración'
+    },
+    {
+      id: 'ship',
+      name: 'Envío'
+    },
+    {
+      id: 'final',
+      name: 'Fin'
+    }
+  ]
+});
+
+db.projects.insert({
+  id: '74b18085-72e2-4b99-83ac-0101a8a95f1d',
+  name: 'Marvel Martillo Thor',
+  description: 'Especificaciones del producto\nJuego de herramientas Martillo Marvel Thor\nMercancía de los vengadores de Marvel con licencia oficial\nUna creación ThinkGeek y exclusiva.\nJuego de herramientas de 44 piezas en una caja moldeada que se parece al martillo de Thor\nIncluye\n6 "alicates\nCinta métrica de 10 pies (métrica e imperial) con tapón, clip de cinturón y cordón\n24 enchufes de 1/4 "\nMétrica: 4, 4.5, 5, 5.5, 6, 6.5, 7, 8, 9, 10, 11, 12, 13, 14\nImperial: 5/32, 3/16, 7/32, 1/4, 9/32, 5/16, 11/32, 3/8, 7/16, 1/2\nBarra de extensión de 2 "para enchufes\nDestornillador de trinquete rechoncho 2 en 1 con 6 brocas\nBrocas de 30 mm de doble terminación: PZ2 x H5, PZ3 x H6, PZ1 x H4, PH1 x SL4, PH2 x SL5, PH3 x SL6\n3 1/4 "barra de extensión para bits\nLlave de 6 "\nLlave de trinquete de liberación rápida de 40Cr\n13 onzas martillo de orejas\nNivel\nCuchillo doblado de 4 "(con 5 cuchillas de repuesto)\n4 brocas de herramienta de pinza de freno de accionamiento\nBits de ranura cruzada: PH3, PH3\nBits de ranura: SL5, SL6\nDimensiones: 15 "de alto x 9" de ancho x 6 "de profundidad (cerrado)\nPeso: 5 1/2 libras.',
+  category: 'toys',
+  current_phase: 'init',
+  start_date: new Date('2020-01-01'),
+  end_date: new Date('2020-06-18'),
+  images: [
+    'https://www.gamestop.com/common/images/lbox/150131b.jpg'
+
+    ],
+  need_collaborations: true,
+  finished: false,
+  project_leader: me6,
+  owner: o5,
+  promoted_level: '',
+  rating: 1,
+  region: 'bsas',
+  require_shipping: false,
+  shipping_address: '',
+  tags: ['toys', 'fun', 'marvel', 'gift', 'advengers'],
+  view_counts: 1,
+  phases: [
+    {
+      id: 'init',
+      name: 'Inicio'
+    },
+    {
+      id: 'design',
+      name: 'Diseño',
+      tasks: [
+        {
+          id: '01',
+          name: 'Envío',
+          status: 'todo'
+        }
+      ]
+    },
+    {
+      id: 'development',
+      name: 'Desarrollo',
+      tasks: [
+        {
+          id: '02',
+          name: 'Desarrollo',
+          status: 'todo'
+        }
+      ]
+    },
+    {
+      id: 'decoration',
+      name: 'Decoración'
+    },
+    {
+      id: 'ship',
+      name: 'Envío'
+    },
+    {
+      id: 'final',
+      name: 'Fin'
+    }
+  ]
+});
+
+db.projects.insert({
+  id: 'f2754c55-0ba2-47f8-bac8-6765bfa4bf35',
+  name: 'Marvel Black Widow',
+  description: 'Especificaciones del producto\nThreeA x Marvel: Figura de Escala 1/6 de Black Widow\nFigura a escala 1: 6 diseñada por Ashley Wood\n24 puntos de articulación.\nPresenta un traje de corte a medida y una gabardina de piel sintética.\nDimensiones: 13 "de altura\nIncluye: 3 juegos de manos intercambiables, 2 Glock 17 con fundas, 2 punzones para la muñeca, 1 cabeza intercambiable enmascarada, gabardina de piel sintética.',
+  category: 'toys',
+  current_phase: 'init',
+  start_date: new Date('2020-01-01'),
+  end_date: new Date('2020-06-18'),
+  images: [ 'https://www.gamestop.com/common/images/lbox/156669b.jpg' ],
+  need_collaborations: true,
+  finished: false,
+  project_leader: me6,
+  owner: o5,
+  promoted_level: '',
+  rating: 1,
+  region: 'bsas',
+  require_shipping: false,
+  shipping_address: '',
+  tags: ['toys', 'fun', 'marvel', 'gift', 'advengers'],
+  view_counts: 1,
+  phases: [
+    {
+      id: 'init',
+      name: 'Inicio'
+    },
+    {
+      id: 'design',
+      name: 'Diseño',
+      tasks: [
+        {
+          id: '01',
+          name: 'Envío',
+          status: 'todo'
+        }
+      ]
+    },
+    {
+      id: 'development',
+      name: 'Desarrollo',
+      tasks: [
+        {
+          id: '02',
+          name: 'Desarrollo',
+          status: 'todo'
+        }
+      ]
+    },
+    {
+      id: 'decoration',
+      name: 'Decoración'
+    },
+    {
+      id: 'ship',
+      name: 'Envío'
+    },
+    {
+      id: 'final',
+      name: 'Fin'
+    }
+  ]
+});
+
 db.projects.updateMany({}, { $set: { need_collaborations: true } })
+
 ```
