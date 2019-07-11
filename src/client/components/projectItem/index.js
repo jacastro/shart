@@ -13,6 +13,8 @@ import AppContext from '../../context';
 import PlaceIcon from '@material-ui/icons/Place';
 import Grid from '@material-ui/core/Grid/Grid';
 
+import './styles.scss';
+
 const ProjectItem = ({ id, name, description, category, images, tags, owner, region }) => {
   const { user } = useContext(AppContext);
   const goTo = `/projects/${id}`;
@@ -24,18 +26,18 @@ const ProjectItem = ({ id, name, description, category, images, tags, owner, reg
             image={images[0]}
             title={name}
           />
-          <CardContent>
+          <CardContent className="project-item-content">
             <Typography color="textSecondary" gutterBottom>
               {category}
             </Typography>
             <Typography gutterBottom variant="h5" component="h2">
               {name}
             </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
+            <Typography variant="body2" color="textSecondary" component="p" className="project-item-description">
               {description}
             </Typography>
           </CardContent>
-          <CardContent>
+          <CardContent className="project-item-tags">
             {tags.map(tag => <Chip label={tag} />)}
             {<Chip icon={<PlaceIcon />} label={region} />}
           </CardContent>

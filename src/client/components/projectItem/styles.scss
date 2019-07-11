@@ -1,0 +1,27 @@
+.project-item {
+  &-content {
+    height: 140px;
+    h2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  &-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &-tags {
+    flex-wrap: nowrap;
+    overflow: scroll;
+    display: flex;
+    div:last-child {
+      margin-right: 40px;
+    }
+  }
+}
