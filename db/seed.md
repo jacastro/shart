@@ -25,7 +25,7 @@ db.projects.remove({})
 var o1 = ObjectId();
 var me1 = ObjectId();
 db.users.insert({ _id: o1, id: 'ae4cc7ac-0052-47e0-b2b1-499c6461e509', email: 'matiasberrueta@gmail.com', user_name: 'mberrueta' })
-db.mes.insert({ _id: me1, id: 'ea1195ad-2732-49c4-a753-bc0eb6ba8180', full_name: 'Matias Berrueta', phone: '+54(011)-3455477', biography: 'Herreria', address: 'Av Independencia 1235', city: 'Buenos Aires', postal_code: '2345', tags: ['Herreria', 'Diseño'], user: o1 })
+db.mes.insert({ _id: me1, id: 'ea1195ad-2732-49c4-a753-bc0eb6ba8180', full_name: 'Matias Berrueta', phone: '+54(011)-3455477', biography: 'Herreria', address: 'Av Independencia 1235', city: 'Buenos Aires', postal_code: '2345', tags: ['toys', 'star-wars'], user: o1 })
 
 var o2 = ObjectId();
 var me2 = ObjectId();
@@ -35,7 +35,7 @@ db.mes.insert({ _id: me2, id: '9d8628e3-189a-4637-a470-44b2b6a55d84', full_name:
 var o3 = ObjectId();
 var me3 = ObjectId();
 db.users.insert({ _id: o3, id: '902d84c4-54aa-403d-953c-53be2206f130', email: 'otero.florencia96@gmail.com', user_name: 'flor' })
-db.mes.insert({ _id: me3, id: 'fae57ec3-f23c-4464-8c5d-9427a37bc811', full_name: 'Florencia Otero', phone: '+54(011)-7895477', biography: 'Modelar arcilla', address: 'Carlos Calvo 2464', city: 'Buenos Aires', postal_code: '1224', tags: ['toys', 'jueguetes'], user: o3 })
+db.mes.insert({ _id: me3, id: 'fae57ec3-f23c-4464-8c5d-9427a37bc811', full_name: 'Florencia Otero', phone: '+54(011)-7895477', biography: 'Modelar arcilla', address: 'Carlos Calvo 2464', city: 'Buenos Aires', postal_code: '1224', tags: ['toys', 'marvel'], user: o3 })
 
 var o4 = ObjectId();
 var me4 = ObjectId();
