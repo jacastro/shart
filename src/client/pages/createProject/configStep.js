@@ -57,6 +57,7 @@ const ConfigStep = () => {
         onChange={handleChange('description')}
         margin="normal"
         variant="outlined"
+        required
         fullWidth
         multiline
       />
@@ -95,7 +96,7 @@ const ConfigStep = () => {
         <Typography variant="body1" gutterBottom>Suba una o más imágenes de su proyecto. Tenga en cuenta que la primera será utilizada como imagen de portada del mismo.</Typography>
         {values.images.map((image, imageIndex) => (
           <TextField
-            label={`Imagen Nº${imageIndex + 1}`}
+            label={`Url de imagen Nº${imageIndex + 1}`}
             value={image}
             onChange={handleChangeImage(imageIndex)}
             margin="normal"

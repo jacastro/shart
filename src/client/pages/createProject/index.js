@@ -21,15 +21,24 @@ import TaskStep from './taskStep';
 
 import './createProject.scss';
 
+const isEmpty = value => value === '' || value == null;
+
 const stepsCreate = [
   {
     title: 'Sobre tu proyecto',
     content: <ConfigStep />,
     disableBack: true,
+    disableNext: values => isEmpty(values.name)
+      || isEmpty(values.description)
+      || isEmpty(values.category),
   },
   {
     title: 'Estado',
     content: <StatusStep />,
+    disableNext: values => isEmpty(values.start_date)
+      || isEmpty(values.end_date)
+      || isEmpty(values.region)
+      || (values.require_shipping && isEmpty(values.shipping_address)),
   },
   {
     title: 'Configurar Tareas',
@@ -40,7 +49,7 @@ const stepsCreate = [
     title: 'Finalizar',
     action: 'create',
     content: <LinearProgress />,
-    disableNext: true
+    disableNext: () => true,
   }
 ];
 
@@ -59,7 +68,7 @@ const stepsEdit = [
     title: 'Finalizar',
     action: 'save',
     content: <LinearProgress />,
-    disableNext: true
+    disableNext: () => true,
   }
 ];
 
@@ -75,8 +84,8 @@ const ModifyProjectPage = ({ data }) => {
     tags: [],
     images: [],
     description: '',
-    start_date: '',
-    end_date: '',
+    start_date: null,
+    end_date: null,
     need_collaborations: true,
     require_shipping: true,
     shipping_address: null,
@@ -190,7 +199,7 @@ const ModifyProjectPage = ({ data }) => {
                 variant="contained"
                 color="primary"
                 onClick={handleNext}
-                disabled={stepData.disableNext || false}
+                disabled={(stepData.disableNext && stepData.disableNext(values)) || false}
               >
                 {stepData.nextText || 'Continuar'}
               </Button>

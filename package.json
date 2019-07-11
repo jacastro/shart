@@ -33,7 +33,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.11",
     "lodash.merge": "^4.6.1",
-    "material-ui-rating": "^4.0.0-beta.2",
+    "material-ui-rating": "^4.1.1",
     "method-override": "^3.0.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
