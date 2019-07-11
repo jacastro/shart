@@ -27,9 +27,10 @@ class Home extends React.Component {
       .then(({ data }) => {
         this.setState({ projects: data });
       });
-    get('/projects', { tags: userTags.join(',') })
+    get(`/projects?tags=${userTags.join(',')}`)
       .then(({ data }) => {
-        this.setState({ listRecommended: data.projects || [] });
+        console.log(data)
+        this.setState({ listRecommended: data || [] });
       });
     get('/projects/top-new', { limit: 5 })
       .then(({ data }) => {
