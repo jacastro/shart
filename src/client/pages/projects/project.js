@@ -28,7 +28,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import FavoriteIcon from '@material-ui/icons/Favorite';
+import StarIcon from '@material-ui/icons/StarRate';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import WatchLaterIcon from '@material-ui/icons/WatchLaterOutlined';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
@@ -132,6 +132,13 @@ class Project extends React.Component {
               <Card className="card-project">
                 <CardHeader
                   action={isMyProject ? [
+                    <Chip
+                      key="0"
+                      color="secondary"
+                      label={project.rating}
+                      icon={<StarIcon />}
+                      className="card-project-rate"
+                    />,
                     <Link key="1" to={`/me/projects/modify/${project.id}`}>
                       <IconButton aria-label="Edit">
                         <EditIcon />
@@ -140,11 +147,6 @@ class Project extends React.Component {
                     <IconButton key="2" aria-label="Delete" onClick={() => this.setState({ openDialog: true })}>
                       <DeleteForeverIcon />
                     </IconButton>,
-                    <Rating
-                      className="card-project-action"
-                      value={project.rating}
-                      editing={false}
-                    />
                   ] : (
                     <Rating
                       className="card-project-action"

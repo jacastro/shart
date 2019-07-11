@@ -12,6 +12,10 @@ a {
   &-action{
     margin-left: 0 !important;
   }
+  &-rate {
+    margin-top: 5px !important;
+    margin-left: 5px !important;
+  }
   &-apply{
     margin-left: auto !important;
     svg{
@@ -30,8 +34,7 @@ a {
   &-media {
     background: no-repeat center;
     background-size: cover;
-    height: 0px;
-    padding-top: 25%;
+    height: 100% !important;
   }
   &-meta{
     div{

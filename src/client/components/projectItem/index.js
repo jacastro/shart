@@ -50,7 +50,7 @@ const ProjectItem = ({ id, name, description, category, images, tags, owner, reg
           )
           : (
             <Button size="small" color="primary" href={`/projects/${id}/tasks`}>
-          Formar parte
+          Ver tareas y formar parte
             </Button>
           )
       }

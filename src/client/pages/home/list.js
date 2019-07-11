@@ -7,7 +7,7 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import StarRateIcon from '@material-ui/icons/StarRate';
-import Badge from '@material-ui/core/Badge';
+import Chip from '@material-ui/core/Chip';
 
 const ProjectList = ({ title, list, loading, children }) => (
   <React.Fragment>
@@ -24,7 +24,7 @@ const ProjectList = ({ title, list, loading, children }) => (
               title={project.name.toUpperCase()}
               subtitle={`Creado por @${project.owner.user_name}`}
               actionIcon={
-                <Badge className="inside-badge" color="secondary" badgeContent={project.rating} />
+                <Chip className="inside-badge" color="secondary" label={project.rating} icon={<StarRateIcon />} />
               }
             />
           </GridListTile>
