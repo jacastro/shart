@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
 import AppContext from '../../context';
 import PlaceIcon from '@material-ui/icons/Place';
+import Grid from '@material-ui/core/Grid/Grid';
 
 const ProjectItem = ({ id, name, description, category, images, tags, owner, region }) => {
   const { user } = useContext(AppContext);
@@ -48,7 +49,7 @@ const ProjectItem = ({ id, name, description, category, images, tags, owner, reg
             </Button>
           )
           : (
-            <Button size="small" color="primary">
+            <Button size="small" color="primary" href={`/projects/${id}/tasks`}>
           Formar parte
             </Button>
           )
