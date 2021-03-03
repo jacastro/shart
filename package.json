@@ -44,7 +44,7 @@
     "node-uuid": "^1.4.8",
     "params": "^0.1.1",
     "prop-types": "^15.7.2",
-    "pug": "^2.0.3",
+    "pug": "^3.0.1",
     "react": "^16.8.6",
     "react-cookie": "^4.0.0",
     "react-dom": "^16.8.6",
