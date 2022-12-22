@@ -30,7 +30,7 @@
     "errorhandler": "^1.5.0",
     "express": "^4.16.3",
     "http-errors": "~1.6.2",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.11",
     "lodash.merge": "^4.6.1",
     "material-ui-rating": "^4.1.1",
